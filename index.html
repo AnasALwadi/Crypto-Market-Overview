@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bitcoin On-Chain Dashboard — Free Data</title>
+<style>
+  :root{color-scheme:dark}
+  body{margin:0;background:#0f1115;color:#e6e6e6;font-family:Arial,Helvetica,sans-serif}
+  .wrap{max-width:1150px;margin:18px auto;padding:0 14px}
+  header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .brand{font-weight:800}
+  .score{padding:6px 10px;border-radius:999px;background:#1a1f2b;color:#fff;font-weight:700}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+  .card{background:#171a21;border:1px solid #262b36;border-radius:12px;padding:12px}
+  .title{font-weight:700;margin-bottom:6px}
+  .kv{display:flex;justify-content:space-between;font-size:13px;color:#9aa0a6;margin:3px 0}
+  .bull{background:#14351f;border-color:#1f5c39}
+  .bear{background:#3a1818;border-color:#6a2a2a}
+  .warn{background:#352e14;border-color:#6b5b22}
+  .neu{background:#1a1f2b;border-color:#2a3040}
+  .muted{color:#9aa0a6}
+  small{color:#9aa0a6}
+  a{color:#8ab4f8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <div class="brand">BTC/USDT — Market Overview</div>
+      <small>Made by <b>Anas Alwadi</b></small>
+    </div>
+    <div class="score" id="marketScore">Loading…</div>
+  </header>
+
+  <div class="grid" id="grid">
+    <!-- Cards will be injected -->
+  </div>
+
+  <div style="margin-top:12px">
+    <small class="muted">Sources: CoinGecko, Blockchain.com charts, (optional) Glassnode.</small>
+  </div>
+</div>
+
+<script>
+// ========= CONFIG =========
+const GLASSNODE_API_KEY = ""; // ضع مفتاح Glassnode المجاني هنا (اختياري). اتركه فارغًا لتجاوزه.
+const STABLES = ["tether", "usd-coin", "dai"]; // أضف رموز CoinGecko لعملات مستقرة أخرى لو حبيت.
+
+// ========= UTIL =========
+const $ = sel => document.querySelector(sel);
+const fmt = n => typeof n==="number" ? n.toLocaleString() : n;
+const pct = x => (x*100).toFixed(2)+"%";
+const SMA = (arr, n) => arr.map((_,i)=> i+1<n ? null : (arr.slice(i+1-n,i+1).reduce((a,b)=>a+b,0)/n));
+
+// ========= FETCHERS (CORS-OK) =========
+// CoinGecko: BTC market data + caps
+async function getCoinGeckoBTC(){
+  const url = "https://api.coingecko.com/api/v3/coins/bitcoin?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false";
+  const r = await fetch(url,{cache:"no-store"});
+  if(!r.ok) throw new Error("CoinGecko BTC failed");
+  const j = await r.json();
+  const mc = j.market_data.market_cap.usd;
+  const price = j.market_data.current_price.usd;
+  const supply = j.market_data.circulating_supply;
+  return {price, marketCap: mc, supply};
+}
+
+// CoinGecko: sum stablecoins market caps
+async function getStableCaps(){
+  const ids = STABLES.join(",");
+  const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${ids}&order=market_cap_desc&per_page=50&page=1&sparkline=false&price_change_percentage=24h`;
+  const r = await fetch(url,{cache:"no-store"});
+  if(!r.ok) throw new Error("CoinGecko stables failed");
+  const j = await r.json();
+  const sumCap = j.reduce((a,c)=>a+(c.market_cap||0),0);
+  return {sumCap, items:j};
+}
+
+// Blockchain.com charts: daily on-chain tx volume (USD)
+async function getDailyOnchainVolume(days=180){
+  const url = `https://api.blockchain.info/charts/estimated-transaction-volume-usd?timespan=${days}days&format=json&cors=true`;
+  const r = await fetch(url,{cache:"no-store"});
+  if(!r.ok) throw new Error("Blockchain.com volume failed");
+  const j = await r.json();
+  // values: [{x:timestampSec, y:valueUSD}]
+  return j.values.map(v=>({t:v.x*1000, v:v.y}));
+}
+
+// OPTIONAL Glassnode (needs key; may block CORS if مفتاح مفقود)
+async function getGlassnode(metric){
+  if(!GLASSNODE_API_KEY) return null;
+  const url = `https://api.glassnode.com/v1/metrics/indicators/${metric}?a=BTC&i=24h&api_key=${GLASSNODE_API_KEY}`;
+  const r = await fetch(url,{cache:"no-store"});
+  if(!r.ok) throw new Error(`Glassnode ${metric} failed`);
+  const j = await r.json();
+  return j.map(d=>({t:d.t*1000, v:d.v}));
+}
+
+// ========= LOGIC =========
+function card(title, html, tone="neu"){
+  return `<div class="card ${tone}">
+    <div class="title">${title}</div>
+    <div>${html}</div>
+  </div>`;
+}
+
+function scoreLabel(score){
+  return score>=2 ? "Strong Bullish" :
+         score>=0.8 ? "Bullish" :
+         score<=-2 ? "Strong Bearish" :
+         score<=-0.8 ? "Bearish" : "Neutral";
+}
+
+async function main(){
+  let score = 0;
+  const cards = [];
+
+  // 1) BTC core data
+  const btc = await getCoinGeckoBTC();
+
+  // 2) Stablecoins ratio
+  const st = await getStableCaps();
+  const stableRatio = st.sumCap / btc.marketCap; // نسبة الكاب المستقر إلى كاب BTC
+  // تحويلها لإشارة حسب مصفوفة المعاني (تقاطع ratio trend مع price trend يحتاج “trend”؛ هنا نكتفي بالحالة اللحظية):
+  let stableTone="neu", stableMsg="Neutral";
+  if(stableRatio>0.8){ stableTone="bear"; stableMsg="Very high stablecoin dry powder on sidelines → can precede risk-off"; score-=0.5; }
+  else if(stableRatio>0.5){ stableTone="warn"; stableMsg="Elevated — watch for pullbacks"; score-=0.2; }
+  else if(stableRatio<0.25){ stableTone="bull"; stableMsg="Low ratio — supportive for risk-on"; score+=0.5; }
+  cards.push(card("Stablecoins Ratio", `
+    <div class="kv"><span>BTC Market Cap</span><span>$${fmt(btc.marketCap)}</span></div>
+    <div class="kv"><span>Top stables cap</span><span>$${fmt(st.sumCap)}</span></div>
+    <div class="kv"><span>Ratio</span><span>${stableRatio.toFixed(2)}</span></div>
+    <div>${stableMsg}</div>
+  `, stableTone));
+
+  // 3) NVT (MarketCap / Daily On-chain Volume)
+  const vol = await getDailyOnchainVolume(240);
+  const latestVol = vol.length ? vol[vol.length-1].v : null;
+  let nvt = null, nvtTone="neu", nvtMsg="No clear signal";
+  if(latestVol && btc.marketCap){
+    nvt = btc.marketCap / latestVol;
+    if(nvt<20){ nvtTone="bull"; nvtMsg="Undervalued — strong buy"; score+=1; }
+    else if(nvt<=40){ nvtTone="bull"; nvtMsg="Fair / potential buy"; score+=0.5; }
+    else if(nvt<=70){ nvtTone="neu"; nvtMsg="Neutral"; }
+    else if(nvt<=80){ nvtTone="warn"; nvtMsg="High — overvaluation risk"; score-=0.3; }
+    else { nvtTone="bear"; nvtMsg="Very high — bubble risk"; score-=1; }
+  }
+  // NVT Golden Cross (SMA 10 – SMA 30 على NVT)
+  const nvtSeries = vol.map(d => (btc.marketCap / d.v));
+  const sma10 = SMA(nvtSeries,10), sma30 = SMA(nvtSeries,30);
+  const gc = (sma10[sma10.length-1]!=null && sma30[sma30.length-1]!=null) ? (sma10[sma10.length-1] - sma30[sma30.length-1]) / sma30[sma30.length-1] : null;
+  let gcTone="neu", gcMsg="Fair value";
+  if(gc!=null){
+    if(gc < -0.15){ gcTone="bull"; gcMsg="Undervalue"; score+=0.7; }
+    else if(gc > 0.21){ gcTone="bear"; gcMsg="Overvalue"; score-=0.7; }
+  }
+  cards.push(card("NVT", `
+    <div class="kv"><span>BTC Price</span><span>$${fmt(btc.price)}</span></div>
+    <div class="kv"><span>Market Cap</span><span>$${fmt(btc.marketCap)}</span></div>
+    <div class="kv"><span>On-chain Volume (24h)</span><span>$${fmt(latestVol||0)}</span></div>
+    <div class="kv"><span>NVT</span><span>${nvt? nvt.toFixed(1) : "—"}</span></div>
+    <div>${nvtMsg}</div>
+  `, nvtTone));
+  cards.push(card("NVT Golden Cross", `
+    <div class="kv"><span>GC (approx)</span><span>${gc!=null ? gc.toFixed(2) : "—"}</span></div>
+    <div>${gcMsg}</div>
+  `, gcTone));
+
+  // 4) Stock-to-Flow (تقريبي)
+  const flowYear = 3.125 * 144 * 365; // subsidy*blocks/day*365 (بعد Halving 2024)
+  const s2f = btc.supply / flowYear;
+  let s2fTone="neu", s2fMsg="Informational only";
+  if(s2f>100) { s2fTone="bull"; s2fMsg="High scarcity"; score+=0.2; }
+  cards.push(card("Stock-to-Flow (approx)", `
+    <div class="kv"><span>Stock (circulating)</span><span>${fmt(btc.supply.toFixed(0))} BTC</span></div>
+    <div class="kv"><span>Flow/yr (est.)</span><span>${fmt(flowYear.toFixed(0))} BTC</span></div>
+    <div class="kv"><span>S2F</span><span>${s2f.toFixed(1)}</span></div>
+    <div>${s2fMsg}</div>
+  `, s2fTone));
+
+  // 5) SOPR + MVRV (اختياري عبر Glassnode)
+  if(GLASSNODE_API_KEY){
+    try{
+      const soprArr = await getGlassnode("sopr");          // Spent Output Profit Ratio
+      const mvrvArr = await getGlassnode("mvrv");          // Market Value / Realized Value
+      const sopr = soprArr?.length ? soprArr[soprArr.length-1].v : null;
+      const mvrv = mvrvArr?.length ? mvrvArr[mvrvArr.length-1].v : null;
+
+      // SOPR signal
+      if(sopr!=null){
+        let tone="neu", msg="Sideways";
+        if(sopr<1){ tone="bull"; msg="Selling at loss → bottoming risk"; score+=1; }
+        else if(sopr>=1.02 && sopr<=1.05){ tone="bull"; msg="Light profits → slow uptrend"; score+=0.5; }
+        else if(Math.abs(sopr-1.08)<0.02){ tone="warn"; msg="Clear profit → short-term correction risk"; score-=0.3; }
+        else if(sopr>=1.10 && sopr<=1.15){ tone="bull"; msg="Strong profits → trend may continue"; score+=0.3; }
+        else if(sopr>1.20){ tone="bear"; msg="Very high profit → heavy selling risk"; score-=1; }
+        cards.push(card("SOPR (Glassnode)", `
+          <div class="kv"><span>Latest</span><span>${sopr.toFixed(3)}</span></div>
+          <div>${msg}</div>
+        `, tone));
+      }
+
+      // MVRV signal
+      if(mvrv!=null){
+        let tone="neu", msg="Fair value";
+        if(mvrv<1 && mvrv>=0.5){ tone="bull"; msg="Undervalued — buy zone"; score+=1; }
+        else if(mvrv>1 && mvrv<=3.5){ tone="bull"; msg="Bull market regime"; score+=0.5; }
+        else if(mvrv>3.5){ tone="bear"; msg="Overvalued — risk of top"; score-=1; }
+        cards.push(card("MVRV (Glassnode)", `
+          <div class="kv"><span>Latest</span><span>${mvrv.toFixed(2)}</span></div>
+          <div>${msg}</div>
+        `, tone));
+      }
+    }catch(e){
+      cards.push(card("Glassnode (SOPR/MVRV)", `<div class="muted">Error: ${e.message}</div>`, "neu"));
+    }
+  } else {
+    cards.push(card("SOPR & MVRV", `<div class="muted">Add <b>GLASSNODE_API_KEY</b> to enable these signals (free tier).</div>`, "neu"));
+  }
+
+  // 6) Netflow / Reserves (غير متاح مجانًا للمتصفح)
+  cards.push(card("Netflow & Reserves", `
+    <div class="muted">Public free APIs with browser CORS for spot/derivatives netflows/reserves are not available.<br>
+    Use <b>Glassnode/CryptoQuant</b> via your key + simple proxy (Netlify Function) to enable.</div>`, "neu"));
+
+  // Render
+  $("#grid").innerHTML = cards.join("");
+  $("#marketScore").textContent = `${scoreLabel(score)} (${score.toFixed(1)})`;
+}
+
+main().catch(e=>{
+  console.error(e);
+  $("#grid").innerHTML = `<div class="card bear"><div class="title">Error</div><div>${e.message}</div></div>`;
+});
+</script>
+</body>
+</html>
