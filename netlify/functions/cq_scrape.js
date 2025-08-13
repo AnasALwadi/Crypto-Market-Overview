@@ -1,94 +1,145 @@
 // netlify/functions/cq_scrape.js
+export const config = { path: "/.netlify/functions/cq_scrape" };
+
+/**
+ * Scrape SOPR / MVRV time-series from CryptoQuant public pages (requires logged-in cookie).
+ * Set env var: CQ_COOKIE (copy full cookie string from browser).
+ *
+ * Test:
+ *  /.netlify/functions/cq_scrape?metric=sopr
+ *  /.netlify/functions/cq_scrape?metric=mvrv
+ *  /.netlify/functions/cq_scrape?metric=sopr&debug=1
+ */
+
 const MAP = {
   sopr: "https://cryptoquant.com/asset/btc/indicator/sopr",
   mvrv: "https://cryptoquant.com/asset/btc/indicator/mvrv",
 };
 
-exports.handler = async (event) => {
-  try {
-    const metric = (event.queryStringParameters?.metric || "").toLowerCase();
-    if (!MAP[metric]) return json(400, { error: "Use ?metric=sopr or ?metric=mvrv" });
+// -------- small utils --------
+function jsonSafeParse(s) { try { return JSON.parse(s); } catch { return null; } }
 
-    const cookie = process.env.CQ_COOKIE || "";
-    if (!cookie) return json(500, { error: "CQ_COOKIE is missing in environment" });
-
-    const url = MAP[metric];
-    const r = await fetch(url, {
-      headers: {
-        cookie,
-        "user-agent": "Mozilla/5.0",
-        accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "accept-language": "en-US,en;q=0.9",
-        referer: "https://cryptoquant.com/",
-      },
-      redirect: "manual",
-    });
-
-    const html = await r.text();
-
-    // لو في تحويل (تسجيل دخول مثلاً)
-    if (r.status >= 300 && r.status < 400) {
-      return json(502, { error: "Redirected (probably not logged in)", status: r.status, location: r.headers.get("location") });
+// recursive finder for any array of { time/value }-like points
+function findTimeSeries(node) {
+  const paths = [];
+  function rec(n, path) {
+    if (!n) return;
+    if (Array.isArray(n) && n.length > 10 && typeof n[0] === "object") {
+      const keys = Object.keys(n[0] || {});
+      const hasTime = keys.some(k => /time|date|t|x/i.test(k));
+      const hasVal  = keys.some(k => /value|v|y|val/i.test(k));
+      if (hasTime && hasVal) paths.push({ path, sample: n.slice(-5) });
     }
-    if (!html || !html.includes("<script")) {
-      return json(502, { error: "Unexpected body from CQ", status: r.status, snippet: (html || "").slice(0, 160) });
+    if (typeof n === "object") {
+      for (const k of Object.keys(n)) rec(n[k], path.concat(k));
     }
-
-    // ✅ Regex أقوى يلتقط سكربت __NEXT_DATA__
-    const m = html.match(/<script[^>]*id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/i);
-    if (!m) {
-      return json(502, { error: "Could not find __NEXT_DATA__ in page", status: r.status, snippet: html.slice(0, 160) });
-    }
-
-    let nextData;
-    try {
-      nextData = JSON.parse(m[1]);
-    } catch (e) {
-      return json(502, { error: "Parse __NEXT_DATA__ failed", msg: e.message });
-    }
-
-    const series = findSeries(nextData);
-    if (!series || !series.length) return json(404, { error: "No time series found" });
-
-    const last = series[series.length - 1];
-    return json(200, { metric, points: series.slice(-120), latest: last });
-
-  } catch (e) {
-    return json(500, { error: e.message });
   }
-};
-
-function json(code, obj) {
-  return { statusCode: code, headers: { "content-type": "application/json" }, body: JSON.stringify(obj) };
+  rec(node, []);
+  return paths;
 }
 
-function findSeries(root) {
-  // نمشي داخل الشجرة ونلتقط أي مصفوفة على شكل {t,time}/{v,value}
-  let found = null;
-  (function walk(obj) {
-    if (found) return;
-    if (Array.isArray(obj)) {
-      if (
-        obj.length &&
-        typeof obj[0] === "object" &&
-        obj[0] &&
-        ("t" in obj[0] || "time" in obj[0]) &&
-        ("v" in obj[0] || "value" in obj[0])
-      ) {
-        found = obj
-          .map(o => ({ t: o.t ?? o.time, v: o.v ?? o.value }))
-          .filter(x => x.t != null && x.v != null);
-        return;
-      }
-      for (const it of obj) walk(it);
-      return;
+function ok(json) {
+  return new Response(JSON.stringify(json), {
+    status: 200,
+    headers: { "content-type": "application/json; charset=utf-8" },
+  });
+}
+function bad(status, msg) {
+  return new Response(JSON.stringify({ error: msg }), {
+    status,
+    headers: { "content-type": "application/json; charset=utf-8" },
+  });
+}
+
+export async function handler(event) {
+  try {
+    const metric = (event.queryStringParameters?.metric || "").toLowerCase();
+    const debug  = event.queryStringParameters?.debug === "1";
+    if (!MAP[metric]) return bad(400, "Use ?metric=sopr or ?metric=mvrv");
+
+    const COOKIE = process.env.CQ_COOKIE || "";
+    if (!COOKIE || COOKIE.length < 50) {
+      return bad(500, "CQ_COOKIE missing or too short in environment");
     }
-    if (obj && typeof obj === "object") {
-      for (const k of Object.keys(obj)) {
-        walk(obj[k]);
-        if (found) return;
+
+    const url = MAP[metric];
+
+    // Stronger headers help avoid being served a stripped page
+    const res = await fetch(url, {
+      headers: {
+        "cookie": COOKIE,
+        "user-agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
+          "(KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "accept-language": "en-US,en;q=0.9",
+        "cache-control": "no-cache",
+        "pragma": "no-cache",
+        "referer": "https://cryptoquant.com/",
+      },
+    });
+
+    const html = await res.text();
+
+    if (debug) {
+      return ok({
+        status: res.status,
+        url,
+        length: html.length,
+        hasNextData: html.includes('__NEXT_DATA__'),
+        snippet: html.slice(0, 200),
+      });
+    }
+
+    if (res.status >= 400) {
+      return bad(res.status, `Upstream status ${res.status}`);
+    }
+
+    // 1) Extract Next.js data blob
+    const m = html.match(
+      /<script id="__NEXT_DATA__" type="application\/json">([\s\S]+?)<\/script>/
+    );
+    if (!m) return bad(502, "Could not find __NEXT_DATA__ in page");
+
+    const nextData = jsonSafeParse(m[1]);
+    if (!nextData) return bad(502, "Failed to parse __NEXT_DATA__ JSON");
+
+    // 2) Search inside for time-series arrays
+    const found = findTimeSeries(nextData);
+    if (!found.length) return bad(404, "No time series found");
+
+    // 3) Heuristic: pick the LONGEST candidate (most points)
+    let best = found[0];
+    let bestLen = best.sample.length;
+    function getByPath(obj, path) {
+      return path.reduce((acc, k) => (acc ? acc[k] : undefined), obj);
+    }
+    for (const cand of found) {
+      const arr = getByPath(nextData, cand.path) || [];
+      if (Array.isArray(arr) && arr.length > bestLen) {
+        best = cand;
+        bestLen = arr.length;
       }
     }
-  })(root);
-  return found;
+    const fullArr = getByPath(nextData, best.path);
+
+    // 4) Normalize points → { time, value }
+    const norm = fullArr.map(p => {
+      // try common key names
+      const t = p.time ?? p.t ?? p.date ?? p.x ?? null;
+      const v = p.value ?? p.v ?? p.y ?? p.val ?? null;
+      return { time: t, value: v };
+    }).filter(d => d.time != null && d.value != null);
+
+    if (!norm.length) return bad(404, "Parsed array but points were empty");
+
+    return ok({
+      metric,
+      count: norm.length,
+      // send last 200 points to keep payload small
+      data: norm.slice(-200),
+    });
+  } catch (e) {
+    return bad(500, `Exception: ${e.message}`);
+  }
 }
