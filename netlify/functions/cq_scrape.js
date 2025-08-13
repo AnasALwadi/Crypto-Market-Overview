@@ -1,172 +1,227 @@
-// netlify/functions/cq_scrape.js
-// Scrape SOPR / MVRV from CryptoQuant public pages using a session cookie in CQ_COOKIE
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>BTC/USDT — Market Overview</title>
+<style>
+  :root { color-scheme: dark; }
+  body{margin:0;background:#0f1115;color:#e6e6e6;font-family:Arial,Helvetica,sans-serif}
+  .wrap{max-width:1150px;margin:18px auto;padding:0 14px}
+  .brand{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .brand .made{font-weight:800;color:#ffcc70}
+  .brand .right{font-size:14px;color:#9aa0a6}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+  .card{background:#171a21;border:1px solid #262b36;border-radius:12px;padding:12px}
+  .title{font-weight:700;margin-bottom:8px}
+  .kv{display:flex;justify-content:space-between;margin:6px 0}
+  .muted{color:#9aa0a6}
+  .bull{border-color:#2e7d32;background:#142017}
+  .bear{border-color:#c62828;background:#221618}
+  .warn{border-color:#ff9800;background:#241d11}
+  .neu{border-color:#2a2f3a;background:#171a21}
+  .score{display:inline-block;padding:6px 10px;border-radius:999px;background:#21242c;margin-left:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">
+    <div>
+      <div class="made">Made by <b>Anas Alwadi</b></div>
+      <div class="title" id="headline">BTC/USDT — Market Overview</div>
+    </div>
+    <div class="right">
+      <div>BTC Price: <span id="btcPrice">–</span></div>
+      <div>Updated: <span id="updated">–</span></div>
+      <div>Market Score: <span id="marketScore" class="score">Neutral (0.0)</span></div>
+    </div>
+  </div>
 
-function json(status, obj) {
-  return {
-    statusCode: status,
-    headers: { "content-type": "application/json; charset=utf-8" },
-    body: JSON.stringify(obj),
-  };
+  <div id="grid" class="grid"></div>
+</div>
+
+<script>
+/* ========= Helpers ========= */
+const $ = s => document.querySelector(s);
+const fmt = x => Number(x).toLocaleString();
+const pct = x => (x*100).toFixed(2) + "%";
+const nowStr = () => new Date().toLocaleString();
+
+/* Cards */
+function card(title, html, mood="neu"){
+  return `<div class="card ${mood}">
+    <div class="title">${title}</div>
+    ${html}
+  </div>`;
 }
 
-function deepScan(node, fn) {
-  try { fn(node); } catch {}
-  if (Array.isArray(node)) for (const x of node) deepScan(x, fn);
-  else if (node && typeof node === "object") for (const k of Object.keys(node)) deepScan(node[k], fn);
+/* Simple score -> label */
+function scoreLabel(sc){
+  if(sc>=1.5) return "Bullish";
+  if(sc<=-1.5) return "Bearish";
+  if(sc>0.5) return "Mild Bullish";
+  if(sc<-0.5) return "Mild Bearish";
+  return "Neutral";
 }
 
-function normalizeTS(t) {
-  if (typeof t === "number") {
-    if (t > 1e12) return Math.floor(t/1000);
-    if (t > 1e9) return Math.floor(t);
+/* ========= Public APIs =========
+   CoinGecko: price, market cap, supply (BTC + stables)
+   Blockchain.com: estimated tx volume USD (time series)
+*/
+const CG_MARKETS_URL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,tether,usd-coin,dai,true-usd,binance-usd&per_page=250&page=1&sparkline=false&locale=en";
+const CG_MCAP_SERIES = "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=120&interval=daily";
+const BC_TXV_SERIES  = "https://api.blockchain.info/charts/estimated-transaction-volume-usd?timespan=120days&format=json";
+
+/* ========= Main ========= */
+async function main(){
+  $("#updated").textContent = nowStr();
+
+  const grid = $("#grid");
+  let score = 0;
+
+  // 1) CoinGecko markets batch (BTC + top stables)
+  const mk = await fetch(CG_MARKETS_URL, {cache:"no-store"}).then(r=>r.json());
+  const byId = {};
+  mk.forEach(o=>byId[o.id]=o);
+
+  const btc = byId["bitcoin"];
+  if(!btc) throw new Error("CoinGecko BTC unavailable");
+
+  $("#btcPrice").textContent = "$" + fmt(btc.current_price.toFixed(2));
+
+  // 2) Stablecoins ratio (approx)
+  // Sum current market caps and reconstruct "yesterday" via market_cap_change_percentage_24h
+  const stableIds = ["tether","usd-coin","dai","true-usd","binance-usd"].filter(id => byId[id]);
+  let stableCapNow = 0, stableCapPrev = 0;
+  stableIds.forEach(id=>{
+    const c = byId[id];
+    const now = c.market_cap || 0;
+    const prev = c.market_cap_change_percentage_24h != null
+        ? now / (1 + (c.market_cap_change_percentage_24h/100))
+        : now;
+    stableCapNow += now;
+    stableCapPrev += prev;
+  });
+
+  const btcCapNow = btc.market_cap || 0;
+  const btcCapPrev = btc.market_cap_change_percentage_24h != null
+      ? btcCapNow / (1 + (btc.market_cap_change_percentage_24h/100))
+      : btcCapNow;
+
+  const ratioNow  = stableCapNow / (btcCapNow || 1);
+  const ratioPrev = stableCapPrev / (btcCapPrev || 1);
+  const ratioUp   = ratioNow > ratioPrev + 1e-9;
+  const btcUp     = (btc.price_change_percentage_24h || 0) > 0;
+
+  // Signal per الجدول المبسّط
+  let srTone="neu", srMsg="stability with no clear direction";
+  if (ratioUp && btcUp) { srTone="warn"; srMsg="warning of a potential correction soon"; score-=0.2; }
+  else if (ratioUp && !btcUp) { srTone="bull"; srMsg="altcoins may rise"; score+=0.3; }
+  else if (!ratioUp && btcUp) { srTone="bull"; srMsg="sustained uptrend"; score+=0.5; }
+  else if (!ratioUp && !btcUp) { srTone="bear"; srMsg="bearish market bias"; score-=0.4; }
+
+  grid.insertAdjacentHTML("beforeend", card("Stablecoins Ratio (approx)", `
+    <div class="kv"><span>Stables mcap</span><span>$${fmt(stableCapNow.toFixed(0))}</span></div>
+    <div class="kv"><span>BTC mcap</span><span>$${fmt(btcCapNow.toFixed(0))}</span></div>
+    <div class="kv"><span>Ratio (stables/BTC)</span><span>${ratioNow.toFixed(3)}</span></div>
+    <div class="kv"><span>24h change dir</span><span>${ratioUp?"↑ up":"↓ down"} vs BTC ${btcUp?"↑":"↓"}</span></div>
+    <div class="muted">${srMsg}</div>
+  `, srTone));
+
+  // 3) Stock-to-Flow (approx)
+  const supply = btc.circulating_supply || 0;
+  const flowYear = 3.125 * 144 * 365; // بعد Halving 2024
+  const s2f = supply / flowYear;
+  let s2fTone="neu", s2fMsg="Informational only";
+  if (s2f > 100) { s2fTone="bull"; s2fMsg="High scarcity"; score+=0.2; }
+  grid.insertAdjacentHTML("beforeend", card("Stock-to-Flow (approx)", `
+    <div class="kv"><span>Stock (circulating)</span><span>${fmt(supply.toFixed(0))} BTC</span></div>
+    <div class="kv"><span>Flow/yr (est.)</span><span>${fmt(flowYear.toFixed(0))} BTC</span></div>
+    <div class="kv"><span>S2F</span><span>${s2f.toFixed(1)}</span></div>
+    <div class="muted">${s2fMsg}</div>
+  `, s2fTone));
+
+  // 4) NVT (Market Cap / Daily Tx Volume)
+  //   market cap series (CG) + tx volume series (Blockchain.com) → latest day + GC signal
+  const [mcSeries, txvSeries] = await Promise.all([
+    fetch(CG_MCAP_SERIES, {cache:"no-store"}).then(r=>r.json()),
+    fetch(BC_TXV_SERIES,  {cache:"no-store"}).then(r=>r.json())
+  ]);
+
+  // CG returns {market_caps:[[ts, cap], ...]}
+  const mc = (mcSeries.market_caps || []).map(([t,v])=>({t:Math.floor(t/1000), v}));
+  // Blockchain.com returns {values:[{x:ts,y:val},...]}
+  const tv = (txvSeries.values || []).map(o=>({t:o.x, v:o.y}));
+
+  // sync by day (use last 120, join by closest same-day ts)
+  function joinSeries(a,b){
+    const out=[];
+    let j=0;
+    for(let i=0;i<a.length;i++){
+      const ta=a[i].t;
+      while(j<b.length-1 && b[j+1].t<=ta) j++;
+      const tb=b[j]?.t;
+      if(Math.abs((tb||0)-ta)<=86400*1.5){
+        out.push({t:ta, a:a[i].v, b:b[j].v});
+      }
+    }
+    return out;
   }
-  if (typeof t === "string") {
-    if (/^\d+$/.test(t)) return normalizeTS(Number(t));
-    const d = Date.parse(t);
-    if (!isNaN(d)) return Math.floor(d/1000);
+  const joined = joinSeries(mc, tv).filter(x=>x.a>0 && x.b>0);
+  if(joined.length){
+    const nvtSeries = joined.map(x=>({t:x.t, v:x.a / x.b}));
+    const latest = nvtSeries[nvtSeries.length-1].v;
+
+    // NVT card & classification
+    let nvtTone="neu", nvtMsg="Neutral zone";
+    if(latest < 20){ nvtTone="bull"; nvtMsg="Strong buying opportunity (undervalued)"; score+=0.7; }
+    else if(latest < 40){ nvtTone="bull"; nvtMsg="Fair value / potential buy"; score+=0.3; }
+    else if(latest >= 70 && latest < 80){ nvtTone="warn"; nvtMsg="Potential overvaluation"; score-=0.2; }
+    else if(latest >= 80){ nvtTone="bear"; nvtMsg="Bubble risk — selling opportunity"; score-=0.8; }
+
+    grid.insertAdjacentHTML("beforeend", card("NVT (Network Value to Tx)", `
+      <div class="kv"><span>Latest</span><span>${latest.toFixed(1)}</span></div>
+      <div class="muted">${nvtMsg}</div>
+    `, nvtTone));
+
+    // 5) NVT Golden Cross (approx): (MA10 - MA30)/MA30
+    function SMA(arr, win){
+      const out=[]; let s=0;
+      for(let i=0;i<arr.length;i++){
+        s += arr[i];
+        if(i>=win) s -= arr[i-win];
+        if(i>=win-1) out.push(s/win);
+      }
+      return out;
+    }
+    const nvts = nvtSeries.map(x=>x.v);
+    const ma10 = SMA(nvts,10);
+    const ma30 = SMA(nvts,30);
+    let gc = null;
+    if(ma30.length){
+      const last10 = ma10[ma10.length-1];
+      const last30 = ma30[ma30.length-1];
+      gc = (last10 - last30) / last30; // نسبة
+      let gcTone="neu", gcMsg="Fair value";
+      if(gc < -0.015){ gcTone="bull"; gcMsg="Undervalue"; score+=0.4; }
+      else if(gc > 0.021){ gcTone="bear"; gcMsg="Overvalue"; score-=0.4; }
+      grid.insertAdjacentHTML("beforeend", card("NVT Golden Cross (approx)", `
+        <div class="kv"><span>GC value</span><span>${(gc*100).toFixed(2)}%</span></div>
+        <div class="muted">${gcMsg}</div>
+      `, gcTone));
+    }
+  } else {
+    grid.insertAdjacentHTML("beforeend", card("NVT / Golden Cross", `<div class="muted">Not enough data</div>`));
   }
-  return null;
+
+  // Score header
+  $("#marketScore").textContent = `${scoreLabel(score)} (${score.toFixed(1)})`;
 }
 
-function isFiniteNumber(x){ return typeof x === "number" && Number.isFinite(x); }
-function getLastTS(cand){
-  if (cand.tuple) return normalizeTS(cand.arr[cand.arr.length-1]?.[0]);
-  const row = cand.arr[cand.arr.length-1] || {};
-  return normalizeTS(row?.[cand.tKey]);
-}
-
-export async function handler(event){
-  try{
-    const metric = (event.queryStringParameters?.metric || "").toLowerCase();
-    const MAP = {
-      sopr: "https://cryptoquant.com/asset/btc/indicator/sopr",
-      mvrv: "https://cryptoquant.com/asset/btc/indicator/mvrv",
-    };
-    if(!MAP[metric]) return json(400,{error:"Use ?metric=sopr or ?metric=mvrv"});
-
-    const cookie = process.env.CQ_COOKIE || "";
-    if(!cookie) return json(500,{error:"CQ_COOKIE not set on Netlify"});
-
-    // Strong browser-like headers; referrer helps أحيانًا
-    const res = await fetch(MAP[metric], {
-      headers: {
-        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-        "accept-language": "en-US,en;q=0.9",
-        "cache-control": "no-cache",
-        "pragma": "no-cache",
-        "upgrade-insecure-requests": "1",
-        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36",
-        "sec-fetch-dest": "document",
-        "sec-fetch-mode": "navigate",
-        "sec-fetch-site": "same-origin",
-        "sec-fetch-user": "?1",
-        "referer": "https://cryptoquant.com/",
-        "cookie": cookie,
-      },
-      redirect: "follow",
-    });
-
-    const status = res.status;
-    const finalURL = res.url;
-    const html = await res.text();
-
-    // Quick fail if got redirected to login or challenge page
-    const looksLikeLogin = /next-auth|signin|sign in|verify you are a human/i.test(html);
-    if(status !== 200 || looksLikeLogin){
-      if(event.queryStringParameters?.debug === "1"){
-        return json(502, {error:"Bad/blocked response", status, finalURL, snippet: html.slice(0,400)});
-      }
-      return json(502, {error:"Unable to fetch page (blocked/redirected). Add &debug=1 for details."});
-    }
-
-    // Try several patterns for __NEXT_DATA__
-    let m = html.match(/<script id="__NEXT_DATA__" type="application\/json">([\s\S]+?)<\/script>/);
-    if(!m){
-      m = html.match(/window\.__NEXT_DATA__\s*=\s*({[\s\S]+?});?\s*<\/script>/);
-    }
-    if(!m){
-      if(event.queryStringParameters?.debug === "1"){
-        return json(502, { error:"Unable to locate __NEXT_DATA__", status, finalURL, snippet: html.slice(0,400) });
-      }
-      return json(502, { error:"Unable to locate __NEXT_DATA__. Add &debug=1 to inspect." });
-    }
-
-    let root;
-    try{ root = JSON.parse(m[1]); }
-    catch(e){
-      if(event.queryStringParameters?.debug === "1"){
-        return json(502, { error:"Failed to parse __NEXT_DATA__", msg: e.message, head: m[1].slice(0,200) });
-      }
-      return json(502, { error:"Failed to parse __NEXT_DATA__" });
-    }
-
-    // Deep scan for time-series arrays
-    const candidates = [];
-    deepScan(root, (node) => {
-      // array of objects
-      if(Array.isArray(node) && node.length>=30 && typeof node[0]==="object"){
-        const keys = Object.keys(node[0] || {});
-        const tKey = keys.find(k => /^(time|timestamp|t|x|date)$/i.test(k));
-        const vKey = keys.find(k => /^(value|y|v|val|price|close)$/i.test(k));
-        if(!tKey || !vKey) return;
-        let ok=0;
-        for(let i=0;i<Math.min(node.length,50);i++){
-          const ts = normalizeTS(node[i]?.[tKey]);
-          const v = node[i]?.[vKey];
-          if(!ts || !isFiniteNumber(Number(v))) break;
-          ok++;
-        }
-        if(ok>=20) candidates.push({arr:node,tKey,vKey});
-      }
-      // array of tuples
-      if(Array.isArray(node) && node.length>=30 && Array.isArray(node[0])){
-        let ok=0;
-        for(let i=0;i<Math.min(node.length,50);i++){
-          const a=node[i]; if(!Array.isArray(a) || a.length<2) break;
-          const ts=normalizeTS(a[0]); const v=Number(a[1]);
-          if(!ts || !isFiniteNumber(v)) break;
-          ok++;
-        }
-        if(ok>=20) candidates.push({arr:node,tuple:true});
-      }
-    });
-
-    if(!candidates.length){
-      if(event.queryStringParameters?.debug === "1"){
-        return json(404,{error:"No time series found", status, finalURL, hasNext: !!m, keys: Object.keys(root||{}).slice(0,20)});
-      }
-      return json(404,{error:"No time series found"});
-    }
-
-    candidates.sort((A,B)=>{
-      const lenDiff = B.arr.length - A.arr.length;
-      if(lenDiff) return lenDiff;
-      return (getLastTS(B)||0) - (getLastTS(A)||0);
-    });
-
-    const best = candidates[0];
-    const series = best.arr.map(row=>{
-      let ts, val;
-      if(best.tuple){ ts = normalizeTS(row[0]); val = Number(row[1]); }
-      else { ts = normalizeTS(row[best.tKey]); val = Number(row[best.vKey]); }
-      return (ts && isFiniteNumber(val)) ? { t: ts, v: val } : null;
-    }).filter(Boolean);
-
-    if(!series.length) return json(404,{error:"Parsed empty series"});
-
-    const latest = series[series.length-1];
-
-    if(event.queryStringParameters?.debug === "1"){
-      return json(200,{
-        ok:true, status, finalURL,
-        candidateCount: candidates.length,
-        picked: { length: series.length, lastTS: latest.t, lastVal: latest.v },
-      });
-    }
-
-    return json(200,{ metric, latest: latest.v, series });
-
-  }catch(e){
-    return json(500,{error:e.message || "Internal error"});
-  }
-}
+main().catch(e=>{
+  console.error(e);
+  $("#grid").innerHTML = `<div class="card bear"><div class="title">Error</div><div>${e.message}</div></div>`;
+});
+</script>
+</body>
+</html>
