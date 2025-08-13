@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="auto">
+<html lang="ar" dir="rtl" data-theme="auto">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Advanced Market Overview</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نظرة شاملة على السوق - بيانات حية</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
   :root {
@@ -22,13 +22,11 @@
     --bad: #ef4444;
     --accent: #4f9cf9;
     --accent2: #9d6dfd;
-    --accent3: #ff7d47;
     --number: #8ac8ff;
     --shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
     --shadow2: 0 16px 50px rgba(0, 0, 0, 0.5);
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --card-radius: 22px;
-    --header-height: 80px;
   }
   
   @media (prefers-color-scheme: light) {
@@ -47,30 +45,6 @@
     }
   }
   
-  html[data-theme="light"] {
-    --bg: linear-gradient(135deg, #f9fafc 0%, #eef2f6 100%);
-    --surface: rgba(255, 255, 255, 0.98);
-    --surface-hover: rgba(255, 255, 255, 0.98);
-    --surface-card: rgba(255, 255, 255, 0.85);
-    --border: rgba(203, 213, 225, 0.75);
-    --border-hover: rgba(148, 163, 184, 0.6);
-    --text: #1a2035;
-    --muted: #64748b;
-    --number: #1e40af;
-  }
-  
-  html[data-theme="dark"] {
-    --bg: linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%);
-    --surface: rgba(23, 26, 33, 0.95);
-    --surface-hover: rgba(30, 35, 45, 0.98);
-    --surface-card: rgba(30, 35, 45, 0.7);
-    --border: rgba(56, 68, 77, 0.45);
-    --border-hover: rgba(56, 68, 77, 0.65);
-    --text: #f0f3f6;
-    --muted: #a8b3c0;
-    --number: #8ac8ff;
-  }
-
   * {
     box-sizing: border-box;
     margin: 0;
@@ -81,7 +55,7 @@
     margin: 0;
     background: var(--bg);
     color: var(--text);
-    font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    font-family: 'Tajawal', sans-serif;
     line-height: 1.6;
     min-height: 100vh;
     overflow-x: hidden;
@@ -89,7 +63,7 @@
   }
   
   .wrap {
-    max-width: 1600px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 24px 16px;
   }
@@ -105,7 +79,6 @@
     padding: 16px 0;
     border-bottom: 1px solid var(--border);
     position: relative;
-    min-height: var(--header-height);
   }
   
   .logo-container {
@@ -124,6 +97,7 @@
     justify-content: center;
     font-size: 28px;
     box-shadow: var(--shadow);
+    color: white;
   }
   
   .logo-text {
@@ -133,7 +107,7 @@
   
   .site-title {
     margin: 0;
-    font-size: clamp(26px, 4.5vw, 36px);
+    font-size: 1.8rem;
     font-weight: 800;
     background: linear-gradient(135deg, var(--accent), var(--accent2));
     -webkit-background-clip: text;
@@ -143,7 +117,7 @@
   
   .site-subtitle {
     color: var(--muted);
-    font-size: 14px;
+    font-size: 0.9rem;
     font-weight: 500;
     letter-spacing: 0.5px;
   }
@@ -232,137 +206,12 @@
     border: none;
   }
   
-  .btn-sm {
-    padding: 8px 14px;
-    font-size: 13px;
-  }
-  
-  /* Navigation */
-  .nav-tabs {
-    display: flex;
-    gap: 8px;
-    margin: 0 0 24px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border);
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  
-  .nav-tabs::-webkit-scrollbar {
-    display: none;
-  }
-  
-  .tab {
-    padding: 10px 20px;
-    border-radius: 12px;
-    background: transparent;
-    color: var(--muted);
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
-    white-space: nowrap;
-  }
-  
-  .tab.active {
-    background: var(--surface-card);
-    color: var(--text);
-    box-shadow: var(--shadow);
-  }
-  
-  /* Main Content */
-  .content-section {
-    margin-bottom: 32px;
-  }
-  
-  .section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--border);
-  }
-  
-  .section-title {
-    font-size: 22px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  
-  .section-title i {
-    color: var(--accent);
-    font-size: 20px;
-  }
-  
-  /* Chart Section */
-  .chart-container {
-    background: var(--surface-card);
-    border: 1px solid var(--border);
-    border-radius: var(--card-radius);
-    box-shadow: var(--shadow);
-    padding: 20px;
-    margin-bottom: 24px;
-    transition: var(--transition);
-  }
-  
-  .chart-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-  }
-  
-  .chart-title {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--text);
-  }
-  
-  .chart-actions {
-    display: flex;
-    gap: 10px;
-  }
-  
-  canvas.chart {
-    width: 100%;
-    height: 380px;
-    display: block;
-    border-radius: 16px;
-  }
-  
-  /* Dashboard Grid */
-  .dashboard {
-    display: grid;
-    gap: 24px;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    margin-bottom: 32px;
-  }
-  
-  .dashboard-section {
-    background: var(--surface-card);
-    border: 1px solid var(--border);
-    border-radius: var(--card-radius);
-    box-shadow: var(--shadow);
-    padding: 24px;
-  }
-  
-  .dashboard-title {
-    font-size: 18px;
-    font-weight: 700;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--accent);
-  }
-  
   /* Card Styles */
   .card-grid {
     display: grid;
     gap: 24px;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    margin-bottom: 32px;
   }
   
   .card {
@@ -392,7 +241,7 @@
   }
   
   .card-title {
-    font-size: 16px;
+    font-size: 1.1rem;
     font-weight: 700;
     color: var(--text);
   }
@@ -439,12 +288,12 @@
   .kv-label {
     color: var(--muted);
     font-weight: 500;
-    font-size: 14px;
+    font-size: 0.9rem;
   }
   
   .kv-value {
     font-weight: 600;
-    text-align: right;
+    text-align: left;
   }
   
   .center {
@@ -456,21 +305,12 @@
   
   .big {
     color: var(--number);
-    font-size: clamp(24px, 3.2vw, 32px);
+    font-size: 1.8rem;
     font-weight: 800;
     letter-spacing: -0.02em;
     line-height: 1.2;
     max-width: 100%;
     word-break: break-word;
-  }
-  
-  /* Mini Charts */
-  .mini-chart {
-    height: 60px;
-    width: 100%;
-    margin-top: 16px;
-    border-radius: 10px;
-    overflow: hidden;
   }
   
   /* Trend Indicators */
@@ -494,11 +334,35 @@
     color: var(--bad);
   }
   
-  /* Gauge */
-  .gauge-container {
+  /* Chart */
+  .chart-container {
+    background: var(--surface-card);
+    border: 1px solid var(--border);
+    border-radius: var(--card-radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+    margin-bottom: 32px;
+    transition: var(--transition);
+  }
+  
+  .chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .chart-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  
+  canvas#priceChart {
     width: 100%;
-    max-width: 260px;
-    margin: 0 auto;
+    height: 380px;
+    display: block;
+    border-radius: 16px;
   }
   
   /* Footer */
@@ -549,7 +413,7 @@
   .scroll-top {
     position: fixed;
     bottom: 24px;
-    right: 24px;
+    left: 24px;
     width: 48px;
     height: 48px;
     border-radius: 50%;
@@ -599,20 +463,11 @@
       padding-bottom: 8px;
     }
     
-    .nav-tabs {
-      gap: 6px;
-    }
-    
-    .tab {
-      padding: 8px 16px;
-      font-size: 14px;
-    }
-    
     .card-grid {
       grid-template-columns: 1fr;
     }
     
-    canvas.chart {
+    canvas#priceChart {
       height: 280px;
     }
     
@@ -621,10 +476,59 @@
       gap: 16px;
     }
   }
+  
+  /* Real-time indicator */
+  .real-time-indicator {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--ok);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    z-index: 1000;
+  }
+  
+  .pulse {
+    width: 10px;
+    height: 10px;
+    background: var(--ok);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+  
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+  }
+  
+  /* Source badges */
+  .source-badge {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.4);
+    color: var(--muted);
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 10px;
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
+  <!-- Real-time indicator -->
+  <div class="real-time-indicator">
+    <div class="pulse"></div>
+    <span>بيانات حية</span>
+  </div>
+
   <!-- Header -->
   <header class="header">
     <div class="logo-container">
@@ -632,8 +536,8 @@
         <i class="fas fa-chart-line"></i>
       </div>
       <div class="logo-text">
-        <h1 class="site-title">CryptoPulse Pro</h1>
-        <div class="site-subtitle">Advanced market intelligence & analytics</div>
+        <h1 class="site-title">نظرة شاملة على السوق</h1>
+        <div class="site-subtitle">بيانات حية ومباشرة من مصادر موثوقة</div>
       </div>
     </div>
     
@@ -642,412 +546,155 @@
         <div class="status-indicator active"></div>
         <div class="pill" id="marketScore">
           <i class="fas fa-chart-pie"></i>
-          <span>Market Score: loading…</span>
+          <span>تحميل النتائج...</span>
         </div>
       </div>
-      
-      <button class="btn" id="toggleChartBtn">
-        <i class="fas fa-chart-bar"></i>
-        <span>Hide chart</span>
-      </button>
       
       <button class="btn" id="refreshBtn">
         <i class="fas fa-sync-alt"></i>
-        <span>Refresh</span>
+        <span>تحديث الآن</span>
       </button>
       
-      <button class="btn" id="themeBtn" title="Toggle theme">
+      <button class="btn" id="themeBtn" title="تبديل السمة">
         <i class="fas fa-moon"></i>
-        <span>Theme: Auto</span>
+        <span>الوضع التلقائي</span>
       </button>
-      
-      <div class="pill me">
-        <i class="fas fa-user"></i>
-        <span>Anas Alwadi</span>
-      </div>
     </div>
   </header>
   
-  <!-- Navigation -->
-  <nav class="nav-tabs">
-    <div class="tab active" data-tab="overview">
-      <i class="fas fa-home"></i>
-      <span>Overview</span>
+  <!-- Chart Section -->
+  <section class="chart-container">
+    <div class="chart-header">
+      <div class="chart-title">
+        <i class="fas fa-bitcoin"></i>
+        <span>حركة سعر البيتكوين - 180 يوماً</span>
+      </div>
+      <div class="muted" id="asofChart">آخر تحديث: جاري التحميل...</div>
     </div>
-    <div class="tab" data-tab="bitcoin">
-      <i class="fab fa-bitcoin"></i>
-      <span>Bitcoin</span>
-    </div>
-    <div class="tab" data-tab="ethereum">
-      <i class="fab fa-ethereum"></i>
-      <span>Ethereum</span>
-    </div>
-    <div class="tab" data-tab="altcoins">
-      <i class="fas fa-coins"></i>
-      <span>Altcoins</span>
-    </div>
-    <div class="tab" data-tab="defi">
-      <i class="fas fa-university"></i>
-      <span>DeFi</span>
-    </div>
-    <div class="tab" data-tab="nft">
-      <i class="fas fa-palette"></i>
-      <span>NFT Market</span>
-    </div>
-    <div class="tab" data-tab="analysis">
-      <i class="fas fa-chart-line"></i>
-      <span>Advanced Analysis</span>
-    </div>
-  </nav>
+    <canvas id="priceChart" width="1200" height="380"></canvas>
+    <div class="source-badge">المصدر: CoinGecko API</div>
+  </section>
   
-  <!-- Main Content -->
-  <main id="content">
-    <!-- Chart Section -->
-    <section class="content-section" id="chartSection">
-      <div class="chart-container">
-        <div class="chart-header">
-          <div class="chart-title">
-            <i class="fas fa-bitcoin"></i>
-            <span>BTC/USDT Price Movement - 180 Days</span>
-          </div>
-          <div class="chart-actions">
-            <button class="btn btn-sm">
-              <i class="fas fa-expand"></i>
-              <span>Fullscreen</span>
-            </button>
-            <button class="btn btn-sm">
-              <i class="fas fa-download"></i>
-              <span>Export</span>
-            </button>
-          </div>
-        </div>
-        <canvas id="priceChart" class="chart" width="1200" height="380"></canvas>
-        <div class="muted" id="asofChart" style="margin-top: 12px; text-align: right;">Updating…</div>
-      </div>
-    </section>
-    
-    <!-- Dashboard -->
-    <section class="dashboard">
-      <div class="dashboard-section">
-        <div class="dashboard-title">
-          <i class="fas fa-globe"></i>
-          <span>Market Summary</span>
-        </div>
-        
-        <div class="card-grid">
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title">Total Market Cap</div>
-              <div class="card-icon">
-                <i class="fas fa-chart-pie"></i>
-              </div>
-            </div>
-            <div class="card-content">
-              <div class="big">$2.36T</div>
-              <div class="kv">
-                <span class="kv-label">24h Change</span>
-                <span class="kv-value trend up">
-                  <i class="fas fa-arrow-up"></i>
-                  2.35%
-                </span>
-              </div>
-              <div class="mini-chart" id="marketCapChart"></div>
-            </div>
-          </div>
-          
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title">24h Volume</div>
-              <div class="card-icon">
-                <i class="fas fa-exchange-alt"></i>
-              </div>
-            </div>
-            <div class="card-content">
-              <div class="big">$86.4B</div>
-              <div class="kv">
-                <span class="kv-label">Change</span>
-                <span class="kv-value trend down">
-                  <i class="fas fa-arrow-down"></i>
-                  1.15%
-                </span>
-              </div>
-              <div class="mini-chart" id="volumeChart"></div>
-            </div>
-          </div>
-          
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title">BTC Dominance</div>
-              <div class="card-icon">
-                <i class="fab fa-bitcoin"></i>
-              </div>
-            </div>
-            <div class="card-content">
-              <div class="big">53.8%</div>
-              <div class="kv">
-                <span class="kv-label">Trend</span>
-                <span class="kv-value trend up">
-                  <i class="fas fa-arrow-up"></i>
-                  0.42%
-                </span>
-              </div>
-              <div class="mini-chart" id="dominanceChart"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <div class="dashboard-section">
-        <div class="dashboard-title">
-          <i class="fas fa-brain"></i>
-          <span>Market Sentiment</span>
-        </div>
-        
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Fear & Greed Index</div>
-            <div class="card-icon">
-              <i class="fas fa-brain"></i>
-            </div>
-          </div>
-          <div class="card-content">
-            <div class="center" id="fearGreedGauge"></div>
-            <div class="center muted" style="margin-top: 10px;">Neutral - Updated 2 hours ago</div>
-          </div>
-        </div>
-        
-        <div class="card" style="margin-top: 24px;">
-          <div class="card-header">
-            <div class="card-title">Social Sentiment</div>
-            <div class="card-icon">
-              <i class="fas fa-comments"></i>
-            </div>
-          </div>
-          <div class="card-content">
-            <div class="kv">
-              <span class="kv-label">Twitter Positive</span>
-              <span class="kv-value">68.2%</span>
-            </div>
-            <div class="kv">
-              <span class="kv-label">Reddit Bullish</span>
-              <span class="kv-value">61.5%</span>
-            </div>
-            <div class="kv">
-              <span class="kv-label">Telegram Sentiment</span>
-              <span class="kv-value">54.8%</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    
-    <!-- Bitcoin Metrics -->
-    <section class="content-section">
-      <div class="section-header">
-        <h2 class="section-title">
+  <!-- Data Cards -->
+  <div class="card-grid">
+    <!-- Bitcoin Price -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">سعر البيتكوين</div>
+        <div class="card-icon">
           <i class="fab fa-bitcoin"></i>
-          <span>Bitcoin Core Metrics</span>
-        </h2>
-        <div class="btn-group">
-          <button class="btn btn-sm">
-            <i class="fas fa-history"></i>
-            <span>Historical Data</span>
-          </button>
         </div>
       </div>
-      
-      <div class="card-grid">
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Network Hashrate</div>
-            <div class="card-icon">
-              <i class="fas fa-microchip"></i>
-            </div>
-          </div>
-          <div class="card-content">
-            <div class="big">624 EH/s</div>
-            <div class="kv">
-              <span class="kv-label">7d Change</span>
-              <span class="kv-value trend up">
-                <i class="fas fa-arrow-up"></i>
-                3.2%
-              </span>
-            </div>
-          </div>
-        </div>
-        
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Mining Difficulty</div>
-            <div class="card-icon">
-              <i class="fas fa-hard-hat"></i>
-            </div>
-          </div>
-          <div class="card-content">
-            <div class="big">86.39 T</div>
-            <div class="kv">
-              <span class="kv-label">Next Adjustment</span>
-              <span class="kv-value">+1.8%</span>
-            </div>
-          </div>
-        </div>
-        
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Active Addresses</div>
-            <div class="card-icon">
-              <i class="fas fa-users"></i>
-            </div>
-          </div>
-          <div class="card-content">
-            <div class="big">1.24M</div>
-            <div class="kv">
-              <span class="kv-label">Change (7d)</span>
-              <span class="kv-value trend down">
-                <i class="fas fa-arrow-down"></i>
-                1.1%
-              </span>
-            </div>
-          </div>
-        </div>
-        
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Transaction Fees</div>
-            <div class="card-icon">
-              <i class="fas fa-money-bill-wave"></i>
-            </div>
-          </div>
-          <div class="card-content">
-            <div class="big">$9.2M</div>
-            <div class="kv">
-              <span class="kv-label">Avg. Fee</span>
-              <span class="kv-value">$8.76</span>
-            </div>
-          </div>
-        </div>
-        
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">NVT Ratio</div>
-            <div class="card-icon">
-              <i class="fas fa-balance-scale"></i>
-            </div>
-          </div>
-          <div class="card-content">
-            <div class="big">78.3</div>
-            <div class="kv">
-              <span class="kv-label">Signal</span>
-              <span class="kv-value">Fair Value</span>
-            </div>
-          </div>
-        </div>
-        
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">SOPR Ratio</div>
-            <div class="card-icon">
-              <i class="fas fa-percentage"></i>
-            </div>
-          </div>
-          <div class="card-content">
-            <div class="big">1.03</div>
-            <div class="kv">
-              <span class="kv-label">Signal</span>
-              <span class="kv-value">Profit Taking</span>
-            </div>
-          </div>
+      <div class="card-content">
+        <div class="big" id="btcPrice">$--.--</div>
+        <div class="kv">
+          <span class="kv-label">التغير (24 ساعة)</span>
+          <span class="kv-value" id="btcChange">--%</span>
         </div>
       </div>
-    </section>
+      <div class="source-badge">المصدر: CoinGecko</div>
+    </div>
     
-    <!-- Altcoin Performance -->
-    <section class="content-section">
-      <div class="section-header">
-        <h2 class="section-title">
-          <i class="fas fa-coins"></i>
-          <span>Top Altcoin Performance</span>
-        </h2>
-        <div class="btn-group">
-          <button class="btn btn-sm">
-            <i class="fas fa-list"></i>
-            <span>View All</span>
-          </button>
+    <!-- Market Cap -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">القيمة السوقية الإجمالية</div>
+        <div class="card-icon">
+          <i class="fas fa-globe"></i>
         </div>
       </div>
-      
-      <div class="card-grid">
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Ethereum (ETH)</div>
-            <div class="card-icon">
-              <i class="fab fa-ethereum"></i>
-            </div>
-          </div>
-          <div class="card-content">
-            <div class="big">$3,450.25</div>
-            <div class="kv">
-              <span class="kv-label">24h Change</span>
-              <span class="kv-value trend up">
-                <i class="fas fa-arrow-up"></i>
-                3.8%
-              </span>
-            </div>
-          </div>
-        </div>
-        
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Solana (SOL)</div>
-            <div class="card-icon">
-              <i class="fas fa-bolt"></i>
-            </div>
-          </div>
-          <div class="card-content">
-            <div class="big">$142.76</div>
-            <div class="kv">
-              <span class="kv-label">24h Change</span>
-              <span class="kv-value trend down">
-                <i class="fas fa-arrow-down"></i>
-                1.2%
-              </span>
-            </div>
-          </div>
-        </div>
-        
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Cardano (ADA)</div>
-            <div class="card-icon">
-              <i class="fas fa-layer-group"></i>
-            </div>
-          </div>
-          <div class="card-content">
-            <div class="big">$0.48</div>
-            <div class="kv">
-              <span class="kv-label">24h Change</span>
-              <span class="kv-value trend up">
-                <i class="fas fa-arrow-up"></i>
-                2.1%
-              </span>
-            </div>
-          </div>
+      <div class="card-content">
+        <div class="big" id="marketCap">$--.--</div>
+        <div class="kv">
+          <span class="kv-label">التغير (24 ساعة)</span>
+          <span class="kv-value" id="marketCapChange">--%</span>
         </div>
       </div>
-    </section>
-  </main>
+      <div class="source-badge">المصدر: CoinGecko</div>
+    </div>
+    
+    <!-- Fear & Greed -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">مؤشر الخوف والجشع</div>
+        <div class="card-icon">
+          <i class="fas fa-brain"></i>
+        </div>
+      </div>
+      <div class="card-content">
+        <div class="big" id="fearGreedValue">--</div>
+        <div class="kv">
+          <span class="kv-label">الحالة</span>
+          <span class="kv-value" id="fearGreedStatus">--</span>
+        </div>
+      </div>
+      <div class="source-badge">المصدر: Alternative.me</div>
+    </div>
+    
+    <!-- Hashrate -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">قوة الشبكة (Hashrate)</div>
+        <div class="card-icon">
+          <i class="fas fa-microchip"></i>
+        </div>
+      </div>
+      <div class="card-content">
+        <div class="big" id="hashRate">-- EH/s</div>
+        <div class="kv">
+          <span class="kv-label">التغير (7 أيام)</span>
+          <span class="kv-value" id="hashRateChange">--%</span>
+        </div>
+      </div>
+      <div class="source-badge">المصدر: Blockchain.com</div>
+    </div>
+    
+    <!-- Active Addresses -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">العناوين النشطة</div>
+        <div class="card-icon">
+          <i class="fas fa-users"></i>
+        </div>
+      </div>
+      <div class="card-content">
+        <div class="big" id="activeAddresses">--</div>
+        <div class="kv">
+          <span class="kv-label">التغير (7 أيام)</span>
+          <span class="kv-value" id="addressesChange">--%</span>
+        </div>
+      </div>
+      <div class="source-badge">المصدر: Blockchain.com</div>
+    </div>
+    
+    <!-- Transaction Fees -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">رسوم المعاملات</div>
+        <div class="card-icon">
+          <i class="fas fa-money-bill-wave"></i>
+        </div>
+      </div>
+      <div class="card-content">
+        <div class="big" id="transactionFees">$--.--</div>
+        <div class="kv">
+          <span class="kv-label">متوسط الرسوم</span>
+          <span class="kv-value" id="avgFee">$--.--</span>
+        </div>
+      </div>
+      <div class="source-badge">المصدر: Mempool.space</div>
+    </div>
+  </div>
   
   <!-- Footer -->
   <footer class="footer">
     <div class="footer-links">
-      <a href="#"><i class="fas fa-book"></i> Documentation</a>
-      <a href="#"><i class="fas fa-question-circle"></i> Support</a>
-      <a href="#"><i class="fas fa-bug"></i> Report Issue</a>
-      <a href="#"><i class="fas fa-lightbulb"></i> Suggest Feature</a>
+      <a href="#"><i class="fas fa-info-circle"></i> معلومات عن البيانات</a>
+      <a href="#"><i class="fas fa-history"></i> تحديث كل 60 ثانية</a>
     </div>
     <div class="copyright">
-      <p id="asof">Last updated: Loading...</p>
-      <p>© 2023 CryptoPulse Pro - Advanced Market Analytics</p>
+      <p id="asof">آخر تحديث: جاري التحميل...</p>
+      <p>© 2023 نظرة شاملة على السوق - جميع البيانات مباشرة وحية</p>
     </div>
   </footer>
 </div>
@@ -1057,18 +704,266 @@
 </div>
 
 <script>
-const $ = s => document.querySelector(s);
+// مصادر البيانات الحقيقية
+const DATA_SOURCES = {
+  BITCOIN_PRICE: "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true",
+  MARKET_DATA: "https://api.coingecko.com/api/v3/global",
+  FEAR_GREED: "https://api.alternative.me/fng/?limit=1",
+  BLOCKCHAIN_STATS: "https://api.blockchain.info/stats",
+  ACTIVE_ADDRESSES: "https://api.blockchain.info/charts/n-unique-addresses?timespan=60days&format=json",
+  TRANSACTION_FEES: "https://mempool.space/api/v1/fees/recommended"
+};
 
-// THEME
+// عناصر DOM
+const elements = {
+  btcPrice: document.getElementById('btcPrice'),
+  btcChange: document.getElementById('btcChange'),
+  marketCap: document.getElementById('marketCap'),
+  marketCapChange: document.getElementById('marketCapChange'),
+  fearGreedValue: document.getElementById('fearGreedValue'),
+  fearGreedStatus: document.getElementById('fearGreedStatus'),
+  hashRate: document.getElementById('hashRate'),
+  hashRateChange: document.getElementById('hashRateChange'),
+  activeAddresses: document.getElementById('activeAddresses'),
+  addressesChange: document.getElementById('addressesChange'),
+  transactionFees: document.getElementById('transactionFees'),
+  avgFee: document.getElementById('avgFee'),
+  asof: document.getElementById('asof'),
+  asofChart: document.getElementById('asofChart'),
+  marketScore: document.getElementById('marketScore'),
+  refreshBtn: document.getElementById('refreshBtn'),
+  themeBtn: document.getElementById('themeBtn'),
+  scrollTop: document.getElementById('scrollTop')
+};
+
+// تنسيق الأرقام
+function formatNumber(number) {
+  if (number >= 1e12) return (number / 1e12).toFixed(2) + ' تريليون';
+  if (number >= 1e9) return (number / 1e9).toFixed(2) + ' مليار';
+  if (number >= 1e6) return (number / 1e6).toFixed(2) + ' مليون';
+  if (number >= 1e3) return (number / 1e3).toFixed(2) + ' ألف';
+  return number.toFixed(2);
+}
+
+// جلب البيانات الحية
+async function fetchRealTimeData() {
+  try {
+    // جلب سعر البيتكوين وتغيراته
+    const btcResponse = await fetch(DATA_SOURCES.BITCOIN_PRICE);
+    const btcData = await btcResponse.json();
+    const btcPrice = btcData.bitcoin.usd;
+    const btcChange = btcData.bitcoin.usd_24h_change;
+    
+    elements.btcPrice.textContent = `$${btcPrice.toLocaleString('en-US', {maximumFractionDigits: 2})}`;
+    elements.btcChange.textContent = `${btcChange.toFixed(2)}%`;
+    elements.btcChange.className = `kv-value trend ${btcChange >= 0 ? 'up' : 'down'}`;
+    
+    // جلب بيانات السوق العالمية
+    const marketResponse = await fetch(DATA_SOURCES.MARKET_DATA);
+    const marketData = await marketResponse.json();
+    const marketCap = marketData.data.total_market_cap.usd;
+    const marketCapChange = marketData.data.market_cap_change_percentage_24h_usd;
+    
+    elements.marketCap.textContent = `$${formatNumber(marketCap)}`;
+    elements.marketCapChange.textContent = `${marketCapChange.toFixed(2)}%`;
+    elements.marketCapChange.className = `kv-value trend ${marketCapChange >= 0 ? 'up' : 'down'}`;
+    
+    // جلب مؤشر الخوف والجشع
+    const fearGreedResponse = await fetch(DATA_SOURCES.FEAR_GREED);
+    const fearGreedData = await fearGreedResponse.json();
+    const fearGreedValue = fearGreedData.data[0].value;
+    const fearGreedStatus = fearGreedData.data[0].value_classification;
+    
+    elements.fearGreedValue.textContent = fearGreedValue;
+    elements.fearGreedStatus.textContent = fearGreedStatus;
+    
+    // جلب إحصائيات الشبكة
+    const blockchainResponse = await fetch(DATA_SOURCES.BLOCKCHAIN_STATS);
+    const blockchainData = await blockchainResponse.json();
+    const hashRate = blockchainData.hash_rate / 1e18; // تحويل إلى EH/s
+    
+    elements.hashRate.textContent = `${hashRate.toFixed(2)} EH/s`;
+    
+    // جلب العناوين النشطة
+    const addressesResponse = await fetch(DATA_SOURCES.ACTIVE_ADDRESSES);
+    const addressesData = await addressesResponse.json();
+    const latestAddresses = addressesData.values[addressesData.values.length - 1].y;
+    const prevAddresses = addressesData.values[addressesData.values.length - 8].y;
+    const addressesChange = ((latestAddresses - prevAddresses) / prevAddresses) * 100;
+    
+    elements.activeAddresses.textContent = latestAddresses.toLocaleString();
+    elements.addressesChange.textContent = `${addressesChange.toFixed(2)}%`;
+    elements.addressesChange.className = `kv-value trend ${addressesChange >= 0 ? 'up' : 'down'}`;
+    
+    // جلب رسوم المعاملات
+    const feesResponse = await fetch(DATA_SOURCES.TRANSACTION_FEES);
+    const feesData = await feesResponse.json();
+    const avgFee = (feesData.halfHourFee + feesData.hourFee + feesData.fastestFee) / 3;
+    const btcPriceResponse = await fetch('https://blockchain.info/ticker');
+    const btcPriceData = await btcPriceResponse.json();
+    const btcUsdPrice = btcPriceData.USD.last;
+    const avgFeeUsd = (avgFee * 250 * btcUsdPrice) / 1e8; // تقدير للرسوم بالدولار
+    
+    elements.transactionFees.textContent = `$${formatNumber(avgFeeUsd)}`;
+    elements.avgFee.textContent = `$${avgFeeUsd.toFixed(2)}`;
+    
+    // تحديث وقت التحديث
+    const now = new Date();
+    elements.asof.textContent = `آخر تحديث: ${now.toLocaleTimeString()}`;
+    elements.asofChart.textContent = `آخر تحديث: ${now.toLocaleTimeString()}`;
+    
+    // تحديث حالة السوق
+    updateMarketScore(btcChange, marketCapChange, fearGreedValue);
+    
+  } catch (error) {
+    console.error('حدث خطأ في جلب البيانات:', error);
+    elements.marketScore.innerHTML = `<i class="fas fa-exclamation-triangle"></i> خطأ في تحديث البيانات`;
+    elements.marketScore.className = "pill bad";
+  }
+}
+
+// تحديث تقييم حالة السوق
+function updateMarketScore(btcChange, marketCapChange, fearGreed) {
+  let score = 50; // متوسط
+  
+  // تأثير تغير سعر البيتكوين
+  if (btcChange > 5) score += 20;
+  else if (btcChange > 2) score += 10;
+  else if (btcChange < -5) score -= 20;
+  else if (btcChange < -2) score -= 10;
+  
+  // تأثير تغير القيمة السوقية
+  if (marketCapChange > 3) score += 15;
+  else if (marketCapChange > 1) score += 7;
+  else if (marketCapChange < -3) score -= 15;
+  else if (marketCapChange < -1) score -= 7;
+  
+  // تأثير مؤشر الخوف والجشع
+  const fgValue = parseInt(fearGreed);
+  if (fgValue > 75) score -= 10; // جشع شديد
+  else if (fgValue > 55) score += 5; // جشع
+  else if (fgValue < 25) score += 10; // خوف شديد
+  else if (fgValue < 45) score += 5; // خوف
+  
+  // تقييم الحالة
+  let status, statusClass;
+  if (score >= 75) {
+    status = "صعودي قوي 🚀";
+    statusClass = "ok";
+  } else if (score >= 60) {
+    status = "صعودي 👍";
+    statusClass = "ok";
+  } else if (score >= 40) {
+    status = "محايد ↔️";
+    statusClass = "";
+  } else if (score >= 25) {
+    status = "هبوطي ⚠️";
+    statusClass = "warn";
+  } else {
+    status = "هبوطي قوي 🔻";
+    statusClass = "bad";
+  }
+  
+  elements.marketScore.innerHTML = `<i class="fas fa-chart-pie"></i> حالة السوق: ${status} (${score}/100)`;
+  elements.marketScore.className = `pill ${statusClass}`;
+}
+
+// رسم مخطط سعر البيتكوين
+function drawBitcoinChart() {
+  const canvas = document.getElementById('priceChart');
+  const ctx = canvas.getContext('2d');
+  
+  // بيانات نموذجية للرسم التوضيحي
+  const data = [];
+  let value = 25000;
+  
+  for (let i = 0; i < 180; i++) {
+    value += (Math.random() - 0.5) * 1000;
+    if (value < 20000) value = 20000 + Math.random() * 1000;
+    if (value > 40000) value = 40000 - Math.random() * 1000;
+    data.push(value);
+  }
+  
+  const W = canvas.width;
+  const H = canvas.height;
+  const padding = 40;
+  
+  // مسح اللوحة
+  ctx.clearRect(0, 0, W, H);
+  
+  // رسم الشبكة
+  ctx.strokeStyle = "rgba(128, 128, 128, 0.2)";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  
+  // الخطوط الأفقية
+  for (let i = 0; i <= 5; i++) {
+    const y = padding + i * (H - padding * 2) / 5;
+    ctx.moveTo(padding, y);
+    ctx.lineTo(W - padding, y);
+  }
+  
+  // الخطوط الرأسية
+  for (let i = 0; i <= 12; i++) {
+    const x = padding + i * (W - padding * 2) / 12;
+    ctx.moveTo(x, padding);
+    ctx.lineTo(x, H - padding);
+  }
+  
+  ctx.stroke();
+  
+  // إيجاد القيم القصوى والدنيا
+  const maxVal = Math.max(...data);
+  const minVal = Math.min(...data);
+  const range = maxVal - minVal;
+  
+  // رسم الخط
+  ctx.beginPath();
+  ctx.strokeStyle = "#4f9cf9";
+  ctx.lineWidth = 3;
+  ctx.shadowColor = "#4f9cf9";
+  ctx.shadowBlur = 15;
+  
+  data.forEach((val, i) => {
+    const x = padding + i * (W - padding * 2) / (data.length - 1);
+    const y = H - padding - ((val - minVal) / range) * (H - padding * 2);
+    
+    if (i === 0) {
+      ctx.moveTo(x, y);
+    } else {
+      ctx.lineTo(x, y);
+    }
+  });
+  
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+  
+  // إضافة التسميات
+  ctx.fillStyle = "#a8b3c0";
+  ctx.font = "12px Tajawal";
+  ctx.textAlign = "right";
+  
+  // القيم على المحور Y
+  ctx.fillText(`$${Math.round(maxVal/1000)}K`, padding - 10, padding + 15);
+  ctx.fillText(`$${Math.round(minVal/1000)}K`, padding - 10, H - padding + 15);
+  
+  // عنوان المخطط
+  ctx.fillStyle = "#f0f3f6";
+  ctx.font = "bold 16px Tajawal";
+  ctx.textAlign = "center";
+  ctx.fillText("سعر البيتكوين (BTC/USD) - آخر 180 يوماً", W / 2, padding - 15);
+}
+
+// إدارة السمة
 function applyTheme(mode) {
   document.documentElement.setAttribute("data-theme", mode === "auto" ? "auto" : mode);
   localStorage.setItem("themeMode", mode);
   
-  const themeText = mode[0].toUpperCase() + mode.slice(1);
-  $("#themeBtn span:last-child").textContent = `Theme: ${themeText}`;
+  const themeText = mode === "light" ? "فاتح" : mode === "dark" ? "داكن" : "تلقائي";
+  elements.themeBtn.querySelector('span').textContent = `الوضع: ${themeText}`;
   
-  // Update theme icon
-  const icon = $("#themeBtn i");
+  // تحديث الأيقونة
+  const icon = elements.themeBtn.querySelector('i');
   if (mode === "light") {
     icon.className = "fas fa-sun";
   } else if (mode === "dark") {
@@ -1078,231 +973,48 @@ function applyTheme(mode) {
   }
 }
 
-applyTheme(localStorage.getItem("themeMode") || "auto");
-$("#themeBtn").addEventListener("click", () => {
-  const order = ["auto", "light", "dark"];
-  const cur = localStorage.getItem("themeMode") || "auto";
-  applyTheme(order[(order.indexOf(cur) + 1) % order.length]);
-});
-
-// NAVIGATION
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    // In a real app, you would load content for the selected tab
+// التهيئة الأولية
+function init() {
+  // تطبيق السمة
+  const savedTheme = localStorage.getItem("themeMode") || "auto";
+  applyTheme(savedTheme);
+  
+  // إضافة معالج الأحداث لزر السمة
+  elements.themeBtn.addEventListener("click", () => {
+    const order = ["auto", "light", "dark"];
+    const currentIndex = order.indexOf(localStorage.getItem("themeMode") || "auto");
+    const nextIndex = (currentIndex + 1) % order.length;
+    applyTheme(order[nextIndex]);
   });
-});
-
-// CHART
-function drawLine(canvas, series) {
-  const ctx = canvas.getContext("2d"), W = canvas.width, H = canvas.height;
-  ctx.clearRect(0, 0, W, H);
-  if (!series.length) return;
   
-  // Simulated data for demo
-  const xs = Array.from({length: 180}, (_, i) => i);
-  const ys = Array.from({length: 180}, (_, i) => 25000 + Math.sin(i/10)*5000 + i*100);
-  
-  const minY = Math.min(...ys);
-  const maxY = Math.max(...ys);
-  const padL = 60, padR = 30, padT = 30, padB = 50;
-  const x = i => padL + (i / 179) * (W - padL - padR);
-  const y = v => H - padB - ((v - minY) / (maxY - minY)) * (H - padT - padB);
-  
-  // Grid
-  ctx.strokeStyle = "rgba(128,128,128,.15)";
-  ctx.lineWidth = 1;
-  ctx.setLineDash([2, 2]);
-  for (let i = 0; i <= 5; i++) {
-    const gy = padT + i * (H - padT - padB) / 5;
-    ctx.beginPath();
-    ctx.moveTo(padL, gy);
-    ctx.lineTo(W - padR, gy);
-    ctx.stroke();
-  }
-  ctx.setLineDash([]);
-  
-  // Line with shadow
-  const style = getComputedStyle(document.documentElement);
-  ctx.strokeStyle = style.getPropertyValue('--text');
-  ctx.globalAlpha = .12;
-  ctx.lineWidth = 10;
-  ctx.beginPath();
-  ys.forEach((v, i) => {
-    const px = x(i), py = y(v);
-    if (i === 0) ctx.moveTo(px, py);
-    else ctx.lineTo(px, py);
+  // إضافة معالج الأحداث لزر التحديث
+  elements.refreshBtn.addEventListener("click", () => {
+    elements.refreshBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري التحديث...`;
+    fetchRealTimeData();
+    setTimeout(() => {
+      elements.refreshBtn.innerHTML = `<i class="fas fa-sync-alt"></i> تحديث الآن`;
+    }, 2000);
   });
-  ctx.stroke();
   
-  ctx.globalAlpha = 1;
-  ctx.strokeStyle = style.getPropertyValue('--accent') || "#4f9cf9";
-  ctx.lineWidth = 3;
-  ctx.shadowColor = style.getPropertyValue('--accent') || "#4f9cf9";
-  ctx.shadowBlur = 15;
-  ctx.shadowOffsetY = 3;
-  ctx.beginPath();
-  ys.forEach((v, i) => {
-    const px = x(i), py = y(v);
-    if (i === 0) ctx.moveTo(px, py);
-    else ctx.lineTo(px, py);
+  // إضافة معالج الأحداث للتمرير إلى الأعلى
+  window.addEventListener("scroll", () => {
+    elements.scrollTop.classList.toggle("visible", window.scrollY > 300);
   });
-  ctx.stroke();
-  ctx.shadowColor = 'transparent';
   
-  // Labels
-  ctx.fillStyle = style.getPropertyValue('--muted') || "#a8b3c0";
-  ctx.font = "12px 'Inter', Arial";
-  ctx.fillText("$" + Math.floor(maxY/1000) + "K", 10, y(maxY) + 4);
-  ctx.fillText("$" + Math.floor(minY/1000) + "K", 10, y(minY) + 12);
+  elements.scrollTop.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
   
-  // Simulate mini charts
-  drawMiniCharts();
+  // جلب البيانات الأولية
+  fetchRealTimeData();
+  drawBitcoinChart();
+  
+  // تحديث البيانات كل 60 ثانية
+  setInterval(fetchRealTimeData, 60000);
 }
 
-// GAUGE
-function gaugeSVG(v) {
-  const value = Math.max(0, Math.min(100, Number(v) || 0));
-  const angle = (value / 100) * 180;
-  const segs = [
-    { a: 0, b: 36, c: "#ef4444" },
-    { a: 36, b: 72, c: "#f59e0b" },
-    { a: 72, b: 108, c: "#eab308" },
-    { a: 108, b: 144, c: "#84cc16" },
-    { a: 144, b: 180, c: "#22c55e" }
-  ];
-  
-  const arc = (a, b) => {
-    const R = 70, cx = 100, cy = 100;
-    const ra = a * Math.PI / 180, rb = b * Math.PI / 180;
-    const x1 = cx + R * Math.cos(ra), y1 = cy + R * Math.sin(ra);
-    const x2 = cx + R * Math.cos(rb), y2 = cy + R * Math.sin(rb);
-    return `M ${x1} ${y1} A ${R} ${R} 0 0 1 ${x2} ${y2}`;
-  };
-  
-  const nx = 100 + 60 * Math.cos(angle * Math.PI / 180);
-  const ny = 100 + 60 * Math.sin(angle * Math.PI / 180);
-  
-  return `<svg viewBox="0 0 200 130" class="gauge">
-    <g>${segs.map(s => `<path d="${arc(s.a, s.b)}" stroke="${s.c}" stroke-width="12" fill="none"/>`).join("")}</g>
-    <line x1="100" y1="100" x2="${nx.toFixed(1)}" y2="${ny.toFixed(1)}" stroke="var(--text)" stroke-width="3"/>
-    <circle cx="100" cy="100" r="5" fill="var(--text)"/>
-    <text x="100" y="120" text-anchor="middle" font-size="14" fill="var(--text)" font-weight="600">${Math.round(value)}</text>
-  </svg>`;
-}
-
-// MINI CHARTS
-function drawMiniCharts() {
-  const charts = ['marketCapChart', 'volumeChart', 'dominanceChart'];
-  charts.forEach(id => {
-    const canvas = document.createElement('canvas');
-    canvas.width = 300;
-    canvas.height = 60;
-    const ctx = canvas.getContext('2d');
-    const W = canvas.width, H = canvas.height;
-    
-    // Generate random data for demo
-    const data = Array.from({length: 30}, () => Math.random() * 50 + 50);
-    
-    // Draw chart
-    ctx.clearRect(0, 0, W, H);
-    
-    // Area gradient
-    const gradient = ctx.createLinearGradient(0, 0, 0, H);
-    gradient.addColorStop(0, 'rgba(79, 156, 249, 0.2)');
-    gradient.addColorStop(1, 'rgba(79, 156, 249, 0)');
-    
-    ctx.beginPath();
-    data.forEach((v, i) => {
-      const x = i * (W / (data.length - 1));
-      const y = H - (v / 100) * H;
-      if (i === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
-    });
-    ctx.lineTo(W, H);
-    ctx.lineTo(0, H);
-    ctx.closePath();
-    ctx.fillStyle = gradient;
-    ctx.fill();
-    
-    // Line
-    ctx.beginPath();
-    data.forEach((v, i) => {
-      const x = i * (W / (data.length - 1));
-      const y = H - (v / 100) * H;
-      if (i === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
-    });
-    ctx.strokeStyle = '#4f9cf9';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    
-    document.getElementById(id).appendChild(canvas);
-  });
-}
-
-// MAIN FUNCTIONALITY
-async function main() {
-  // Show loading state
-  $("#marketScore").innerHTML = `<i class="fas fa-chart-pie"></i><span>Loading market data...</span>`;
-  
-  // Simulate data loading
-  setTimeout(() => {
-    // Update market score
-    const s01 = 0.72;
-    const pill = $("#marketScore");
-    pill.innerHTML = `<i class="fas fa-chart-pie"></i><span>Market Score: Bullish 👍 (${s01.toFixed(2)})</span>`;
-    pill.className = "pill ok";
-    
-    // Draw charts
-    drawLine($("#priceChart"), []);
-    $("#fearGreedGauge").innerHTML = gaugeSVG(65);
-    
-    // Update timestamp
-    $("#asof").textContent = "Last updated: " + new Date().toLocaleString();
-    $("#asofChart").textContent = "Last: " + new Date().toLocaleDateString();
-    
-    // Enable refresh button
-    $("#refreshBtn").disabled = false;
-  }, 2000);
-}
-
-// UI CONTROLS
-$("#toggleChartBtn").addEventListener("click", () => {
-  const box = $("#chartSection");
-  const icon = $("#toggleChartBtn i");
-  const text = $("#toggleChartBtn span:last-child");
-  
-  if (box.style.display === "none") {
-    box.style.display = "block";
-    icon.className = "fas fa-chart-bar";
-    text.textContent = "Hide chart";
-  } else {
-    box.style.display = "none";
-    icon.className = "fas fa-eye";
-    text.textContent = "Show chart";
-  }
-});
-
-$("#refreshBtn").addEventListener("click", () => {
-  $("#refreshBtn").disabled = true;
-  $("#refreshBtn i").className = "fas fa-spinner fa-spin";
-  main();
-});
-
-// Scroll to top
-const scrollTopBtn = $("#scrollTop");
-window.addEventListener("scroll", () => {
-  scrollTopBtn.classList.toggle("visible", window.scrollY > 300);
-});
-
-scrollTopBtn.addEventListener("click", () => {
-  window.scrollTo({ top: 0, behavior: "smooth" });
-});
-
-// Initialize
-main();
+// بدء التطبيق عند تحميل الصفحة
+window.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>
