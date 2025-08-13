@@ -4,88 +4,114 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Market Overview</title>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
   :root{
-    --bg: linear-gradient(135deg,#0f1419 0%,#1a1f2e 100%);
-    --surface: rgba(23,26,33,.88);
-    --surface-hover: rgba(30,35,45,.95);
-    --border: rgba(56,68,77,.30);
-    --border-hover: rgba(56,68,77,.55);
+    --bg: linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%);
+    --surface: rgba(23, 26, 33, 0.8);
+    --surface-hover: rgba(30, 35, 45, 0.9);
+    --border: rgba(56, 68, 77, 0.3);
+    --border-hover: rgba(56, 68, 77, 0.6);
     --text: #e6e8eb;
-    --muted: #9aa0a6;
-    --accent: #4aa8ff;
-    --accent2:#8b5cf6;
-    --ok:#10b981; --warn:#f59e0b; --bad:#ef4444;
-    --shadow: 0 10px 30px rgba(0,0,0,.35);
-    --shadow2: 0 14px 44px rgba(0,0,0,.45);
+    --text-secondary: #9aa0a6;
+    --ok: #10b981;
+    --warn: #f59e0b;
+    --bad: #ef4444;
+    --accent: #3b82f6;
+    --accent-secondary: #8b5cf6;
+    --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --card-shadow-hover: 0 12px 48px rgba(0, 0, 0, 0.4);
+    --glow: 0 0 20px rgba(59, 130, 246, 0.3);
   }
   @media (prefers-color-scheme: light){
     :root{
-      --bg: linear-gradient(135deg,#f8fafc 0%,#e2e8f0 100%);
-      --surface: rgba(255,255,255,.96);
-      --surface-hover:#fff;
-      --border: rgba(203,213,225,.9);
-      --border-hover: rgba(148,163,184,.7);
-      --text:#1e293b; --muted:#64748b;
-      --shadow: 0 10px 30px rgba(15,23,42,.08);
-      --shadow2: 0 14px 44px rgba(15,23,42,.12);
+      --bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      --surface: rgba(255, 255, 255, 0.9);
+      --surface-hover: rgba(248, 250, 252, 1);
+      --border: rgba(226, 232, 240, 0.8);
+      --border-hover: rgba(148, 163, 184, 0.6);
+      --text: #1e293b;
+      --text-secondary: #64748b;
+      --card-shadow: 0 8px 32px rgba(15, 23, 42, 0.08);
+      --card-shadow-hover: 0 12px 48px rgba(15, 23, 42, 0.12);
+      --glow: 0 0 20px rgba(59, 130, 246, 0.2);
     }
   }
-  html[data-theme="light"]{ /* نفس قيم اللايت */ }
-  html[data-theme="dark"]{ /* نفس قيم الدارك */ }
+  html[data-theme="light"]{
+    --bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    --surface: rgba(255, 255, 255, 0.9);
+    --surface-hover: rgba(248, 250, 252, 1);
+    --border: rgba(226, 232, 240, 0.8);
+    --border-hover: rgba(148, 163, 184, 0.6);
+    --text: #1e293b;
+    --text-secondary: #64748b;
+    --card-shadow: 0 8px 32px rgba(15, 23, 42, 0.08);
+    --card-shadow-hover: 0 12px 48px rgba(15, 23, 42, 0.12);
+    --glow: 0 0 20px rgba(59, 130, 246, 0.2);
+  }
+  html[data-theme="dark"]{
+    --bg: linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%);
+    --surface: rgba(23, 26, 33, 0.8);
+    --surface-hover: rgba(30, 35, 45, 0.9);
+    --border: rgba(56, 68, 77, 0.3);
+    --border-hover: rgba(56, 68, 77, 0.6);
+    --text: #e6e8eb;
+    --text-secondary: #9aa0a6;
+    --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --card-shadow-hover: 0 12px 48px rgba(0, 0, 0, 0.4);
+    --glow: 0 0 20px rgba(59, 130, 246, 0.3);
+  }
 
-  *{box-sizing:border-box}
+  *{box-sizing:border-box;margin:0;padding:0}
   body{
     margin:0;background:var(--bg);color:var(--text);
-    font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-    min-height:100vh;
+    font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    line-height:1.6;min-height:100vh;overflow-x:hidden
   }
-  .wrap{max-width:1400px;margin:0 auto;padding:20px}
-  .brand{display:flex;gap:16px;align-items:center;justify-content:space-between;padding:20px 0;border-bottom:1px solid var(--border)}
-  h1{margin:0;font-size:clamp(22px,4vw,30px);font-weight:800;letter-spacing:-.02em;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-  .btn,.pill{
-    background:var(--surface);border:1px solid var(--border);color:var(--text);
-    border-radius:12px;padding:10px 14px;font:600 13px/1 'Inter',sans-serif;cursor:pointer;
-    box-shadow:var(--shadow);transition:all .25s ease
+  body::before{
+    content:'';position:fixed;inset:0;pointer-events:none;z-index:-1;
+    background:
+      radial-gradient(circle at 20% 80%, rgba(59,130,246,.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(139,92,246,.1) 0%, transparent 50%);
   }
-  .btn:hover,.pill:hover{background:var(--surface-hover);border-color:var(--border-hover);transform:translateY(-1px);box-shadow:var(--shadow2)}
-  .me{color:var(--warn);border-color:rgba(245,158,11,.35);background:rgba(245,158,11,.09)}
-  .grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));align-items:stretch}
-  .card{
-    position:relative;background:var(--surface);border:1px solid var(--border);border-radius:18px;
-    padding:18px;min-height:180px;display:flex;flex-direction:column;box-shadow:var(--shadow);transition:all .25s ease;overflow:hidden
-  }
-  .card:hover{transform:translateY(-2px);border-color:var(--border-hover);box-shadow:var(--shadow2)}
-  .card::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));opacity:.6}
-  .card h3{margin:0 0 8px;font:700 15px/1.2 'Inter',sans-serif;letter-spacing:.2px}
-  .muted{color:var(--muted);font-weight:600;font-size:12px}
-  .big{
-    font-weight:800;letter-spacing:-.02em;
-    font-size:clamp(18px,3.6vw,28px);
-    background:linear-gradient(180deg,var(--text) 0%,var(--accent) 120%);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent
-  }
-  /* الرقم في منتصف البطاقة */
-  .centerBox{
-    flex:1; display:grid; place-items:center; padding:4px 6px;
-  }
-  .kv{display:flex;justify-content:space-between;gap:10px;margin:6px 0}
-  .kv span:first-child{color:var(--muted);font-size:12px;font-weight:600}
-  .ok{background:rgba(16,185,129,.06);border-color:rgba(16,185,129,.45)}
-  .warn{background:rgba(245,158,11,.06);border-color:rgba(245,158,11,.45)}
-  .bad{background:rgba(239,68,68,.06);border-color:rgba(239,68,68,.45)}
-  /* Chart */
-  .chartWrap{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:18px;margin:16px 0 24px;box-shadow:var(--shadow)}
-  .toolbar{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:12px}
-  canvas#priceChart{width:100%;height:340px;border-radius:10px;display:block}
-  .gauge{width:100%;max-width:280px;margin:auto;filter:drop-shadow(0 4px 8px rgba(0,0,0,.08))}
+  .wrap{max-width:1400px;margin:0 auto;padding:24px 20px}
+  .brand{display:flex;gap:16px;justify-content:space-between;align-items:center;margin:0 0 32px;padding:24px 0;border-bottom:1px solid var(--border)}
+  .brand h1{font-size:clamp(24px,4vw,32px);font-weight:700;margin:0;
+    background:linear-gradient(135deg,var(--accent) 0%,var(--accent-secondary) 100%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  .me{color:var(--warn);font-weight:600;font-size:14px;padding:8px 16px;background:rgba(245,158,11,.1);border-radius:20px;border:1px solid rgba(245,158,11,.2)}
+  .btn{background:var(--surface);backdrop-filter:blur(10px);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:10px 16px;cursor:pointer;box-shadow:var(--card-shadow);font-weight:500;font-size:14px;transition:.3s}
+  .btn:hover{background:var(--surface-hover);border-color:var(--border-hover);box-shadow:var(--card-shadow-hover);transform:translateY(-2px)}
+  .btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+  .pill{padding:10px 20px;border:1px solid var(--border);border-radius:25px;background:var(--surface);backdrop-filter:blur(10px);font-weight:600;font-size:14px;box-shadow:var(--card-shadow)}
+  .grid{display:grid;gap:24px;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));align-items:stretch;margin-bottom:32px}
+  .card{background:var(--surface);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:20px;padding:20px;min-height:200px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:var(--card-shadow);position:relative;transition:.3s}
+  .card:hover{background:var(--surface-hover);border-color:var(--border-hover);box-shadow:var(--card-shadow-hover);transform:translateY(-4px) scale(1.02)}
+  .card h3{margin:0 0 8px;font-size:15px;font-weight:600;color:var(--text);letter-spacing:-.02em}
+  .kv{display:flex;justify-content:space-between;gap:16px;margin:8px 0;align-items:center}
+  .kv span:first-child{font-size:13px;color:var(--text-secondary);font-weight:500}
+  .kv span:last-child{font-weight:600;color:var(--text)}
+  .big{font-size:clamp(20px,3vw,26px);font-weight:800;letter-spacing:-.02em}
+  .muted{color:var(--text-secondary);font-size:12.5px}
+  .ok{border-color:var(--ok);background:rgba(16,185,129,.05)}
+  .warn{border-color:var(--warn);background:rgba(245,158,11,.05)}
+  .bad{border-color:var(--bad);background:rgba(239,68,68,.05)}
+  .card[data-tip]::after{content:attr(data-tip);position:absolute;left:16px;right:16px;bottom:16px;background:rgba(0,0,0,.9);color:#fff;font-size:12px;line-height:1.4;padding:10px 12px;border-radius:12px;opacity:0;transform:translateY(8px);pointer-events:none;transition:.3s;backdrop-filter:blur(10px);z-index:10}
+  html[data-theme="light"] .card[data-tip]::after{background:rgba(30,34,44,.95)}
+  .card:hover::after{opacity:1;transform:translateY(0)}
+  .chartWrap{background:var(--surface);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:20px;padding:20px;margin:0 0 32px;box-shadow:var(--card-shadow)}
+  canvas#priceChart{width:100%;height:360px;display:block;border-radius:12px}
+  .toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+  .gauge{width:100%;max-width:260px;margin:auto;filter:drop-shadow(0 4px 8px rgba(0,0,0,.1))}
+  /* الرقم في وسط البطاقة */
+  .centerBox{flex:1;display:grid;place-items:center;padding:4px 6px}
+
   @media (max-width:768px){
-    .wrap{padding:14px}
-    .grid{grid-template-columns:1fr}
-    .card{min-height:160px}
+    .wrap{padding:16px 12px}
+    .brand{flex-direction:column;gap:12px;text-align:center}
+    .grid{grid-template-columns:1fr;gap:16px}
     canvas#priceChart{height:300px}
   }
 </style>
@@ -99,7 +125,7 @@
       <button class="btn" id="toggleChartBtn">Hide chart</button>
       <button class="btn" id="refreshBtn">Refresh</button>
       <button class="btn" id="themeBtn" title="Toggle theme">Theme: Auto</button>
-      <div class="pill me">Made by Anas Alwadi</div>
+      <div class="me">Made by Anas Alwadi</div>
     </div>
   </div>
 
@@ -112,47 +138,47 @@
   </div>
 
   <div class="grid" id="grid"></div>
-  <p class="muted" id="asof" style="margin-top:8px"></p>
+  <p class="muted" id="asof" style="margin-top:10px"></p>
 </div>
 
 <script>
 const $ = s => document.querySelector(s);
 const bust = url => url + (url.includes("?")?"&":"?") + "t=" + Date.now();
 
-/* تنسيق مختصر للأرقام الكبيرة */
+// أرقام مختصرة K/M/B/T
 function compact(n, withSymbol){
   if(n==null || !isFinite(n)) return "—";
   const abs = Math.abs(n);
-  const units = [
-    {v:1e12, s:"T"}, {v:1e9, s:"B"}, {v:1e6, s:"M"}, {v:1e3, s:"K"}
-  ];
-  for(const u of units){
-    if(abs >= u.v) return (n/u.v).toFixed(2).replace(/\.0+$/,"") + (withSymbol?(" "+u.s):u.s);
+  const units = [{v:1e12,s:"T"},{v:1e9,s:"B"},{v:1e6,s:"M"},{v:1e3,s:"K"}];
+  for (const u of units){
+    if (abs >= u.v) return (n/u.v).toFixed(2).replace(/\.0+$/,"") + (withSymbol?(" "+u.s):u.s);
   }
-  return n.toLocaleString();
+  return Number(n).toLocaleString();
 }
-const pct = x => (x==null||!isFinite(x)) ? "—" : (x*100).toFixed(2)+"%";
 
-/* Theme toggle: auto / light / dark */
-function setTheme(mode){
+// Theme toggle (auto/light/dark)
+function applyTheme(mode){
   const html=document.documentElement;
-  if(mode==="auto"){ html.setAttribute("data-theme","auto"); }
-  else if(mode==="light"){ html.setAttribute("data-theme","light"); }
-  else{ html.setAttribute("data-theme","dark"); }
-  localStorage.setItem("themeMode",mode);
+  html.setAttribute("data-theme", mode);
+  localStorage.setItem("themeMode", mode);
   $("#themeBtn").textContent = "Theme: " + mode[0].toUpperCase()+mode.slice(1);
 }
-(function initTheme(){ setTheme(localStorage.getItem("themeMode")||"auto"); })();
+(function(){
+  const saved = localStorage.getItem("themeMode") || "auto";
+  applyTheme(saved);
+})();
 $("#themeBtn").addEventListener("click", ()=>{
   const order=["auto","light","dark"];
   const cur=localStorage.getItem("themeMode")||"auto";
-  setTheme(order[(order.indexOf(cur)+1)%order.length]);
+  const next=order[(order.indexOf(cur)+1)%order.length];
+  applyTheme(next);
 });
 
-/* APIs (مجانية) */
+// Data sources
 const CG_GLOBAL   = "https://api.coingecko.com/api/v3/global";
 const CG_COIN     = "https://api.coingecko.com/api/v3/coins/bitcoin?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false";
 const CG_MKTCHART = "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=180&interval=daily";
+const FNG         = "https://api.alternative.me/fng/?limit=2";
 const BCH_HASH    = "https://api.blockchain.info/charts/hash-rate?timespan=60days&format=json&cors=true";
 const BCH_DIFF    = "https://api.blockchain.info/charts/difficulty?timespan=60days&format=json&cors=true";
 const BCH_ADDR    = "https://api.blockchain.info/charts/n-unique-addresses?timespan=60days&format=json&cors=true";
@@ -166,115 +192,98 @@ async function getJSON(url){
   if(!r.ok) throw new Error(`HTTP ${r.status}`);
   return r.json();
 }
-
-/* رسم خط السعر */
 function drawPriceChart(canvas, series){
   const ctx=canvas.getContext("2d");
-  const W=canvas.width, H=canvas.height;
+  const W=canvas.width,H=canvas.height;
   ctx.clearRect(0,0,W,H);
   if(!series.length) return;
   const xs=series.map(p=>p.t), ys=series.map(p=>p.v);
   const x0=xs[0], x1=xs[xs.length-1];
   const minY=Math.min(...ys), maxY=Math.max(...ys);
   const padL=50,padR=10,padT=10,padB=24;
-  const X=t=>padL+((t-x0)/(x1-x0))*(W-padL-padR);
-  const Y=v=>H-padB-((v-minY)/(maxY-minY))*(H-padT-padB);
-  // grid
-  ctx.strokeStyle="rgba(128,128,128,.22)"; ctx.lineWidth=1;
-  for(let i=0;i<=5;i++){const y=padT+i*(H-padT-padB)/5;ctx.beginPath();ctx.moveTo(padL,y);ctx.lineTo(W-padR,y);ctx.stroke();}
-  // line
-  ctx.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()||'#4aa8ff';
-  ctx.lineWidth=1.7; ctx.beginPath();
-  series.forEach((p,i)=>{const x=X(p.t), y=Y(p.v); if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);});
-  ctx.stroke();
-  ctx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--muted').trim()||'#9aa0a6';
-  ctx.font="12px Inter, Arial";
-  ctx.fillText("$"+(maxY|0).toLocaleString(), 6, Y(maxY)+4);
-  ctx.fillText("$"+(minY|0).toLocaleString(), 6, Y(minY)+12);
+  const x=t=>padL+((t-x0)/(x1-x0))*(W-padL-padR);
+  const y=v=>H-padB-((v-minY)/(maxY-minY))*(H-padT-padB);
+  ctx.strokeStyle="rgba(128,128,128,.25)";ctx.lineWidth=1;
+  for(let i=0;i<=5;i++){const gy=padT+i*(H-padT-padB)/5;ctx.beginPath();ctx.moveTo(padL,gy);ctx.lineTo(W-padR,gy);ctx.stroke();}
+  ctx.strokeStyle="#3b82f6";ctx.lineWidth=1.6;ctx.beginPath();
+  series.forEach((p,i)=>{const px=x(p.t),py=y(p.v);if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);});ctx.stroke();
+  ctx.fillStyle="rgba(160,160,170,.9)";ctx.font="12px Inter,Arial";ctx.fillText("$"+Math.round(maxY).toLocaleString(),6,y(maxY)+4);ctx.fillText("$"+Math.round(minY).toLocaleString(),6,y(minY)+12);
 }
 
-/* بطاقة موّحدة */
+// Gauge SVG
+function gaugeSVG(value){
+  const v=Math.max(0,Math.min(100,Number(value)||0));
+  const angle=(v/100)*180;
+  const segs=[{a:0,b:36,c:"#ff4d4d"},{a:36,b:72,c:"#ffb84d"},{a:72,b:108,c:"#cccc66"},{a:108,b:144,c:"#88cc66"},{a:144,b:180,c:"#33aa55"}];
+  const arc=(a,b)=>{const r=70,cx=100,cy=100,ra=a*Math.PI/180,rb=b*Math.PI/180,x1=cx+r*Math.cos(ra),y1=cy+r*Math.sin(ra),x2=cx+r*Math.cos(rb),y2=cy+r*Math.sin(rb);return `M ${x1} ${y1} A ${r} ${r} 0 0 1 ${x2} ${y2}`;};
+  const nx=100+60*Math.cos(angle*Math.PI/180), ny=100+60*Math.sin(angle*Math.PI/180);
+  return `<svg viewBox="0 0 200 130" class="gauge" style="transform: rotateX(180deg) rotateY(180deg);">
+    <g>${segs.map(s=>`<path d="${arc(s.a,s.b)}" stroke="${s.c}" stroke-width="12" fill="none"/>`).join("")}</g>
+    <line x1="100" y1="100" x2="${nx.toFixed(1)}" y2="${ny.toFixed(1)}" stroke="var(--text)" stroke-width="3"/><circle cx="100" cy="100" r="5" fill="var(--text)"/>
+    <text x="100" y="120" text-anchor="middle" font-size="14" fill="var(--text)" font-family="Inter,Arial">${Math.round(v)}</text>
+  </svg>`;
+}
+
+// بطاقة موحّدة: رقم كبير في الوسط + محتوى إضافي اختياري
 function card(title, numberHtml, extraHtml="", tone="", tip=""){
   const cls = tone==="bull"?"ok":tone==="warn"?"warn":tone==="bear"?"bad":"";
   const tipAttr = tip ? ` data-tip="${tip.replace(/"/g,'&quot;')}"` : "";
   return `
-  <div class="card ${cls}"${tipAttr}>
-    <h3>${title}</h3>
-    <div class="centerBox">${numberHtml}</div>
-    ${extraHtml}
-  </div>`;
+    <div class="card ${cls}"${tipAttr}>
+      <h3>${title}</h3>
+      <div class="centerBox">${numberHtml}</div>
+      ${extraHtml}
+    </div>`;
 }
 
-/* تحويل مجموع الدرجات إلى نص */
-function scoreText(x){
-  if (x>=2.5) return `Bullish (${x.toFixed(1)})`;
-  if (x<=-2.5) return `Bearish (${x.toFixed(1)})`;
-  return `Neutral (${x.toFixed(1)})`;
-}
-
-/* Gauge SVG (0..100) */
-function gaugeSVG(v){
-  v=Math.max(0,Math.min(100,Number(v)||0));
-  const ang=(v/100)*180, r=70,cx=100,cy=100;
-  const arc=(a,b)=>{const ra=a*Math.PI/180, rb=b*Math.PI/180;
-    const x1=cx+r*Math.cos(ra), y1=cy+r*Math.sin(ra);
-    const x2=cx+r*Math.cos(rb), y2=cy+r*Math.sin(rb);
-    return `M ${x1} ${y1} A ${r} ${r} 0 0 1 ${x2} ${y2}`;};
-  const segs=[[0,36,"#ff4d4d"],[36,72,"#ffb84d"],[72,108,"#d9d966"],[108,144,"#88cc66"],[144,180,"#33aa55"]];
-  const nx=100+60*Math.cos(ang*Math.PI/180), ny=100+60*Math.sin(ang*Math.PI/180);
-  return `<svg viewBox="0 0 200 130" class="gauge" style="transform:rotateX(180deg) rotateY(180deg)">
-    <g>${segs.map(s=>`<path d="${arc(s[0],s[1])}" stroke="${s[2]}" stroke-width="12" fill="none"/>`).join("")}</g>
-    <line x1="100" y1="100" x2="${nx.toFixed(1)}" y2="${ny.toFixed(1)}" stroke="currentColor" stroke-width="3"/>
-    <circle cx="100" cy="100" r="5" fill="currentColor"/>
-    <text x="100" y="120" text-anchor="middle" font-size="14" fill="currentColor" font-family="Inter">${Math.round(v)}</text>
-  </svg>`;
-}
+function scoreLabel(x){ if(x>=2.5) return `Bullish (${x.toFixed(1)})`; if(x<=-2.5) return `Bearish (${x.toFixed(1)})`; return `Neutral (${x.toFixed(1)})`; }
 
 async function main(){
   $("#grid").innerHTML=""; $("#refreshBtn").disabled=true;
   $("#asof").textContent="Updating…"; $("#asofChart").textContent="Updating…";
 
-  const cards=[]; let score=0;
+  let score=0; const cards=[];
+
+  // ---------------- Core + Chart ----------------
+  let priceUSD=null, dominance=null, totalM=null, altM=null, vol24=null, supply=null, btcCap=null;
+  // سنستخدم هذه لاحقًا لحساب NVT
+  let txUSD = null;
 
   try{
-    const [global, coin, chart] = await Promise.all([
+    const [g, coin, chart] = await Promise.all([
       getJSON(CG_GLOBAL),
       getJSON(CG_COIN),
       getJSON(CG_MKTCHART)
     ]);
 
-    // السعر و الماركِت كاب من /coins/bitcoin
-    const priceUSD = coin?.market_data?.current_price?.usd ?? null;
-    const btcCap   = coin?.market_data?.market_cap?.usd ?? null;
-    const supply   = coin?.market_data?.circulating_supply ?? null;
+    priceUSD = coin?.market_data?.current_price?.usd ?? null;
+    btcCap   = coin?.market_data?.market_cap?.usd ?? null;
+    supply   = coin?.market_data?.circulating_supply ?? null;
 
-    // من /global
-    const dominance = global?.data?.market_cap_percentage?.btc ?? null;
-    const totalM    = global?.data?.total_market_cap?.usd ?? null;
-    const vol24     = global?.data?.total_volume?.usd ?? null;
-    const altM      = (totalM!=null && btcCap!=null) ? Math.max(0,totalM-btcCap) : null;
-    const liqRatio  = (totalM>0 && vol24!=null) ? (vol24/totalM) : null;
+    dominance = g?.data?.market_cap_percentage?.btc ?? null;
+    totalM    = g?.data?.total_market_cap?.usd ?? null;
+    vol24     = g?.data?.total_volume?.usd ?? null;
+    altM      = (totalM!=null && btcCap!=null) ? Math.max(0, totalM - btcCap) : null;
 
-    // السعر (مركزي بالنص)
-    cards.push(card("BTC Price", `<div class="big">$${compact(priceUSD,true)}</div>`,"","", "Spot price in USD."));
+    const s = (chart?.prices||[]).map(([t,v])=>({t:Math.floor(t/1000), v}));
+    drawPriceChart(document.getElementById("priceChart"), s);
+    if(s.length) $("#asofChart").textContent = "Last: " + new Date(s[s.length-1].t*1000).toLocaleDateString();
 
-    // Dominance
-    let domTone=""; if(dominance>=55) { domTone="bull"; score+=0.4; } else if(dominance<=45){ domTone="warn"; score-=0.2; }
-    cards.push(card("BTC Dominance", `<div class="big">${dominance!=null?dominance.toFixed(1):"—"}%</div>`, "", domTone, "BTC market cap share of total crypto."));
+    // بطاقات BTC (بدون ذكر المصدر)
+    cards.push(card("BTC Price", `<div class="big">$${compact(priceUSD,true)}</div>`));
 
-    // إجمالي السوق / سوق الألتكوين / حجم 24 ساعة
+    let domTone="";
+    if(dominance>=55){ domTone="bull"; score+=0.4; }
+    else if(dominance<=45){ domTone="warn"; score-=0.2; }
+    cards.push(card("BTC Dominance", `<div class="big">${dominance!=null?dominance.toFixed(1):"—"}%</div>`, "", domTone, "BTC share of total crypto market."));
+
     cards.push(card("Total Market Cap", `<div class="big">$${compact(totalM,true)}</div>`));
     cards.push(card("Altcoin Market Cap", `<div class="big">$${compact(altM,true)}</div>`));
     cards.push(card("24h Total Volume", `<div class="big">$${compact(vol24,true)}</div>`));
-    cards.push(card("Volume / Market Cap", `<div class="big">${liqRatio!=null ? (liqRatio*100).toFixed(2)+"%" : "—"}</div>`));
+    cards.push(card("Volume / Market Cap", `<div class="big">${(totalM && vol24)?(vol24/totalM*100).toFixed(2)+"%":"—"}</div>`));
 
-    // رسم الشارت
-    const s=(chart.prices||[]).map(([t,v])=>({t:Math.floor(t/1000), v}));
-    drawPriceChart($("#priceChart"), s);
-    if(s.length) $("#asofChart").textContent = "Last: " + new Date(s[s.length-1].t*1000).toLocaleDateString();
-
-    // سـتوك-تو-فلو (تقريبي)
-    const flowYear = 3.125 * 144 * 365; // بعد هالڤنغ 2024
+    // S2F (تقريبي)
+    const flowYear = 3.125 * 144 * 365;
     const s2f = (supply!=null) ? (supply/flowYear) : null;
     let s2fTone="", s2fMsg="Informational only";
     if(s2f!=null && s2f>100){ s2fTone="bull"; s2fMsg="High scarcity"; score+=0.2; }
@@ -282,134 +291,136 @@ async function main(){
       `<div class="big">${s2f!=null? s2f.toFixed(1) : "—"}</div>`,
       `<div class="kv"><span>Stock (circulating)</span><span>${supply?compact(supply,true)+" BTC":"—"}</span></div>
        <div class="kv"><span>Flow / year (est.)</span><span>${compact(flowYear,true)} BTC</span></div>
-       <div class="muted">${s2fMsg}</div>`, s2fTone, "Approx: current subsidy × blocks/day × 365"));
-
+       <div class="muted">${s2fMsg}</div>`, s2fTone, "Approx: subsidy × blocks/day × 365"
+    ));
   }catch(e){
-    console.error(e);
-    cards.push(card("Core Data", `<div class="big">—</div>`, `<div class="muted">Error: ${e.message}</div>`,"warn"));
+    console.error("BTC Core data error:", e);
+    cards.push(card("Core Data", `<div class="big">—</div>`, `<div class="muted">Error: ${e.message}</div>`, "warn"));
   }
 
-  // Fear & Greed (Gauge)
+  // ---------------- Fear & Greed ----------------
   try{
-    const f = await getJSON("https://api.alternative.me/fng/?limit=2");
-    const now=f?.data?.[0];
+    const f = await getJSON(FNG);
+    const now = f?.data?.[0];
     if(now){
-      const v=Number(now.value);
-      let tone=""; if(v<=25){ tone="bear"; score-=.8; } else if(v<=45){ tone="warn"; score-=.4; }
-      else if(v>=75){ tone="warn"; score-=.4; } else if(v>=55){ tone="bull"; score+=.2; }
-      cards.push(card("Fear & Greed (Gauge)",
-        `<div class="big" style="margin-bottom:6px"></div>
-         <div style="display:grid;place-items:center">${gaugeSVG(v)}</div>
-         <div class="muted" style="text-align:center;margin-top:6px">${now.value_classification} — ${new Date(Number(now.timestamp)*1000).toLocaleDateString()}</div>`,
-        "", tone, "Sentiment index (0=extreme fear, 100=extreme greed)."));
+      const v = Number(now.value);
+      let tone=""; if(v<=25){tone="bear";score-=.8;} else if(v<=45){tone="warn";score-=.4;} else if(v>=75){tone="warn";score-=.4;} else if(v>=55){tone="bull";score+=.2;}
+      const gauge = `<div class="centerBox">${gaugeSVG(v)}</div>
+        <div class="muted" style="text-align:center">${now.value_classification} — ${new Date(Number(now.timestamp)*1000).toLocaleDateString()}</div>`;
+      cards.push(card("Fear & Greed (Gauge)", "", gauge, tone, "0=extreme fear, 100=extreme greed."));
     }
   }catch(e){
-    cards.push(card("Fear & Greed", `<div class="big">—</div>`, `<div class="muted">Error: ${e.message}</div>`,"warn"));
+    cards.push(card("Fear & Greed", `<div class="big">—</div>`, `<div class="muted">Error: ${e.message}</div>`));
   }
 
-  // Hashrate
+  // ---------------- Hashrate ----------------
   try{
-    const h=await getJSON(BCH_HASH);
-    const pts=h?.values||[]; const last=pts.at(-1), prev=pts.at(-8);
+    const h = await getJSON(BCH_HASH);
+    const pts=h?.values||[]; const last=pts[pts.length-1], prev=pts[pts.length-8];
     const latest=last?.y, ch=(latest&&prev)?(latest-prev.y)/prev.y:null;
-    let tone=""; if(ch!=null){ if(ch>.05){tone="bull";score+=.3;} else if(ch<-.05){tone="warn";score-=.2;} }
+    let tone="", msg="—"; if(ch!=null){ if(ch>.05){tone="bull";msg="Rising";score+=.3;} else if(ch<-.05){tone="warn";msg="Falling";score-=.2;} }
     cards.push(card("Hashrate", `<div class="big">${latest?compact(latest,false):"—"} EH/s</div>`,
-      `<div class="kv"><span>~7d Change</span><span>${pct(ch)}</span></div>`, tone, "Estimated network hash rate."));
+      `<div class="kv"><span>~7d Change</span><span>${ch!=null?(ch*100).toFixed(2)+"%":"—"}</span></div>
+       <div class="muted">${msg}</div>`, tone));
   }catch(e){ cards.push(card("Hashrate", `<div class="big">—</div>`, `<div class="muted">Error: ${e.message}</div>`)); }
 
-  // Difficulty
+  // ---------------- Difficulty ----------------
   try{
-    const d=await getJSON(BCH_DIFF);
-    const pts=d?.values||[]; const last=pts.at(-1), prev=pts.at(-8);
+    const d = await getJSON(BCH_DIFF);
+    const pts=d?.values||[]; const last=pts[pts.length-1], prev=pts[pts.length-8];
     const latest=last?.y, ch=(latest&&prev)?(latest-prev.y)/prev.y:null;
-    let tone=""; if(ch!=null){ if(ch>.03){tone="bull";score+=.2;} else if(ch<-.03){tone="warn";score-=.1;} }
+    let tone="", msg="—"; if(ch!=null){ if(ch>.03){tone="bull";msg="Trending up";score+=.2;} else if(ch<-.03){tone="warn";msg="Trending down";score-=.1;} }
     cards.push(card("Mining Difficulty", `<div class="big">${latest?compact(latest,false):"—"}</div>`,
-      `<div class="kv"><span>~7d Change</span><span>${pct(ch)}</span></div>`, tone));
+      `<div class="kv"><span>~7d Change</span><span>${ch!=null?(ch*100).toFixed(2)+"%":"—"}</span></div>
+       <div class="muted">${msg}</div>`, tone));
   }catch(e){ cards.push(card("Mining Difficulty", `<div class="big">—</div>`, `<div class="muted">Error: ${e.message}</div>`)); }
 
-  // Active Addresses
+  // ---------------- Active Addresses ----------------
   try{
-    const a=await getJSON(BCH_ADDR);
-    const pts=a?.values||[]; const last=pts.at(-1), prev=pts.at(-8);
+    const a = await getJSON(BCH_ADDR);
+    const pts=a?.values||[]; const last=pts[pts.length-1], prev=pts[pts.length-8];
     const latest=last?.y, ch=(latest&&prev)?(latest-prev.y)/prev.y:null;
-    let tone=""; if(ch!=null){ if(ch>.05){tone="bull";score+=.3;} else if(ch<-.05){tone="warn";score-=.2;} }
+    let tone="", msg="—"; if(ch!=null){ if(ch>.05){tone="bull";msg="Activity up";score+=.3;} else if(ch<-.05){tone="warn";msg="Activity down";score-=.2;} }
     cards.push(card("Active Addresses", `<div class="big">${latest?compact(latest,false):"—"}</div>`,
-      `<div class="kv"><span>~7d Change</span><span>${pct(ch)}</span></div>`, tone));
+      `<div class="kv"><span>~7d Change</span><span>${ch!=null?(ch*100).toFixed(2)+"%":"—"}</span></div>
+       <div class="muted">${msg}</div>`, tone));
   }catch(e){ cards.push(card("Active Addresses", `<div class="big">—</div>`, `<div class="muted">Error: ${e.message}</div>`)); }
 
-  // Fees (USD) + بديل mempool
+  // ---------------- Fees (daily) ----------------
   try{
-    const f=await getJSON(BCH_FEES_USD);
-    const pts=f?.values||[]; const last=pts.at(-1), prev=pts.at(-8);
-    const feesUSD=last?.y??null; const ch=(feesUSD&&prev)?(feesUSD-prev.y)/prev.y:null;
-    let tone=""; if(ch!=null){ if(ch>.25){tone="warn";score-=.2;} else if(ch<-.25){tone="bull";score+=.1;} }
-    cards.push(card("Daily Fees (USD)", `<div class="big">$${feesUSD?compact(feesUSD,true):"—"}</div>`,
-      `<div class="kv"><span>~7d Change</span><span>${pct(ch)}</span></div>`, tone, "Total daily tx fees in USD."));
+    const f = await getJSON(BCH_FEES_USD);
+    const pts=f?.values||[]; const last=pts[pts.length-1], prev=pts[pts.length-8];
+    const feesUSD=last?.y||null; const ch=(feesUSD&&prev)?(feesUSD-prev.y)/prev.y:null;
+    let tone="", msg="—"; if(ch!=null){ if(ch>.25){tone="warn";msg="Congestion";score-=.2;} else if(ch<-.25){tone="bull";msg="Low fees";score+=.1;} }
+    cards.push(card("Daily Fees", `<div class="big">${feesUSD?"$"+compact(feesUSD,true):"—"}</div>`,
+      `<div class="kv"><span>~7d Change</span><span>${ch!=null?(ch*100).toFixed(2)+"%":"—"}</span></div>
+       <div class="muted">${msg}</div>`, tone));
   }catch(e){
     try{
-      const mf=await getJSON(MEMPOOL_FEES);
-      cards.push(card("Current Fees", `<div class="big">${mf.fastestFee} sat/vB</div>`,
-        `<div class="kv"><span>Standard</span><span>${mf.halfHourFee} sat/vB</span></div>
-         <div class="kv"><span>Economy</span><span>${mf.hourFee} sat/vB</span></div>`));
+      const mem = await getJSON(MEMPOOL_FEES);
+      cards.push(card("Current Fees",
+        `<div class="big">${mem.fastestFee} sat/vB</div>`,
+        `<div class="kv"><span>Standard</span><span>${mem.halfHourFee} sat/vB</span></div>
+         <div class="kv"><span>Economy</span><span>${mem.hourFee} sat/vB</span></div>`));
     }catch(e2){
-      cards.push(card("Fees", `<div class="big">—</div>`, `<div class="muted">Error: ${e.message}</div>`,"warn"));
+      cards.push(card("Fees", `<div class="big">—</div>`, `<div class="muted">Error: ${e.message}</div>`));
     }
   }
 
-  // Tx Volume (USD) + NVT (محسوبة محليًا)
-  let txUSD=null, btcMCap=null;
+  // ---------------- Tx Volume (USD) + NVT ----------------
   try{
-    const t=await getJSON(BCH_TXV_USD);
-    const pts=t?.values||[]; const last=pts.at(-1), prev=pts.at(-8);
-    txUSD=last?.y??null; const ch=(txUSD&&prev)?(txUSD-prev.y)/prev.y:null;
-    let tone=""; if(ch!=null){ if(ch>.05){tone="bull";score+=.2;} else if(ch<-.05){tone="warn";score-=.1;} }
-    cards.push(card("Transaction Volume (USD)", `<div class="big">$${txUSD?compact(txUSD,true):"—"}</div>`,
-      `<div class="kv"><span>~7d Change</span><span>${pct(ch)}</span></div>`, tone));
+    const t = await getJSON(BCH_TXV_USD);
+    const pts=t?.values||[]; const last=pts[pts.length-1], prev=pts[pts.length-8];
+    txUSD = last?.y ?? null;
+    const ch=(txUSD&&prev)?(txUSD-prev.y)/prev.y:null;
+    let tone="", msg="—"; if(ch!=null){ if(ch>.05){tone="bull";msg="Volume up";score+=.2;} else if(ch<-.05){tone="warn";msg="Volume down";score-=.1;} }
+    cards.push(card("Transaction Volume (USD)", `<div class="big">${txUSD?"$"+compact(txUSD,true):"—"}</div>`,
+      `<div class="kv"><span>~7d Change</span><span>${ch!=null?(ch*100).toFixed(2)+"%":"—"}</span></div>
+       <div class="muted">${msg}</div>`, tone));
   }catch(e){ cards.push(card("Transaction Volume (USD)", `<div class="big">—</div>`, `<div class="muted">Error: ${e.message}</div>`)); }
 
-  try{
-    // خذنا ماركت كاب BTC من /coins/bitcoin سابقًا عبر المتغير coin => لكن خارج النطاق الآن، فنسحبه سريعًا:
-    const coin = await getJSON(CG_COIN);
-    btcMCap = coin?.market_data?.market_cap?.usd ?? null;
-  }catch{}
-  // NVT = Market Cap / Daily Tx Volume
-  const nvt = (btcMCap && txUSD) ? (btcMCap/txUSD) : null;
+  // NVT محلي
+  const nvt = (btcCap && txUSD) ? (btcCap/txUSD) : null;
   let nvtTone="", nvtMsg="Normal range";
   if(nvt!=null){
-    if(nvt>150){ nvtTone="warn"; nvtMsg="High valuation"; score-=.2; }
-    else if(nvt<50){ nvtTone="bull"; nvtMsg="Low valuation"; score+=.2; }
+    if(nvt>150){ nvtTone="warn"; nvtMsg="High valuation"; score -= .2; }
+    else if(nvt<50){ nvtTone="bull"; nvtMsg="Low valuation"; score += .2; }
   }
   cards.push(card("NVT Ratio", `<div class="big">${nvt!=null?nvt.toFixed(1):"—"}</div>`,
-    `<div class="kv"><span>BTC Market Cap</span><span>$${btcMCap?compact(btcMCap,true):"—"}</span></div>
+    `<div class="kv"><span>BTC Market Cap</span><span>$${btcCap?compact(btcCap,true):"—"}</span></div>
      <div class="kv"><span>Tx Volume (USD)</span><span>$${txUSD?compact(txUSD,true):"—"}</span></div>
-     <div class="muted">${nvtMsg}</div>`, nvtTone, "NVT = Market Cap ÷ Daily Tx Volume"));
+     <div class="muted">${nvtMsg}</div>`, nvtTone, "NVT = Market Cap ÷ Daily Tx Volume"
+  ));
 
-  // Mempool snapshot
+  // ---------------- Mempool Status ----------------
   try{
-    const m=await getJSON(MEMPOOL_STATS);
-    const count=m?.count||0, vsize=m?.vsize||0, totalFees=m?.total_fee||0;
-    let tone=""; if(count>50000){ tone="warn"; score-=.2; } else if(count<5000){ tone="bull"; score+=.1; }
+    const mem = await getJSON(MEMPOOL_STATS);
+    const count=mem?.count||0, vsize=mem?.vsize||0, totalFees=mem?.total_fee||0;
+    let tone="", msg="Normal"; if(count>50000){tone="warn";msg="Congested";score-=.2;} else if(count<5000){tone="bull";msg="Clear";score+=.1;}
     cards.push(card("Mempool Status", `<div class="big">${compact(count,false)} TXs</div>`,
-      `<div class="kv"><span>Size</span><span>${(vsize/1e6).toFixed(1)} vMB</span></div>
-       <div class="kv"><span>Total Fees</span><span>${(totalFees/1e8).toFixed(2)} BTC</span></div>`, tone));
-  }catch(e){}
+      `<div class="kv"><span>Size (vMB)</span><span>${(vsize/1e6).toFixed(1)}</span></div>
+       <div class="kv"><span>Total Fees</span><span>${(totalFees/1e8).toFixed(2)} BTC</span></div>
+       <div class="muted">${msg}</div>`, tone));
+  }catch(e){ cards.push(card("Mempool Status", `<div class="big">—</div>`, `<div class="muted">Error: ${e.message}</div>`)); }
 
-  // إخراج
-  $("#grid").innerHTML = cards.join("");
-  $("#marketScore").textContent = "Market Score: " + scoreText(score);
-  $("#asof").textContent = "Last updated: " + new Date().toLocaleString();
-  $("#refreshBtn").disabled=false;
+  // ---------------- Score + render ----------------
+  document.getElementById("marketScore").textContent = "Market Score: " + scoreLabel(score);
+  document.getElementById("grid").innerHTML = cards.join("");
+  document.getElementById("asof").textContent = "Last updated: " + new Date().toLocaleString();
+  document.getElementById("refreshBtn").disabled = false;
 }
 
-/* أزرار التحكم */
-$("#toggleChartBtn").addEventListener("click", ()=>{
-  const box=$("#chartBox");
-  if(box.style.display==="none"){ box.style.display="block"; $("#toggleChartBtn").textContent="Hide chart"; }
-  else { box.style.display="none"; $("#toggleChartBtn").textContent="Show chart"; }
+// UI actions
+document.getElementById("toggleChartBtn").addEventListener("click", ()=>{
+  const box=document.getElementById("chartBox");
+  const btn=document.getElementById("toggleChartBtn");
+  const show = box.style.display==="none";
+  box.style.display = show ? "block":"none";
+  btn.textContent = show ? "Hide chart":"Show chart";
 });
-$("#refreshBtn").addEventListener("click", main);
+document.getElementById("refreshBtn").addEventListener("click", main);
 
-/* تحميل أولي */
+// Start
 main();
 </script>
 </body>
