@@ -97,7 +97,7 @@
   .gauge{width:100%;max-width:240px;margin:auto}
   @media (max-width:768px){canvas#priceChart{height:280px}}
   
-  /* Added for real-time indicator */
+  /* Real-time indicator */
   .real-time-indicator {
     position: fixed;
     top: 10px;
@@ -265,6 +265,7 @@ const BCH_DIFF    = "https://api.blockchain.info/charts/difficulty?timespan=60da
 const BCH_ADDR    = "https://api.blockchain.info/charts/n-unique-addresses?timespan=60days&format=json&cors=true";
 const BCH_TXV_USD = "https://api.blockchain.info/charts/estimated-transaction-volume-usd?timespan=180days&format=json&cors=true";
 const BCH_FEES_USD= "https://api.blockchain.info/charts/transaction-fees-usd?timespan=60days&format=json&cors=true";
+const BCH_UTXO    = "https://api.blockchain.info/charts/utxo-count?timespan=60days&format=json&cors=true";
 const MEMPOOL_FEES = "https://mempool.space/api/v1/fees/recommended";
 
 // MAIN
@@ -281,46 +282,46 @@ async function main(){
     ]);
     
     // Only proceed if data is available
-    if (!g || !p || !coin || !chart || !txv) {
-      throw new Error("Failed to fetch core data");
+    if (g && p && coin && chart && txv) {
+      const series=(chart.prices||[]).map(([t,v])=>({t:Math.floor(t/1000),v}));
+      drawLine($("#priceChart"), series);
+      $("#asofChart").textContent="Last: "+new Date(series.at(-1).t*1000).toLocaleDateString();
+
+      priceUSD = p.bitcoin.usd;
+      const btcCap = coin.market_data.market_cap.usd;
+      const dominance = g.data.market_cap_percentage.btc;
+      const totalM = g.data.total_market_cap.usd;
+      const vol24 = g.data.total_volume.usd;
+      supply = coin.market_data.circulating_supply || (btcCap&&priceUSD? btcCap/priceUSD : null);
+      const altM = Math.max(0, totalM - btcCap);
+      const liqRatio = (totalM>0)? vol24/totalM : null;
+
+      // Cards
+      cards.push(card("BTC Price", `<div class="center big">$${fmtCompact(priceUSD)}</div>`));
+      cards.push(card("BTC Dominance", `<div class="center big">${dominance.toFixed(1)}%</div>`, dominance>=55?"bull":dominance<=45?"warn":"", "BTC share of the total crypto market."));
+      cards.push(card("Total Market Cap", `<div class="center big">$${fmtCompact(totalM)}</div>`));
+      cards.push(card("Altcoin Market Cap", `<div class="center big">$${fmtCompact(altM)}</div>`));
+      cards.push(card("24h Total Volume", `<div class="center big">$${fmtCompact(vol24)}</div>`));
+      cards.push(card("Volume / Market Cap", `<div class="center big">${liqRatio!=null?(liqRatio*100).toFixed(2)+"%":"—"}</div>`));
+
+      if (dominance>=55) addScore("BTC Dominance", +0.40, "≥55% favors BTC strength");
+      else if (dominance<=45) addScore("BTC Dominance", -0.20, "≤45% weak BTC share");
+
+      // Save series for NVT/GC
+      txvSeries = (txv.values||[]).map(o=>({t:o.x, v:o.y}));
+      // S2F
+      const flowYear = 3.125*144*365;
+      const s2f = supply ? (supply/flowYear) : null;
+      let s2fTone="", s2fMsg="Informational only";
+      if(s2f!=null && s2f>100){ s2fTone="bull"; s2fMsg="High scarcity"; addScore("S2F (approx)", +0.20, "High scarcity"); }
+      cards.push(card("Stock-to-Flow (approx)",
+        `<div class="kv"><span>Stock</span><span class="big">${supply?fmtCompact(supply)+" BTC":"—"}</span></div>
+         <div class="kv"><span>Flow / year</span><span>${fmtCompact(flowYear)} BTC</span></div>
+         <div class="center big">${s2f? s2f.toFixed(1):"—"}</div>
+         <div class="muted">${s2fMsg}</div>`, s2fTone));
+    } else {
+      throw new Error("Some data sources are unavailable");
     }
-    
-    const series=(chart.prices||[]).map(([t,v])=>({t:Math.floor(t/1000),v}));
-    drawLine($("#priceChart"), series);
-    $("#asofChart").textContent="Last: "+new Date(series.at(-1).t*1000).toLocaleDateString();
-
-    priceUSD = p.bitcoin.usd;
-    const btcCap = coin.market_data.market_cap.usd;
-    const dominance = g.data.market_cap_percentage.btc;
-    const totalM = g.data.total_market_cap.usd;
-    const vol24 = g.data.total_volume.usd;
-    supply = coin.market_data.circulating_supply || (btcCap&&priceUSD? btcCap/priceUSD : null);
-    const altM = Math.max(0, totalM - btcCap);
-    const liqRatio = (totalM>0)? vol24/totalM : null;
-
-    // Cards
-    cards.push(card("BTC Price", `<div class="center big">$${fmtCompact(priceUSD)}</div>`));
-    cards.push(card("BTC Dominance", `<div class="center big">${dominance.toFixed(1)}%</div>`, dominance>=55?"bull":dominance<=45?"warn":"", "BTC share of the total crypto market."));
-    cards.push(card("Total Market Cap", `<div class="center big">$${fmtCompact(totalM)}</div>`));
-    cards.push(card("Altcoin Market Cap", `<div class="center big">$${fmtCompact(altM)}</div>`));
-    cards.push(card("24h Total Volume", `<div class="center big">$${fmtCompact(vol24)}</div>`));
-    cards.push(card("Volume / Market Cap", `<div class="center big">${liqRatio!=null?(liqRatio*100).toFixed(2)+"%":"—"}</div>`));
-
-    if (dominance>=55) addScore("BTC Dominance", +0.40, "≥55% favors BTC strength");
-    else if (dominance<=45) addScore("BTC Dominance", -0.20, "≤45% weak BTC share");
-
-    // Save series for NVT/GC
-    txvSeries = (txv.values||[]).map(o=>({t:o.x, v:o.y}));
-    // S2F
-    const flowYear = 3.125*144*365;
-    const s2f = supply ? (supply/flowYear) : null;
-    let s2fTone="", s2fMsg="Informational only";
-    if(s2f!=null && s2f>100){ s2fTone="bull"; s2fMsg="High scarcity"; addScore("S2F (approx)", +0.20, "High scarcity"); }
-    cards.push(card("Stock-to-Flow (approx)",
-      `<div class="kv"><span>Stock</span><span class="big">${supply?fmtCompact(supply)+" BTC":"—"}</span></div>
-       <div class="kv"><span>Flow / year</span><span>${fmtCompact(flowYear)} BTC</span></div>
-       <div class="center big">${s2f? s2f.toFixed(1):"—"}</div>
-       <div class="muted">${s2fMsg}</div>`, s2fTone));
   }catch(e){
     cards.push(card("Core Data", `<div class="muted">Error: ${e.message}</div>`,"warn"));
   }
@@ -345,19 +346,19 @@ async function main(){
   async function addBC(title,url,unit,thUp,thDn,scoreTag,upS,downS,tip){
     try{
       const j=await getJSON(url); 
-      if (!j) return;
-      
-      const pts=j?.values||[]; const last=pts.at(-1), prev=pts.at(-8);
-      const latest=last?.y; const ch=(latest&&prev)?(latest-prev.y)/prev.y:null;
-      let tone="",msg="Flat";
-      if(ch!=null){
-        if(ch>thUp){tone="bull";msg="Rising"; if(upS) addScore(scoreTag,upS,"Rising");}
-        else if(ch<thDn){tone="warn";msg="Falling"; if(downS) addScore(scoreTag,downS,"Falling");}
+      if (j) {
+        const pts=j?.values||[]; const last=pts.at(-1), prev=pts.at(-8);
+        const latest=last?.y; const ch=(latest&&prev)?(latest-prev.y)/prev.y:null;
+        let tone="",msg="Flat";
+        if(ch!=null){
+          if(ch>thUp){tone="bull";msg="Rising"; if(upS) addScore(scoreTag,upS,"Rising");}
+          else if(ch<thDn){tone="warn";msg="Falling"; if(downS) addScore(scoreTag,downS,"Falling");}
+        }
+        cards.push(card(title,
+          `<div class="kv"><span>Latest</span><span class="big">${latest?fmtCompact(latest)+(unit?" "+unit:""):"—"}</span></div>
+           <div class="kv"><span>~7d Change</span><span>${pct(ch)}</span></div>
+           <div class="muted">${msg}</div>`, tone, tip||""));
       }
-      cards.push(card(title,
-        `<div class="kv"><span>Latest</span><span class="big">${latest?fmtCompact(latest)+(unit?" "+unit:""):"—"}</span></div>
-         <div class="kv"><span>~7d Change</span><span>${pct(ch)}</span></div>
-         <div class="muted">${msg}</div>`, tone, tip||""));
     }catch(e){ cards.push(card(title, `<div class="muted">Error: ${e.message}</div>`)); }
   }
   await addBC("Hashrate", BCH_HASH, "EH/s", 0.05,-0.05, "Hashrate", +0.30,-0.20);
@@ -380,7 +381,7 @@ async function main(){
          <div class="kv"><span>~7d Change</span><span>${pct(ch)}</span></div>
          <div class="muted">${msg}</div>`, tone));
     } else {
-      throw new Error("No fee data");
+      throw new Error("No fee data available");
     }
   }catch(e){
     try{
@@ -390,56 +391,56 @@ async function main(){
           `<div class="kv"><span>Fast</span><span class="big">${m.fastestFee} sat/vB</span></div>
            <div class="kv"><span>Standard</span><span>${m.halfHourFee} sat/vB</span></div>
            <div class="kv"><span>Economy</span><span>${m.hourFee} sat/vB</span></div>`));
-      } else {
-        throw new Error("No fee data");
       }
     }catch(e2){ cards.push(card("Fees", `<div class="muted">Error: ${e.message}</div>`)); }
   }
 
-  // NVT
+  // -------- NVT (محسوب محليًا) + NVT Golden Cross --------
   try{
+    // price series (from chart) & txvSeries (180d) & supply (latest)
+    // للحصول على سلسلة السعر من الرسم الذي جلبناه مسبقًا:
     const priceSeriesResp = await getJSON(CG_MKTCHART);
-    if (!priceSeriesResp) throw new Error("No price data");
-    
-    const priceSeries = (priceSeriesResp.prices||[]).map(([t,v])=>v);
-    const txv = txvSeries.map(p=>p.v);
-    const n = Math.min(priceSeries.length, txv.length);
-    const supplyGuess = supply || 19_000_000;
-    const nvtSeries = [];
-    for(let i=0;i<n;i++){
-      const mcap = priceSeries[priceSeries.length-n+i]*supplyGuess;
-      const vol  = txv[txv.length-n+i] || 0.0001;
-      nvtSeries.push(mcap/vol);
-    }
-    const latestNVT = nvtSeries.at(-1);
-    let tone=""; let msg="Neutral zone";
-    if(latestNVT>150){ tone="warn"; msg="High valuation"; addScore("NVT",-0.20,"High valuation"); }
-    else if(latestNVT<50){ tone="bull"; msg="Low valuation"; addScore("NVT",+0.20,"Low valuation"); }
+    if (priceSeriesResp) {
+      const priceSeries = (priceSeriesResp.prices||[]).map(([t,v])=>v); // فقط القيم
+      const txv = txvSeries.map(p=>p.v);
+      const n = Math.min(priceSeries.length, txv.length);
+      const supplyGuess = supply || 19_000_000; // احتياط
+      const nvtSeries = [];
+      for(let i=0;i<n;i++){
+        const mcap = priceSeries[priceSeries.length-n+i]*supplyGuess;
+        const vol  = txv[txv.length-n+i] || 0.0001;
+        nvtSeries.push(mcap/vol);
+      }
+      const latestNVT = nvtSeries.at(-1);
+      let tone=""; let msg="Neutral zone";
+      if(latestNVT>150){ tone="warn"; msg="High valuation"; addScore("NVT",-0.20,"High valuation"); }
+      else if(latestNVT<50){ tone="bull"; msg="Low valuation"; addScore("NVT",+0.20,"Low valuation"); }
 
-    cards.push(card("NVT (Market Cap ÷ Tx Volume)",
-      `<div class="center big">${latestNVT?latestNVT.toFixed(1):"—"}</div>
-       <div class="muted">${msg}</div>`, tone));
+      cards.push(card("NVT (Market Cap ÷ Tx Volume)",
+        `<div class="center big">${latestNVT?latestNVT.toFixed(1):"—"}</div>
+         <div class="muted">${msg}</div>`, tone));
 
-    // Golden Cross
-    const nvt10 = SMA(nvtSeries,10), nvt30 = SMA(nvtSeries,30);
-    let gc = null;
-    if(nvt10.length && nvt30.length){
-      const last10 = nvt10.at(-1), last30 = nvt30.at(-1);
-      gc = ((last10/last30)-1)*100;
+      // Golden Cross (approx): ratio SMA10 / SMA30 لنفس سلسلة NVT
+      const nvt10 = SMA(nvtSeries,10), nvt30 = SMA(nvtSeries,30);
+      let gc = null;
+      if(nvt10.length && nvt30.length){
+        const last10 = nvt10.at(-1), last30 = nvt30.at(-1);
+        gc = ((last10/last30)-1)*100; // %
+      }
+      let gcTone="", gcMsg="Fair value";
+      if(gc!=null){
+        if(gc > 5) { gcTone="warn"; gcMsg="Overvalue (GC>+5%)"; addScore("NVT Golden Cross",-0.20,"Overvalue"); }
+        else if(gc < -5){ gcTone="bull"; gcMsg="Undervalue (GC<-5%)"; addScore("NVT Golden Cross",+0.20,"Undervalue"); }
+      }
+      cards.push(card("NVT Golden Cross (approx)",
+        `<div class="center big">${gc!=null?gc.toFixed(2)+"%":"—"}</div>
+         <div class="muted">${gcMsg}</div>`, gcTone));
     }
-    let gcTone="", gcMsg="Fair value";
-    if(gc!=null){
-      if(gc > 5) { gcTone="warn"; gcMsg="Overvalue (GC>+5%)"; addScore("NVT Golden Cross",-0.20,"Overvalue"); }
-      else if(gc < -5){ gcTone="bull"; gcMsg="Undervalue (GC<-5%)"; addScore("NVT Golden Cross",+0.20,"Undervalue"); }
-    }
-    cards.push(card("NVT Golden Cross (approx)",
-      `<div class="center big">${gc!=null?gc.toFixed(2)+"%":"—"}</div>
-       <div class="muted">${gcMsg}</div>`, gcTone));
   }catch(e){
     cards.push(card("NVT", `<div class="muted">Error: ${e.message}</div>`));
   }
 
-  // Finalize
+  // -------- Finalize --------
   const {s01} = marketScore01();
   const [lab,cls] = verdict(s01);
   const pill=$("#marketScore");
