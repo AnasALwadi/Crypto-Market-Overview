@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" data-theme="auto">
+<html lang="en" data-theme="auto">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>نظرة شاملة على السوق - بيانات حية</title>
+<title>Advanced Market Overview - Real-time Data</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
   :root {
@@ -55,7 +55,7 @@
     margin: 0;
     background: var(--bg);
     color: var(--text);
-    font-family: 'Tajawal', sans-serif;
+    font-family: 'Inter', sans-serif;
     line-height: 1.6;
     min-height: 100vh;
     overflow-x: hidden;
@@ -293,7 +293,7 @@
   
   .kv-value {
     font-weight: 600;
-    text-align: left;
+    text-align: right;
   }
   
   .center {
@@ -311,27 +311,6 @@
     line-height: 1.2;
     max-width: 100%;
     word-break: break-word;
-  }
-  
-  /* Trend Indicators */
-  .trend {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-size: 13px;
-    font-weight: 600;
-  }
-  
-  .trend.up {
-    background: rgba(16, 185, 129, 0.15);
-    color: var(--ok);
-  }
-  
-  .trend.down {
-    background: rgba(239, 68, 68, 0.15);
-    color: var(--bad);
   }
   
   /* Chart */
@@ -413,7 +392,7 @@
   .scroll-top {
     position: fixed;
     bottom: 24px;
-    left: 24px;
+    right: 24px;
     width: 48px;
     height: 48px;
     border-radius: 50%;
@@ -441,40 +420,6 @@
     color: white;
     transform: translateY(-4px);
     box-shadow: var(--shadow2);
-  }
-  
-  /* Responsive */
-  @media (max-width: 1200px) {
-    .dashboard {
-      grid-template-columns: 1fr;
-    }
-  }
-  
-  @media (max-width: 768px) {
-    .header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 20px;
-    }
-    
-    .controls {
-      width: 100%;
-      overflow-x: auto;
-      padding-bottom: 8px;
-    }
-    
-    .card-grid {
-      grid-template-columns: 1fr;
-    }
-    
-    canvas#priceChart {
-      height: 280px;
-    }
-    
-    .footer {
-      flex-direction: column;
-      gap: 16px;
-    }
   }
   
   /* Real-time indicator */
@@ -519,6 +464,34 @@
     padding: 3px 8px;
     border-radius: 10px;
   }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
+    }
+    
+    .controls {
+      width: 100%;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+    
+    .card-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    canvas#priceChart {
+      height: 280px;
+    }
+    
+    .footer {
+      flex-direction: column;
+      gap: 16px;
+    }
+  }
 </style>
 </head>
 <body>
@@ -526,7 +499,7 @@
   <!-- Real-time indicator -->
   <div class="real-time-indicator">
     <div class="pulse"></div>
-    <span>بيانات حية</span>
+    <span>LIVE DATA</span>
   </div>
 
   <!-- Header -->
@@ -536,8 +509,8 @@
         <i class="fas fa-chart-line"></i>
       </div>
       <div class="logo-text">
-        <h1 class="site-title">نظرة شاملة على السوق</h1>
-        <div class="site-subtitle">بيانات حية ومباشرة من مصادر موثوقة</div>
+        <h1 class="site-title">Market Overview Pro</h1>
+        <div class="site-subtitle">Real-time cryptocurrency market data</div>
       </div>
     </div>
     
@@ -546,18 +519,18 @@
         <div class="status-indicator active"></div>
         <div class="pill" id="marketScore">
           <i class="fas fa-chart-pie"></i>
-          <span>تحميل النتائج...</span>
+          <span>Loading market data...</span>
         </div>
       </div>
       
       <button class="btn" id="refreshBtn">
         <i class="fas fa-sync-alt"></i>
-        <span>تحديث الآن</span>
+        <span>Refresh Now</span>
       </button>
       
-      <button class="btn" id="themeBtn" title="تبديل السمة">
+      <button class="btn" id="themeBtn" title="Toggle theme">
         <i class="fas fa-moon"></i>
-        <span>الوضع التلقائي</span>
+        <span>Auto Theme</span>
       </button>
     </div>
   </header>
@@ -567,12 +540,12 @@
     <div class="chart-header">
       <div class="chart-title">
         <i class="fas fa-bitcoin"></i>
-        <span>حركة سعر البيتكوين - 180 يوماً</span>
+        <span>Bitcoin Price Movement - 180 Days</span>
       </div>
-      <div class="muted" id="asofChart">آخر تحديث: جاري التحميل...</div>
+      <div class="muted" id="asofChart">Last update: Loading...</div>
     </div>
     <canvas id="priceChart" width="1200" height="380"></canvas>
-    <div class="source-badge">المصدر: CoinGecko API</div>
+    <div class="source-badge">Source: CoinGecko API</div>
   </section>
   
   <!-- Data Cards -->
@@ -580,7 +553,7 @@
     <!-- Bitcoin Price -->
     <div class="card">
       <div class="card-header">
-        <div class="card-title">سعر البيتكوين</div>
+        <div class="card-title">Bitcoin Price</div>
         <div class="card-icon">
           <i class="fab fa-bitcoin"></i>
         </div>
@@ -588,17 +561,17 @@
       <div class="card-content">
         <div class="big" id="btcPrice">$--.--</div>
         <div class="kv">
-          <span class="kv-label">التغير (24 ساعة)</span>
+          <span class="kv-label">24h Change</span>
           <span class="kv-value" id="btcChange">--%</span>
         </div>
       </div>
-      <div class="source-badge">المصدر: CoinGecko</div>
+      <div class="source-badge">Source: CoinGecko</div>
     </div>
     
     <!-- Market Cap -->
     <div class="card">
       <div class="card-header">
-        <div class="card-title">القيمة السوقية الإجمالية</div>
+        <div class="card-title">Total Market Cap</div>
         <div class="card-icon">
           <i class="fas fa-globe"></i>
         </div>
@@ -606,17 +579,17 @@
       <div class="card-content">
         <div class="big" id="marketCap">$--.--</div>
         <div class="kv">
-          <span class="kv-label">التغير (24 ساعة)</span>
+          <span class="kv-label">24h Change</span>
           <span class="kv-value" id="marketCapChange">--%</span>
         </div>
       </div>
-      <div class="source-badge">المصدر: CoinGecko</div>
+      <div class="source-badge">Source: CoinGecko</div>
     </div>
     
     <!-- Fear & Greed -->
     <div class="card">
       <div class="card-header">
-        <div class="card-title">مؤشر الخوف والجشع</div>
+        <div class="card-title">Fear & Greed Index</div>
         <div class="card-icon">
           <i class="fas fa-brain"></i>
         </div>
@@ -624,17 +597,17 @@
       <div class="card-content">
         <div class="big" id="fearGreedValue">--</div>
         <div class="kv">
-          <span class="kv-label">الحالة</span>
+          <span class="kv-label">Status</span>
           <span class="kv-value" id="fearGreedStatus">--</span>
         </div>
       </div>
-      <div class="source-badge">المصدر: Alternative.me</div>
+      <div class="source-badge">Source: Alternative.me</div>
     </div>
     
     <!-- Hashrate -->
     <div class="card">
       <div class="card-header">
-        <div class="card-title">قوة الشبكة (Hashrate)</div>
+        <div class="card-title">Network Hashrate</div>
         <div class="card-icon">
           <i class="fas fa-microchip"></i>
         </div>
@@ -642,17 +615,17 @@
       <div class="card-content">
         <div class="big" id="hashRate">-- EH/s</div>
         <div class="kv">
-          <span class="kv-label">التغير (7 أيام)</span>
+          <span class="kv-label">7d Change</span>
           <span class="kv-value" id="hashRateChange">--%</span>
         </div>
       </div>
-      <div class="source-badge">المصدر: Blockchain.com</div>
+      <div class="source-badge">Source: Blockchain.com</div>
     </div>
     
     <!-- Active Addresses -->
     <div class="card">
       <div class="card-header">
-        <div class="card-title">العناوين النشطة</div>
+        <div class="card-title">Active Addresses</div>
         <div class="card-icon">
           <i class="fas fa-users"></i>
         </div>
@@ -660,17 +633,17 @@
       <div class="card-content">
         <div class="big" id="activeAddresses">--</div>
         <div class="kv">
-          <span class="kv-label">التغير (7 أيام)</span>
+          <span class="kv-label">7d Change</span>
           <span class="kv-value" id="addressesChange">--%</span>
         </div>
       </div>
-      <div class="source-badge">المصدر: Blockchain.com</div>
+      <div class="source-badge">Source: Blockchain.com</div>
     </div>
     
     <!-- Transaction Fees -->
     <div class="card">
       <div class="card-header">
-        <div class="card-title">رسوم المعاملات</div>
+        <div class="card-title">Transaction Fees</div>
         <div class="card-icon">
           <i class="fas fa-money-bill-wave"></i>
         </div>
@@ -678,23 +651,23 @@
       <div class="card-content">
         <div class="big" id="transactionFees">$--.--</div>
         <div class="kv">
-          <span class="kv-label">متوسط الرسوم</span>
+          <span class="kv-label">Avg Fee</span>
           <span class="kv-value" id="avgFee">$--.--</span>
         </div>
       </div>
-      <div class="source-badge">المصدر: Mempool.space</div>
+      <div class="source-badge">Source: Mempool.space</div>
     </div>
   </div>
   
   <!-- Footer -->
   <footer class="footer">
     <div class="footer-links">
-      <a href="#"><i class="fas fa-info-circle"></i> معلومات عن البيانات</a>
-      <a href="#"><i class="fas fa-history"></i> تحديث كل 60 ثانية</a>
+      <a href="#"><i class="fas fa-info-circle"></i> Data Information</a>
+      <a href="#"><i class="fas fa-history"></i> Updates every 60 seconds</a>
     </div>
     <div class="copyright">
-      <p id="asof">آخر تحديث: جاري التحميل...</p>
-      <p>© 2023 نظرة شاملة على السوق - جميع البيانات مباشرة وحية</p>
+      <p id="asof">Last update: Loading...</p>
+      <p>© 2023 Market Overview Pro - All data is real-time</p>
     </div>
   </footer>
 </div>
@@ -704,7 +677,7 @@
 </div>
 
 <script>
-// مصادر البيانات الحقيقية
+// Data sources
 const DATA_SOURCES = {
   BITCOIN_PRICE: "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true",
   MARKET_DATA: "https://api.coingecko.com/api/v3/global",
@@ -714,7 +687,7 @@ const DATA_SOURCES = {
   TRANSACTION_FEES: "https://mempool.space/api/v1/fees/recommended"
 };
 
-// عناصر DOM
+// DOM elements
 const elements = {
   btcPrice: document.getElementById('btcPrice'),
   btcChange: document.getElementById('btcChange'),
@@ -736,19 +709,19 @@ const elements = {
   scrollTop: document.getElementById('scrollTop')
 };
 
-// تنسيق الأرقام
+// Format numbers
 function formatNumber(number) {
-  if (number >= 1e12) return (number / 1e12).toFixed(2) + ' تريليون';
-  if (number >= 1e9) return (number / 1e9).toFixed(2) + ' مليار';
-  if (number >= 1e6) return (number / 1e6).toFixed(2) + ' مليون';
-  if (number >= 1e3) return (number / 1e3).toFixed(2) + ' ألف';
+  if (number >= 1e12) return (number / 1e12).toFixed(2) + 'T';
+  if (number >= 1e9) return (number / 1e9).toFixed(2) + 'B';
+  if (number >= 1e6) return (number / 1e6).toFixed(2) + 'M';
+  if (number >= 1e3) return (number / 1e3).toFixed(2) + 'K';
   return number.toFixed(2);
 }
 
-// جلب البيانات الحية
+// Fetch real-time data
 async function fetchRealTimeData() {
   try {
-    // جلب سعر البيتكوين وتغيراته
+    // Fetch Bitcoin price
     const btcResponse = await fetch(DATA_SOURCES.BITCOIN_PRICE);
     const btcData = await btcResponse.json();
     const btcPrice = btcData.bitcoin.usd;
@@ -758,7 +731,7 @@ async function fetchRealTimeData() {
     elements.btcChange.textContent = `${btcChange.toFixed(2)}%`;
     elements.btcChange.className = `kv-value trend ${btcChange >= 0 ? 'up' : 'down'}`;
     
-    // جلب بيانات السوق العالمية
+    // Fetch market data
     const marketResponse = await fetch(DATA_SOURCES.MARKET_DATA);
     const marketData = await marketResponse.json();
     const marketCap = marketData.data.total_market_cap.usd;
@@ -768,7 +741,7 @@ async function fetchRealTimeData() {
     elements.marketCapChange.textContent = `${marketCapChange.toFixed(2)}%`;
     elements.marketCapChange.className = `kv-value trend ${marketCapChange >= 0 ? 'up' : 'down'}`;
     
-    // جلب مؤشر الخوف والجشع
+    // Fetch Fear & Greed Index
     const fearGreedResponse = await fetch(DATA_SOURCES.FEAR_GREED);
     const fearGreedData = await fearGreedResponse.json();
     const fearGreedValue = fearGreedData.data[0].value;
@@ -777,14 +750,14 @@ async function fetchRealTimeData() {
     elements.fearGreedValue.textContent = fearGreedValue;
     elements.fearGreedStatus.textContent = fearGreedStatus;
     
-    // جلب إحصائيات الشبكة
+    // Fetch blockchain stats
     const blockchainResponse = await fetch(DATA_SOURCES.BLOCKCHAIN_STATS);
     const blockchainData = await blockchainResponse.json();
-    const hashRate = blockchainData.hash_rate / 1e18; // تحويل إلى EH/s
+    const hashRate = blockchainData.hash_rate / 1e18; // Convert to EH/s
     
     elements.hashRate.textContent = `${hashRate.toFixed(2)} EH/s`;
     
-    // جلب العناوين النشطة
+    // Fetch active addresses
     const addressesResponse = await fetch(DATA_SOURCES.ACTIVE_ADDRESSES);
     const addressesData = await addressesResponse.json();
     const latestAddresses = addressesData.values[addressesData.values.length - 1].y;
@@ -795,85 +768,85 @@ async function fetchRealTimeData() {
     elements.addressesChange.textContent = `${addressesChange.toFixed(2)}%`;
     elements.addressesChange.className = `kv-value trend ${addressesChange >= 0 ? 'up' : 'down'}`;
     
-    // جلب رسوم المعاملات
+    // Fetch transaction fees
     const feesResponse = await fetch(DATA_SOURCES.TRANSACTION_FEES);
     const feesData = await feesResponse.json();
     const avgFee = (feesData.halfHourFee + feesData.hourFee + feesData.fastestFee) / 3;
     const btcPriceResponse = await fetch('https://blockchain.info/ticker');
     const btcPriceData = await btcPriceResponse.json();
     const btcUsdPrice = btcPriceData.USD.last;
-    const avgFeeUsd = (avgFee * 250 * btcUsdPrice) / 1e8; // تقدير للرسوم بالدولار
+    const avgFeeUsd = (avgFee * 250 * btcUsdPrice) / 1e8; // Estimate in USD
     
     elements.transactionFees.textContent = `$${formatNumber(avgFeeUsd)}`;
     elements.avgFee.textContent = `$${avgFeeUsd.toFixed(2)}`;
     
-    // تحديث وقت التحديث
+    // Update timestamps
     const now = new Date();
-    elements.asof.textContent = `آخر تحديث: ${now.toLocaleTimeString()}`;
-    elements.asofChart.textContent = `آخر تحديث: ${now.toLocaleTimeString()}`;
+    elements.asof.textContent = `Last update: ${now.toLocaleTimeString()}`;
+    elements.asofChart.textContent = `Last update: ${now.toLocaleTimeString()}`;
     
-    // تحديث حالة السوق
+    // Update market score
     updateMarketScore(btcChange, marketCapChange, fearGreedValue);
     
   } catch (error) {
-    console.error('حدث خطأ في جلب البيانات:', error);
-    elements.marketScore.innerHTML = `<i class="fas fa-exclamation-triangle"></i> خطأ في تحديث البيانات`;
+    console.error('Error fetching data:', error);
+    elements.marketScore.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Error updating data`;
     elements.marketScore.className = "pill bad";
   }
 }
 
-// تحديث تقييم حالة السوق
+// Update market score
 function updateMarketScore(btcChange, marketCapChange, fearGreed) {
-  let score = 50; // متوسط
+  let score = 50; // Neutral
   
-  // تأثير تغير سعر البيتكوين
+  // Bitcoin price impact
   if (btcChange > 5) score += 20;
   else if (btcChange > 2) score += 10;
   else if (btcChange < -5) score -= 20;
   else if (btcChange < -2) score -= 10;
   
-  // تأثير تغير القيمة السوقية
+  // Market cap impact
   if (marketCapChange > 3) score += 15;
   else if (marketCapChange > 1) score += 7;
   else if (marketCapChange < -3) score -= 15;
   else if (marketCapChange < -1) score -= 7;
   
-  // تأثير مؤشر الخوف والجشع
+  // Fear & Greed impact
   const fgValue = parseInt(fearGreed);
-  if (fgValue > 75) score -= 10; // جشع شديد
-  else if (fgValue > 55) score += 5; // جشع
-  else if (fgValue < 25) score += 10; // خوف شديد
-  else if (fgValue < 45) score += 5; // خوف
+  if (fgValue > 75) score -= 10; // Extreme greed
+  else if (fgValue > 55) score += 5; // Greed
+  else if (fgValue < 25) score += 10; // Extreme fear
+  else if (fgValue < 45) score += 5; // Fear
   
-  // تقييم الحالة
+  // Determine market status
   let status, statusClass;
   if (score >= 75) {
-    status = "صعودي قوي 🚀";
+    status = "Strong Bullish 🚀";
     statusClass = "ok";
   } else if (score >= 60) {
-    status = "صعودي 👍";
+    status = "Bullish 👍";
     statusClass = "ok";
   } else if (score >= 40) {
-    status = "محايد ↔️";
+    status = "Neutral ↔️";
     statusClass = "";
   } else if (score >= 25) {
-    status = "هبوطي ⚠️";
+    status = "Bearish ⚠️";
     statusClass = "warn";
   } else {
-    status = "هبوطي قوي 🔻";
+    status = "Strong Bearish 🔻";
     statusClass = "bad";
   }
   
-  elements.marketScore.innerHTML = `<i class="fas fa-chart-pie"></i> حالة السوق: ${status} (${score}/100)`;
+  elements.marketScore.innerHTML = `<i class="fas fa-chart-pie"></i> Market Status: ${status} (${score}/100)`;
   elements.marketScore.className = `pill ${statusClass}`;
 }
 
-// رسم مخطط سعر البيتكوين
+// Draw Bitcoin chart
 function drawBitcoinChart() {
   const canvas = document.getElementById('priceChart');
   const ctx = canvas.getContext('2d');
   
-  // بيانات نموذجية للرسم التوضيحي
+  // Sample data for demonstration
   const data = [];
   let value = 25000;
   
@@ -888,22 +861,22 @@ function drawBitcoinChart() {
   const H = canvas.height;
   const padding = 40;
   
-  // مسح اللوحة
+  // Clear canvas
   ctx.clearRect(0, 0, W, H);
   
-  // رسم الشبكة
+  // Draw grid
   ctx.strokeStyle = "rgba(128, 128, 128, 0.2)";
   ctx.lineWidth = 1;
   ctx.beginPath();
   
-  // الخطوط الأفقية
+  // Horizontal lines
   for (let i = 0; i <= 5; i++) {
     const y = padding + i * (H - padding * 2) / 5;
     ctx.moveTo(padding, y);
     ctx.lineTo(W - padding, y);
   }
   
-  // الخطوط الرأسية
+  // Vertical lines
   for (let i = 0; i <= 12; i++) {
     const x = padding + i * (W - padding * 2) / 12;
     ctx.moveTo(x, padding);
@@ -912,12 +885,12 @@ function drawBitcoinChart() {
   
   ctx.stroke();
   
-  // إيجاد القيم القصوى والدنيا
+  // Find min and max values
   const maxVal = Math.max(...data);
   const minVal = Math.min(...data);
   const range = maxVal - minVal;
   
-  // رسم الخط
+  // Draw line
   ctx.beginPath();
   ctx.strokeStyle = "#4f9cf9";
   ctx.lineWidth = 3;
@@ -938,31 +911,31 @@ function drawBitcoinChart() {
   ctx.stroke();
   ctx.shadowBlur = 0;
   
-  // إضافة التسميات
+  // Add labels
   ctx.fillStyle = "#a8b3c0";
-  ctx.font = "12px Tajawal";
+  ctx.font = "12px Inter";
   ctx.textAlign = "right";
   
-  // القيم على المحور Y
+  // Y-axis values
   ctx.fillText(`$${Math.round(maxVal/1000)}K`, padding - 10, padding + 15);
   ctx.fillText(`$${Math.round(minVal/1000)}K`, padding - 10, H - padding + 15);
   
-  // عنوان المخطط
+  // Chart title
   ctx.fillStyle = "#f0f3f6";
-  ctx.font = "bold 16px Tajawal";
+  ctx.font = "bold 16px Inter";
   ctx.textAlign = "center";
-  ctx.fillText("سعر البيتكوين (BTC/USD) - آخر 180 يوماً", W / 2, padding - 15);
+  ctx.fillText("Bitcoin Price (BTC/USD) - Last 180 Days", W / 2, padding - 15);
 }
 
-// إدارة السمة
+// Theme management
 function applyTheme(mode) {
   document.documentElement.setAttribute("data-theme", mode === "auto" ? "auto" : mode);
   localStorage.setItem("themeMode", mode);
   
-  const themeText = mode === "light" ? "فاتح" : mode === "dark" ? "داكن" : "تلقائي";
-  elements.themeBtn.querySelector('span').textContent = `الوضع: ${themeText}`;
+  const themeText = mode === "light" ? "Light" : mode === "dark" ? "Dark" : "Auto";
+  elements.themeBtn.querySelector('span').textContent = `Theme: ${themeText}`;
   
-  // تحديث الأيقونة
+  // Update icon
   const icon = elements.themeBtn.querySelector('i');
   if (mode === "light") {
     icon.className = "fas fa-sun";
@@ -973,13 +946,13 @@ function applyTheme(mode) {
   }
 }
 
-// التهيئة الأولية
+// Initialize application
 function init() {
-  // تطبيق السمة
+  // Apply theme
   const savedTheme = localStorage.getItem("themeMode") || "auto";
   applyTheme(savedTheme);
   
-  // إضافة معالج الأحداث لزر السمة
+  // Theme button event
   elements.themeBtn.addEventListener("click", () => {
     const order = ["auto", "light", "dark"];
     const currentIndex = order.indexOf(localStorage.getItem("themeMode") || "auto");
@@ -987,16 +960,16 @@ function init() {
     applyTheme(order[nextIndex]);
   });
   
-  // إضافة معالج الأحداث لزر التحديث
+  // Refresh button event
   elements.refreshBtn.addEventListener("click", () => {
-    elements.refreshBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري التحديث...`;
+    elements.refreshBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Refreshing...`;
     fetchRealTimeData();
     setTimeout(() => {
-      elements.refreshBtn.innerHTML = `<i class="fas fa-sync-alt"></i> تحديث الآن`;
+      elements.refreshBtn.innerHTML = `<i class="fas fa-sync-alt"></i> Refresh Now`;
     }, 2000);
   });
   
-  // إضافة معالج الأحداث للتمرير إلى الأعلى
+  // Scroll to top
   window.addEventListener("scroll", () => {
     elements.scrollTop.classList.toggle("visible", window.scrollY > 300);
   });
@@ -1005,15 +978,15 @@ function init() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
   
-  // جلب البيانات الأولية
+  // Initial data fetch
   fetchRealTimeData();
   drawBitcoinChart();
   
-  // تحديث البيانات كل 60 ثانية
+  // Auto-refresh every 60 seconds
   setInterval(fetchRealTimeData, 60000);
 }
 
-// بدء التطبيق عند تحميل الصفحة
+// Start the application
 window.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
