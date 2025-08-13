@@ -5,68 +5,498 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>BTC/USDT — Market Overview (Free Data)</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+  
   :root{
-    --bg:#0f1115; --surface:#171a21; --border:#262b36; --text:#e6e6e6; --muted:#9aa0a6;
-    --ok:#7fd18b; --warn:#ffc877; --bad:#ff8b8b; --accent:#8ab4f8; --card-shadow:0 6px 20px rgba(0,0,0,.25);
+    --bg: linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%);
+    --surface: rgba(23, 26, 33, 0.8);
+    --surface-hover: rgba(30, 35, 45, 0.9);
+    --border: rgba(56, 68, 77, 0.3);
+    --border-hover: rgba(56, 68, 77, 0.6);
+    --text: #e6e8eb;
+    --text-secondary: #9aa0a6;
+    --ok: #10b981;
+    --warn: #f59e0b;
+    --bad: #ef4444;
+    --accent: #3b82f6;
+    --accent-secondary: #8b5cf6;
+    --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --card-shadow-hover: 0 12px 48px rgba(0, 0, 0, 0.4);
+    --glow: 0 0 20px rgba(59, 130, 246, 0.3);
   }
+  
   /* Light theme vars */
   @media (prefers-color-scheme: light){
-    :root{ --bg:#f6f7fb; --surface:#ffffff; --border:#e7e9f2; --text:#1f2430; --muted:#6d7480; --card-shadow:0 6px 18px rgba(10,20,30,.06); }
+    :root{ 
+      --bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      --surface: rgba(255, 255, 255, 0.9);
+      --surface-hover: rgba(248, 250, 252, 1);
+      --border: rgba(226, 232, 240, 0.8);
+      --border-hover: rgba(148, 163, 184, 0.6);
+      --text: #1e293b;
+      --text-secondary: #64748b;
+      --card-shadow: 0 8px 32px rgba(15, 23, 42, 0.08);
+      --card-shadow-hover: 0 12px 48px rgba(15, 23, 42, 0.12);
+      --glow: 0 0 20px rgba(59, 130, 246, 0.2);
+    }
   }
+  
   /* Force theme via attribute */
   html[data-theme="light"]{
-    --bg:#f6f7fb; --surface:#ffffff; --border:#e7e9f2; --text:#1f2430; --muted:#6d7480; --card-shadow:0 6px 18px rgba(10,20,30,.06);
+    --bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    --surface: rgba(255, 255, 255, 0.9);
+    --surface-hover: rgba(248, 250, 252, 1);
+    --border: rgba(226, 232, 240, 0.8);
+    --border-hover: rgba(148, 163, 184, 0.6);
+    --text: #1e293b;
+    --text-secondary: #64748b;
+    --card-shadow: 0 8px 32px rgba(15, 23, 42, 0.08);
+    --card-shadow-hover: 0 12px 48px rgba(15, 23, 42, 0.12);
+    --glow: 0 0 20px rgba(59, 130, 246, 0.2);
   }
+  
   html[data-theme="dark"]{
-    --bg:#0f1115; --surface:#171a21; --border:#262b36; --text:#e6e6e6; --muted:#9aa0a6; --card-shadow:0 6px 20px rgba(0,0,0,.25);
+    --bg: linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%);
+    --surface: rgba(23, 26, 33, 0.8);
+    --surface-hover: rgba(30, 35, 45, 0.9);
+    --border: rgba(56, 68, 77, 0.3);
+    --border-hover: rgba(56, 68, 77, 0.6);
+    --text: #e6e8eb;
+    --text-secondary: #9aa0a6;
+    --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --card-shadow-hover: 0 12px 48px rgba(0, 0, 0, 0.4);
+    --glow: 0 0 20px rgba(59, 130, 246, 0.3);
   }
 
   /* Base */
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}
-  .wrap{max-width:1180px;margin:18px auto;padding:0 14px}
-  .brand{display:flex;gap:10px;justify-content:space-between;align-items:center;margin:6px 0 14px}
-  .brand h1{margin:0;font-size:18px}
-  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-  .me{color:var(--warn);font-weight:700}
-  .btn{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:8px 12px;cursor:pointer;box-shadow:var(--card-shadow)}
-  .btn:disabled{opacity:.6;cursor:not-allowed}
-  .pill{padding:6px 10px;border:1px solid var(--border);border-radius:999px;background:var(--surface)}
-  .muted{color:var(--muted);font-size:12px}
-  .grid{
-    display:grid;gap:14px;
-    grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-    align-items:stretch;
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
   }
-  .card{
-    background:var(--surface);border:1px solid var(--border);border-radius:14px;
-    padding:14px;min-height:170px;display:flex;flex-direction:column;justify-content:space-between;
-    box-shadow:var(--card-shadow); position:relative;
+  
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
   }
-  .card h3{margin:0 0 10px;font-size:16px}
-  .kv{display:flex;justify-content:space-between;gap:10px;margin:7px 0}
-  .big{font-size:24px;font-weight:800}
-  .center{text-align:center}
-  .ok{outline:1px solid color-mix(in oklab, var(--ok) 40%, transparent)}
-  .warn{outline:1px solid color-mix(in oklab, var(--warn) 40%, transparent)}
-  .bad{outline:1px solid color-mix(in oklab, var(--bad) 40%, transparent)}
+  
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
+  }
+  
+  .wrap {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px 20px;
+    position: relative;
+  }
+  
+  .brand {
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 0 32px;
+    padding: 24px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .brand h1 {
+    margin: 0;
+    font-size: clamp(24px, 4vw, 32px);
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  
+  .me {
+    color: var(--warn);
+    font-weight: 600;
+    font-size: 14px;
+    padding: 8px 16px;
+    background: rgba(245, 158, 11, 0.1);
+    border-radius: 20px;
+    border: 1px solid rgba(245, 158, 11, 0.2);
+  }
+  
+  .btn {
+    background: var(--surface);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 12px;
+    padding: 10px 16px;
+    cursor: pointer;
+    box-shadow: var(--card-shadow);
+    font-family: inherit;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s;
+  }
+  
+  .btn:hover::before {
+    left: 100%;
+  }
+  
+  .btn:hover {
+    background: var(--surface-hover);
+    border-color: var(--border-hover);
+    box-shadow: var(--card-shadow-hover);
+    transform: translateY(-2px);
+  }
+  
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+  
+  .pill {
+    padding: 10px 20px;
+    border: 1px solid var(--border);
+    border-radius: 25px;
+    background: var(--surface);
+    backdrop-filter: blur(10px);
+    font-weight: 600;
+    font-size: 14px;
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s ease;
+  }
+  
+  .pill:hover {
+    box-shadow: var(--glow);
+    transform: translateY(-1px);
+  }
+  
+  .muted {
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+  }
+  
+  .grid {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    align-items: stretch;
+    margin-bottom: 32px;
+  }
+  
+  .card {
+    background: var(--surface);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: var(--card-shadow);
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+  }
+  
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .card:hover::before {
+    opacity: 1;
+  }
+  
+  .card:hover {
+    background: var(--surface-hover);
+    border-color: var(--border-hover);
+    box-shadow: var(--card-shadow-hover);
+    transform: translateY(-4px) scale(1.02);
+  }
+  
+  .card h3 {
+    margin: 0 0 16px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.025em;
+  }
+  
+  .kv {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 10px 0;
+    align-items: center;
+  }
+  
+  .kv span:first-child {
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+  
+  .kv span:last-child {
+    font-weight: 600;
+    color: var(--text);
+  }
+  
+  .big {
+    font-size: clamp(20px, 3vw, 28px);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .center {
+    text-align: center;
+  }
+  
+  .ok {
+    border-color: var(--ok);
+    background: rgba(16, 185, 129, 0.05);
+  }
+  
+  .ok::before {
+    background: linear-gradient(90deg, var(--ok), #34d399);
+  }
+  
+  .warn {
+    border-color: var(--warn);
+    background: rgba(245, 158, 11, 0.05);
+  }
+  
+  .warn::before {
+    background: linear-gradient(90deg, var(--warn), #fbbf24);
+  }
+  
+  .bad {
+    border-color: var(--bad);
+    background: rgba(239, 68, 68, 0.05);
+  }
+  
+  .bad::before {
+    background: linear-gradient(90deg, var(--bad), #f87171);
+  }
 
   /* Tooltip on cards */
-  .card[data-tip]::after{
+  .card[data-tip]::after {
     content: attr(data-tip);
-    position:absolute; left:12px; right:12px; bottom:12px;
-    background:rgba(0,0,0,.75); color:#fff; font-size:12px; line-height:1.3;
-    padding:8px 10px; border-radius:10px; opacity:0; transform:translateY(6px);
-    pointer-events:none; transition:opacity .18s, transform .18s;
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    background: rgba(0, 0, 0, 0.9);
+    color: #fff;
+    font-size: 12px;
+    line-height: 1.4;
+    padding: 12px 16px;
+    border-radius: 12px;
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+    z-index: 10;
   }
-  html[data-theme="light"] .card[data-tip]::after{ background:rgba(30,34,44,.9); }
-  .card:hover::after{ opacity:1; transform:translateY(0) }
+  
+  html[data-theme="light"] .card[data-tip]::after {
+    background: rgba(30, 34, 44, 0.95);
+  }
+  
+  .card:hover::after {
+    opacity: 1;
+    transform: translateY(0);
+  }
 
   /* Chart box */
-  .chartWrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:10px;margin:0 0 14px;box-shadow:var(--card-shadow)}
-  canvas#priceChart{width:100%;height:340px;display:block}
-  .toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-  .gauge{width:100%;max-width:240px;margin:auto}
+  .chartWrap {
+    background: var(--surface);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+    margin: 0 0 32px;
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .chartWrap::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+  }
+  
+  .chartWrap:hover {
+    box-shadow: var(--card-shadow-hover);
+    transform: translateY(-2px);
+  }
+  
+  canvas#priceChart {
+    width: 100%;
+    height: 400px;
+    display: block;
+    border-radius: 12px;
+  }
+  
+  .toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .toolbar .muted {
+    font-weight: 600;
+  }
+  
+  .gauge {
+    width: 100%;
+    max-width: 280px;
+    margin: auto;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+  }
+  
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .wrap {
+      padding: 16px 12px;
+    }
+    
+    .brand {
+      flex-direction: column;
+      gap: 16px;
+      text-align: center;
+    }
+    
+    .row {
+      justify-content: center;
+    }
+    
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    
+    .card {
+      padding: 20px;
+      min-height: 180px;
+    }
+    
+    canvas#priceChart {
+      height: 300px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .brand h1 {
+      font-size: 24px;
+    }
+    
+    .btn, .pill {
+      font-size: 13px;
+      padding: 8px 12px;
+    }
+    
+    .card {
+      padding: 16px;
+      border-radius: 16px;
+    }
+    
+    .chartWrap {
+      padding: 16px;
+      border-radius: 16px;
+    }
+  }
+  
+  /* Loading animation */
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  
+  .loading {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--border-hover);
+  }
 </style>
 </head>
 <body>
@@ -129,9 +559,14 @@ const CG_MKTCHART = "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart
 const FNG         = "https://api.alternative.me/fng/?limit=2";
 const BCH_HASH    = "https://api.blockchain.info/charts/hash-rate?timespan=60days&format=json&cors=true";
 const BCH_DIFF    = "https://api.blockchain.info/charts/difficulty?timespan=60days&format=json&cors=true";
-const BCH_ADDR    = "https://api.blockchain.info/charts/active-addresses?timespan=60days&format=json&cors=true";
+const BCH_ADDR    = "https://api.blockchain.info/charts/n-unique-addresses?timespan=60days&format=json&cors=true";
 const BCH_TXV_USD = "https://api.blockchain.info/charts/estimated-transaction-volume-usd?timespan=180days&format=json&cors=true";
-const BCH_FEES_BTC= "https://api.blockchain.info/charts/transaction-fees?timespan=60days&format=json&cors=true";
+const BCH_FEES_USD= "https://api.blockchain.info/charts/transaction-fees-usd?timespan=60days&format=json&cors=true";
+const BCH_MVRV    = "https://api.blockchain.info/charts/mvrv?timespan=60days&format=json&cors=true";
+const BCH_NVT     = "https://api.blockchain.info/charts/nvt?timespan=60days&format=json&cors=true";
+const BCH_UTXO    = "https://api.blockchain.info/charts/utxo-count?timespan=60days&format=json&cors=true";
+const MEMPOOL_FEES = "https://mempool.space/api/v1/fees/recommended";
+const MEMPOOL_STATS = "https://mempool.space/api/mempool";
 
 async function getJSON(url){
   const r = await fetch(bust(url), {cache:"no-store"});
@@ -143,13 +578,14 @@ function SMA(arr, win){ const out=[]; let s=0; for(let i=0;i<arr.length;i++){ s+
 // Gauge SVG (0..100)
 function gaugeSVG(value){
   const v = Math.max(0, Math.min(100, Number(value)||0));
-  const angle = -90 + (v/100)*180;
+  const angle = (v/100)*180; // 0 to 180 degrees
   const segs = [
-    {a:-90,b:-54,c:"#ff4d4d"},{a:-54,b:-18,c:"#ffb84d"},{a:-18,b:18,c:"#cccc66"},{a:18,b:54,c:"#88cc66"},{a:54,b:90,c:"#33aa55"}
+    {a:0,b:36,c:"#ff4d4d"},{a:36,b:72,c:"#ffb84d"},{a:72,b:108,c:"#cccc66"},{a:108,b:144,c:"#88cc66"},{a:144,b:180,c:"#33aa55"}
   ];
   const arc=(a,b)=>{const r=70,cx=100,cy=100,ra=a*Math.PI/180,rb=b*Math.PI/180,x1=cx+r*Math.cos(ra),y1=cy+r*Math.sin(ra),x2=cx+r*Math.cos(rb),y2=cy+r*Math.sin(rb);return `M ${x1} ${y1} A ${r} ${r} 0 0 1 ${x2} ${y2}`;};
   const nx=100+60*Math.cos(angle*Math.PI/180), ny=100+60*Math.sin(angle*Math.PI/180);
-  return `<svg viewBox="0 0 200 130" class="gauge"><g>${segs.map(s=>`<path d="${arc(s.a,s.b)}" stroke="${s.c}" stroke-width="12" fill="none"/>`).join("")}</g>
+  return `<svg viewBox="0 0 200 130" class="gauge" style="transform: rotateX(180deg) rotateY(180deg);">
+  <g>${segs.map(s=>`<path d="${arc(s.a,s.b)}" stroke="${s.c}" stroke-width="12" fill="none"/>`).join("")}</g>
   <line x1="100" y1="100" x2="${nx.toFixed(1)}" y2="${ny.toFixed(1)}" stroke="var(--text)" stroke-width="3"/><circle cx="100" cy="100" r="5" fill="var(--text)"/>
   <text x="100" y="120" text-anchor="middle" font-size="14" fill="var(--text)" font-family="Arial">${Math.round(v)}</text></svg>`;
 }
@@ -256,7 +692,12 @@ async function main(){
     `, s2fTone, "Approximation: uses current block subsidy × blocks/day × 365."));
 
   }catch(e){
-    cards.push(card("BTC Core / Chart", `<div class="muted">Error: ${e.message}</div>`));
+    console.error("BTC Core data error:", e);
+    // Add individual cards with error messages for better debugging
+    cards.push(card("BTC Price", `<div class="muted">Error loading price data</div>`));
+    cards.push(card("BTC Dominance", `<div class="muted">Error loading dominance data</div>`));
+    cards.push(card("Total Market Cap", `<div class="muted">Error loading market data</div>`));
+    cards.push(card("Chart Data", `<div class="muted">Error loading chart: ${e.message}</div>`));
   }
 
   // Fear & Greed (Gauge)
@@ -320,70 +761,134 @@ async function main(){
 
   // Fees (daily)
   try{
-    const f = await getJSON(BCH_FEES_BTC);
+    const f = await getJSON(BCH_FEES_USD);
     const pts=f?.values||[]; const last=pts[pts.length-1], prev=pts[pts.length-8];
-    const feesBTC=last?.y||null; const ch=(feesBTC&&prev)?(feesBTC-prev.y)/prev.y:null;
-    const price = ($("#grid").dataset.priceUSD)||null; // not used
-    const priceResp = await getJSON(CG_PRICE); const px = priceResp.bitcoin.usd;
-    const feesUSD = (feesBTC && px)? feesBTC*px : null;
-    let tone="", msg="—"; if(ch!=null){ if(ch>.25){tone="warn";msg="Congestion";score-=.2;} else if(ch<-.25){tone="bull";msg="Easing";score+=.1;} }
-    cards.push(card("Transaction Fees (daily)",
-      `<div class="kv"><span>Total fees (BTC)</span><span class="big">${feesBTC?feesBTC.toFixed(2):"—"} BTC</span></div>
-       <div class="kv"><span>≈ USD</span><span>${feesUSD?"$"+fmt(feesUSD.toFixed(0)):"—"}</span></div>
+    const feesUSD=last?.y||null; const ch=(feesUSD&&prev)?(feesUSD-prev.y)/prev.y:null;
+    let tone="", msg="—"; if(ch!=null){ if(ch>.25){tone="warn";msg="Congestion";
+      score-=.2; } else if(ch<-.25){tone="bull";msg="Low fees";score+=.1;} }
+    cards.push(card("Daily Fees (Blockchain.com)",
+      `<div class="kv"><span>Latest</span><span class="big">${feesUSD?"$"+fmt(feesUSD.toFixed(0)):"—"}</span></div>
        <div class="kv"><span>~7d Change</span><span>${pct(ch)}</span></div>
        <div class="muted">${msg}</div>`,
-      tone, "Total miner fees paid per day (proxy for demand / congestion)."));
-  }catch(e){ cards.push(card("Transaction Fees", `<div class="muted">Error: ${e.message}</div>`)); }
-
-  // NVT + Golden Cross
-  try{
-    const [mcSeries, txvSeries] = await Promise.all([
-      (await getJSON(CG_MKTCHART)).market_caps || [],
-      (await getJSON(BCH_TXV_USD)).values || []
-    ]);
-    const mc = mcSeries.map(([t,v])=>({t:Math.floor(t/1000), v}));
-    const tv = txvSeries.map(o=>({t:o.x, v:o.y}));
-    function joinSeries(a,b){ const out=[]; let j=0; for(let i=0;i<a.length;i++){ const ta=a[i].t; while(j<b.length-1 && b[j+1].t<=ta) j++; const tb=b[j]?.t; if(Math.abs((tb||0)-ta)<=86400*1.5) out.push({t:ta,a:a[i].v,b:b[j].v}); } return out; }
-    const joined = joinSeries(mc,tv).filter(x=>x.a>0 && x.b>0);
-    if(joined.length){
-      const nvt = joined.map(x=>x.a/x.b), latest = nvt[nvt.length-1];
-      let tone="", msg="Neutral zone";
-      if(latest<20){ tone="bull"; msg="Strong buying opportunity"; score+=.6; }
-      else if(latest<40){ tone="bull"; msg="Fair value / potential buy"; score+=.2; }
-      else if(latest>=70 && latest<80){ tone="warn"; msg="Potential overvaluation"; score-=.2; }
-      else if(latest>=80){ tone="bear"; msg="Bubble risk"; score-=.6; }
-      const ma10=SMA(nvt,10), ma30=SMA(nvt,30);
-      let gcTxt="—", gcTone="";
-      if(ma30.length){ const gc=(ma10[ma10.length-1]-ma30[ma30.length-1])/ma30[ma30.length-1]; gcTxt=(gc*100).toFixed(2)+"%"; if(gc<-1.5){gcTone="bull";} else if(gc>2.1){gcTone="bear";}}
-      cards.push(card("NVT (Network Value to Tx)",
-        `<div class="center big">${latest.toFixed(1)}</div><div class="center muted">${msg}</div>`,
-        tone, "Market cap ÷ daily on-chain transaction value (USD). Lower = cheaper."));
-      cards.push(card("NVT Golden Cross (approx)",
-        `<div class="center big">${gcTxt}</div><div class="center muted">Negative = undervalued, Positive = overvalued</div>`,
-        "", "Derived from NVT moving averages to reduce noise."));
+      tone, "Total daily transaction fees in USD."));
+  }catch(e){ 
+    // Fallback to mempool.space for current fees
+    try{
+      const mempoolFees = await getJSON(MEMPOOL_FEES);
+      cards.push(card("Current Fees (Mempool.space)",
+        `<div class="kv"><span>Fast</span><span class="big">${mempoolFees.fastestFee} sat/vB</span></div>
+         <div class="kv"><span>Standard</span><span>${mempoolFees.halfHourFee} sat/vB</span></div>
+         <div class="kv"><span>Economy</span><span>${mempoolFees.hourFee} sat/vB</span></div>`,
+        "", "Current recommended transaction fees."));
+    }catch(e2){
+      cards.push(card("Daily Fees", `<div class="muted">Error: ${e.message}</div>`));
     }
-  }catch(e){
-    cards.push(card("NVT / Golden Cross", `<div class="muted">Error: ${e.message}</div>`));
   }
 
-  // Render
-  $("#grid").innerHTML = cards.join("");
+  // Transaction Volume (USD)
+  try{
+    const t = await getJSON(BCH_TXV_USD);
+    const pts=t?.values||[]; const last=pts[pts.length-1], prev=pts[pts.length-8];
+    const latest=last?.y, ch=(latest&&prev)?(latest-prev.y)/prev.y:null;
+    let tone="", msg="—"; if(ch!=null){ if(ch>.05){tone="bull";msg="Volume up";score+=.2;} else if(ch<-.05){tone="warn";msg="Volume down";score-=.1;} }
+    cards.push(card("Transaction Volume (USD)",
+      `<div class="kv"><span>Latest</span><span class="big">${latest?"$"+fmt(latest.toFixed(0)):"—"}</span></div>
+       <div class="kv"><span>~7d Change</span><span>${pct(ch)}</span></div>
+       <div class="muted">${msg}</div>`,
+      tone, "Estimated daily value of on-chain transactions in USD."));
+  }catch(e){ cards.push(card("Transaction Volume", `<div class="muted">Error: ${e.message}</div>`)); }
+
+  // MVRV Ratio
+  try{
+    const mvrv = await getJSON(BCH_MVRV);
+    const pts=mvrv?.values||[]; const last=pts[pts.length-1], prev=pts[pts.length-8];
+    const latest=last?.y, ch=(latest&&prev)?(latest-prev.y)/prev.y:null;
+    let tone="", msg="—"; 
+    if(latest!=null){ 
+      if(latest>3.7){tone="warn";msg="Overvalued";score-=.3;} 
+      else if(latest<1){tone="bull";msg="Undervalued";score+=.3;}
+      else {msg="Fair value";}
+    }
+    cards.push(card("MVRV Ratio",
+      `<div class="kv"><span>Latest</span><span class="big">${latest?latest.toFixed(2):"—"}</span></div>
+       <div class="kv"><span>~7d Change</span><span>${pct(ch)}</span></div>
+       <div class="muted">${msg}</div>`,
+      tone, "Market Value to Realized Value ratio. Values >3.7 suggest overvaluation."));
+  }catch(e){ cards.push(card("MVRV Ratio", `<div class="muted">Error: ${e.message}</div>`)); }
+
+  // NVT Ratio
+  try{
+    const nvt = await getJSON(BCH_NVT);
+    const pts=nvt?.values||[]; const last=pts[pts.length-1], prev=pts[pts.length-8];
+    const latest=last?.y, ch=(latest&&prev)?(latest-prev.y)/prev.y:null;
+    let tone="", msg="—"; 
+    if(latest!=null){ 
+      if(latest>150){tone="warn";msg="High valuation";score-=.2;} 
+      else if(latest<50){tone="bull";msg="Low valuation";score+=.2;}
+      else {msg="Normal range";}
+    }
+    cards.push(card("NVT Ratio",
+      `<div class="kv"><span>Latest</span><span class="big">${latest?latest.toFixed(1):"—"}</span></div>
+       <div class="kv"><span>~7d Change</span><span>${pct(ch)}</span></div>
+       <div class="muted">${msg}</div>`,
+      tone, "Network Value to Transactions ratio. High values suggest overvaluation."));
+  }catch(e){ cards.push(card("NVT Ratio", `<div class="muted">Error: ${e.message}</div>`)); }
+
+  // UTXO Count
+  try{
+    const utxo = await getJSON(BCH_UTXO);
+    const pts=utxo?.values||[]; const last=pts[pts.length-1], prev=pts[pts.length-8];
+    const latest=last?.y, ch=(latest&&prev)?(latest-prev.y)/prev.y:null;
+    let tone="", msg="—"; if(ch!=null){ if(ch>.02){tone="bull";msg="Growing";score+=.1;} else if(ch<-.02){tone="warn";msg="Declining";score-=.1;} }
+    cards.push(card("UTXO Count",
+      `<div class="kv"><span>Latest</span><span class="big">${latest?fmt(latest.toFixed(0)):"—"}</span></div>
+       <div class="kv"><span>~7d Change</span><span>${pct(ch)}</span></div>
+       <div class="muted">${msg}</div>`,
+      tone, "Number of unspent transaction outputs. Indicates network usage."));
+  }catch(e){ cards.push(card("UTXO Count", `<div class="muted">Error: ${e.message}</div>`)); }
+
+  // Mempool Stats
+  try{
+    const mempool = await getJSON(MEMPOOL_STATS);
+    const count = mempool?.count || 0;
+    const vsize = mempool?.vsize || 0;
+    const totalFees = mempool?.total_fee || 0;
+    let tone="", msg="—"; 
+    if(count > 50000){tone="warn";msg="Congested";score-=.2;} 
+    else if(count < 5000){tone="bull";msg="Clear";score+=.1;}
+    else {msg="Normal";}
+    cards.push(card("Mempool Status",
+      `<div class="kv"><span>Pending TXs</span><span class="big">${fmt(count)}</span></div>
+       <div class="kv"><span>Size (vMB)</span><span>${(vsize/1000000).toFixed(1)}</span></div>
+       <div class="kv"><span>Total Fees</span><span>${(totalFees/100000000).toFixed(2)} BTC</span></div>
+       <div class="muted">${msg}</div>`,
+      tone, "Current mempool status showing pending transactions."));
+  }catch(e){ cards.push(card("Mempool Status", `<div class="muted">Error: ${e.message}</div>`)); }
+
+  // Final score
   $("#marketScore").textContent = "Market Score: " + scoreLabel(score);
-  $("#asof").textContent = "Updated at " + new Date().toLocaleString();
+  $("#grid").innerHTML = cards.join("");
+  $("#asof").textContent = "Last updated: " + new Date().toLocaleString();
   $("#refreshBtn").disabled = false;
 }
 
-$("#refreshBtn").addEventListener("click", main);
+// Toggle chart
 $("#toggleChartBtn").addEventListener("click", ()=>{
-  const box = $("#chartBox");
-  const hidden = box.style.display === "none";
-  box.style.display = hidden ? "block" : "none";
-  $("#toggleChartBtn").textContent = hidden ? "Hide chart" : "Show chart";
+  const chartBox = $("#chartBox");
+  if(chartBox.style.display === "none"){
+    chartBox.style.display = "block";
+    $("#toggleChartBtn").textContent = "Hide chart";
+  }else{
+    chartBox.style.display = "none";
+    $("#toggleChartBtn").textContent = "Show chart";
+  }
 });
 
+// Refresh button
+$("#refreshBtn").addEventListener("click", main);
+
+// Initial load
 main();
-// تحديث تلقائي كل 10 دقائق
-setInterval(main, 10*60*1000);
 </script>
 </body>
 </html>
