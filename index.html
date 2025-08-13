@@ -3,54 +3,100 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
-<title>BTC/USDT — Market Overview (Free Data)</title>
+<title>Market Overview</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
   :root{
     --bg: linear-gradient(135deg,#0f1419 0%,#1a1f2e 100%);
-    --surface: rgba(23,26,33,.8);
-    --surface-hover: rgba(30,35,45,.9);
-    --border: rgba(56,68,77,.3);
+    --surface: rgba(23,26,33,.85);
+    --surface-hover: rgba(30,35,45,.95);
+    --border: rgba(56,68,77,.35);
     --border-hover: rgba(56,68,77,.6);
     --text:#e6e8eb; --text-secondary:#9aa0a6;
     --ok:#10b981; --warn:#f59e0b; --bad:#ef4444;
     --accent:#3b82f6; --accent-secondary:#8b5cf6;
-    --card-shadow:0 8px 32px rgba(0,0,0,.3);
-    --card-shadow-hover:0 12px 48px rgba(0,0,0,.4);
+    --card-shadow:0 8px 28px rgba(0,0,0,.30);
+    --card-shadow-hover:0 12px 44px rgba(0,0,0,.38);
   }
   @media (prefers-color-scheme: light){
-    :root{ --bg:linear-gradient(135deg,#f8fafc 0%,#e2e8f0 100%);
-      --surface:rgba(255,255,255,.9);--surface-hover:#fff;--border:rgba(226,232,240,.8);--border-hover:rgba(148,163,184,.6);
-      --text:#1e293b;--text-secondary:#64748b;--card-shadow:0 8px 32px rgba(15,23,42,.08);--card-shadow-hover:0 12px 48px rgba(15,23,42,.12);
+    :root{
+      --bg: linear-gradient(135deg,#f8fafc 0%,#e2e8f0 100%);
+      --surface: #ffffff;
+      --surface-hover:#ffffff;
+      --border: rgba(226,232,240,.9);
+      --border-hover: rgba(148,163,184,.7);
+      --text:#0f172a; --text-secondary:#64748b;
+      --card-shadow:0 8px 26px rgba(15,23,42,.08);
+      --card-shadow-hover:0 12px 40px rgba(15,23,42,.12);
     }
   }
-  html[data-theme="light"]{--bg:linear-gradient(135deg,#f8fafc 0%,#e2e8f0 100%);--surface:#fff;--surface-hover:#fff;--border:rgba(226,232,240,.8);--border-hover:rgba(148,163,184,.6);--text:#1e293b;--text-secondary:#64748b}
-  html[data-theme="dark"]{--bg:linear-gradient(135deg,#0f1419 0%,#1a1f2e 100%);--surface:rgba(23,26,33,.8);--surface-hover:rgba(30,35,45,.9);--border:rgba(56,68,77,.3);--border-hover:rgba(56,68,77,.6);--text:#e6e8eb;--text-secondary:#9aa0a6}
+  html[data-theme="light"]{
+    --bg: linear-gradient(135deg,#f8fafc 0%,#e2e8f0 100%);
+    --surface:#fff; --surface-hover:#fff;
+    --border: rgba(226,232,240,.9); --border-hover: rgba(148,163,184,.7);
+    --text:#0f172a; --text-secondary:#64748b;
+    --card-shadow:0 8px 26px rgba(15,23,42,.08);
+    --card-shadow-hover:0 12px 40px rgba(15,23,42,.12);
+  }
+  html[data-theme="dark"]{
+    --bg: linear-gradient(135deg,#0f1419 0%,#1a1f2e 100%);
+    --surface: rgba(23,26,33,.85); --surface-hover: rgba(30,35,45,.95);
+    --border: rgba(56,68,77,.35); --border-hover: rgba(56,68,77,.6);
+    --text:#e6e8eb; --text-secondary:#9aa0a6;
+    --card-shadow:0 8px 28px rgba(0,0,0,.30);
+    --card-shadow-hover:0 12px 44px rgba(0,0,0,.38);
+  }
+
   *{box-sizing:border-box;margin:0;padding:0}
   body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6;min-height:100vh;overflow-x:hidden}
   .wrap{max-width:1400px;margin:0 auto;padding:24px 16px}
-  .brand{display:flex;gap:12px;flex-wrap:wrap;justify-content:space-between;align-items:center;margin:0 0 20px;padding:16px 0;border-bottom:1px solid var(--border)}
-  .brand h1{font-size:clamp(22px,4vw,32px);font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent-secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .brand{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;align-items:center;margin:0 0 20px;padding:10px 0;border-bottom:1px solid var(--border)}
+  .brand h1{font-size:clamp(22px,4vw,32px);font-weight:800}
   .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-  .btn{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:10px 14px;font-weight:600;cursor:pointer;box-shadow:var(--card-shadow);transition:.2s}
+  .btn{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer;box-shadow:var(--card-shadow);transition:.2s}
   .btn:hover{background:var(--surface-hover);border-color:var(--border-hover);transform:translateY(-2px)}
-  .pill{padding:10px 14px;border:1px solid var(--border);border-radius:999px;background:var(--surface);font-weight:700}
-  .me{color:var(--warn);font-weight:700;font-size:14px;padding:8px 12px;border:1px solid rgba(245,158,11,.25);border-radius:999px;background:rgba(245,158,11,.08)}
-  .banner{display:none;margin-bottom:12px;padding:10px 12px;border-radius:10px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.35);color:#fecaca;font-weight:700}
+  .pill{padding:10px 14px;border:1px solid var(--border);border-radius:999px;background:var(--surface);font-weight:800}
+  .me{color:var(--warn);font-weight:800;font-size:14px;padding:8px 12px;border:1px solid rgba(245,158,11,.25);border-radius:999px;background:rgba(245,158,11,.08)}
+  .banner{display:none;margin-bottom:12px;padding:10px 12px;border-radius:10px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.35);color:#fecaca;font-weight:800}
   .chartWrap{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;margin:0 0 20px;box-shadow:var(--card-shadow)}
   .toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)}
   canvas#priceChart{width:100%;height:360px;display:block;border-radius:10px}
+
   .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
   .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;min-height:180px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:var(--card-shadow);position:relative}
-  .card h3{margin:0 0 10px;font-size:15px;font-weight:700}
+  .card h3{margin:0 0 8px;font-size:15px;font-weight:800}
   .kv{display:flex;justify-content:space-between;gap:10px;margin:8px 0;align-items:center}
-  .kv span:first-child{font-size:13px;color:var(--text-secondary)} .kv span:last-child{font-weight:800}
-  .big{font-size:clamp(20px,3vw,26px);font-weight:800}
-  .ok{border-color:var(--ok);background:rgba(16,185,129,.05)} .warn{border-color:var(--warn);background:rgba(245,158,11,.05)} .bad{border-color:var(--bad);background:rgba(239,68,68,.05)}
+  .kv span:first-child{font-size:13px;color:var(--text-secondary)}
+  .kv span:last-child{font-weight:800}
+
+  /* الرقم الكبير في منتصف البطاقة دائمًا */
+  .big{
+    font-size:clamp(20px,3vw,28px);
+    font-weight:900;
+    text-align:center;
+    color:var(--text);
+    word-break:keep-all;
+  }
+  .center{ text-align:center }
+
+  .ok{border-color:var(--ok);background:rgba(16,185,129,.05)}
+  .warn{border-color:var(--warn);background:rgba(245,158,11,.05)}
+  .bad{border-color:var(--bad);background:rgba(239,68,68,.05)}
   .muted{color:var(--text-secondary);font-size:12px}
-  .card[data-tip]::after{content:attr(data-tip);position:absolute;left:12px;right:12px;bottom:12px;background:rgba(0,0,0,.85);color:#fff;font-size:12px;line-height:1.4;padding:10px;border-radius:10px;opacity:0;transform:translateY(6px);pointer-events:none;transition:.2s}
+
+  /* Tooltip: أسفل البطاقة بدون ما يغطي الرقم */
+  .card{padding-bottom:44px}
+  .card[data-tip]::after{
+    content:attr(data-tip);
+    position:absolute;left:12px;right:12px;bottom:10px;
+    background:rgba(0,0,0,.85);color:#fff;font-size:12px;line-height:1.4;
+    padding:8px 10px;border-radius:10px;opacity:0;transform:translateY(6px);
+    pointer-events:none;transition:.2s
+  }
   html[data-theme="light"] .card[data-tip]::after{background:rgba(30,34,44,.9)}
   .card:hover::after{opacity:1;transform:translateY(0)}
+
   @media (max-width:480px){canvas#priceChart{height:280px}}
 </style>
 </head>
@@ -59,7 +105,7 @@
   <div id="netBanner" class="banner">You are offline — some data may fail. Reconnect then tap Refresh.</div>
 
   <div class="brand">
-    <h1>BTC/USDT — Market Overview</h1>
+    <h1>Market Overview</h1>
     <div class="row">
       <div class="pill" id="marketScore">Market Score: loading…</div>
       <button class="btn" id="toggleChartBtn">Hide chart</button>
@@ -82,20 +128,30 @@
 </div>
 
 <script>
+/* =================== Helpers & Theme =================== */
 const $ = s => document.querySelector(s);
-const fmt = n => Number(n).toLocaleString();
+
+// تنسيقات الأرقام
+function fmtCompactNum(n){
+  if(n==null || !isFinite(n)) return "—";
+  const abs = Math.abs(n);
+  const sign = n<0 ? "-" : "";
+  if(abs >= 1e12) return sign + (abs/1e12).toFixed(2) + "T";
+  if(abs >= 1e9 ) return sign + (abs/1e9 ).toFixed(2) + "B";
+  if(abs >= 1e6 ) return sign + (abs/1e6 ).toFixed(2) + "M";
+  if(abs >= 1e3 ) return sign + (abs/1e3 ).toFixed(2) + "K";
+  return sign + abs.toFixed(0);
+}
+const fmtUSD = n => n==null ? "—" : "$"+fmtCompactNum(n);
+const fmtNUM = n => n==null ? "—" : fmtCompactNum(n);
 const pct = x => (x==null||!isFinite(x)) ? "—" : (x*100).toFixed(2)+"%";
 const bust = url => url + (url.includes("?")?"&":"?") + "t=" + Date.now();
 
-// Network banner
-function updateNetBanner(){ $("#netBanner").style.display = navigator.onLine ? "none" : "block"; }
-addEventListener("online",updateNetBanner); addEventListener("offline",updateNetBanner); updateNetBanner();
-
-// Theme toggle
+// Theme (Auto/Light/Dark) + متابعة تغيّر النظام على الموبايل
 function applyTheme(mode){
   const html = document.documentElement;
-  const sysDark = matchMedia('(prefers-color-scheme: dark)').matches;
-  html.setAttribute("data-theme", mode==="auto" ? (sysDark?"dark":"light") : mode);
+  const prefersDark = matchMedia('(prefers-color-scheme: dark)').matches;
+  html.setAttribute("data-theme", mode==="auto" ? (prefersDark?"dark":"light") : mode);
   localStorage.setItem("themeMode", mode);
   $("#themeBtn").textContent = "Theme: " + mode[0].toUpperCase()+mode.slice(1);
 }
@@ -106,8 +162,15 @@ $("#themeBtn").addEventListener("click", ()=>{
   const next = order[(order.indexOf(cur)+1)%order.length];
   applyTheme(next);
 });
+// لو الثيم Auto وتغيّر نظام الجهاز -> نحدّث
+const mq = matchMedia('(prefers-color-scheme: dark)');
+mq.addEventListener?.("change", ()=>{ if((localStorage.getItem("themeMode")||"auto")==="auto") applyTheme("auto"); });
 
-// Endpoints
+// Offline banner
+function updateNetBanner(){ $("#netBanner").style.display = navigator.onLine ? "none" : "block"; }
+addEventListener("online",updateNetBanner); addEventListener("offline",updateNetBanner); updateNetBanner();
+
+/* =================== Data Endpoints =================== */
 const CG_PRICE    = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd";
 const CG_GLOBAL   = "https://api.coingecko.com/api/v3/global";
 const CG_COIN     = "https://api.coingecko.com/api/v3/coins/bitcoin?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false";
@@ -124,57 +187,38 @@ const BCH_UTXO    = "https://api.blockchain.info/charts/utxo-count?timespan=60da
 const MEMPOOL_FEES  = "https://mempool.space/api/v1/fees/recommended";
 const MEMPOOL_STATS = "https://mempool.space/api/mempool";
 
-// Cache + Retry
+/* =================== Fetch with cache+retry =================== */
 function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
 function cacheKey(url){ return "cache::"+url.split("?")[0]; }
 function cacheGet(url, ttlMs=120000){
-  try{
-    const raw = sessionStorage.getItem(cacheKey(url));
-    if(!raw) return null;
-    const obj = JSON.parse(raw);
-    if(Date.now()-obj.t > ttlMs) return null;
-    return obj.v;
-  }catch(_){ return null; }
+  try{ const raw = sessionStorage.getItem(cacheKey(url)); if(!raw) return null;
+       const obj = JSON.parse(raw); if(Date.now()-obj.t > ttlMs) return null; return obj.v; }catch(_){ return null; }
 }
-function cacheSet(url, val){
-  try{ sessionStorage.setItem(cacheKey(url), JSON.stringify({t:Date.now(), v:val})); }catch(_){}
-}
+function cacheSet(url, val){ try{ sessionStorage.setItem(cacheKey(url), JSON.stringify({t:Date.now(), v:val})); }catch(_){ } }
 async function getJSONRetry(url, tries=4){
-  const cached = cacheGet(url);
-  if(cached) return cached;
+  const cached = cacheGet(url); if(cached) return cached;
   let lastErr=null;
   for(let i=0;i<tries;i++){
-    try{
-      const r = await fetch(bust(url), {cache:"no-store", mode:"cors"});
-      if(!r.ok) throw new Error(`HTTP ${r.status}`);
-      const js = await r.json();
-      cacheSet(url, js);
-      return js;
-    }catch(e){
-      lastErr=e;
-      const wait = [300,700,1500,2500][Math.min(i,3)] + Math.random()*200;
-      await sleep(wait);
-    }
+    try{ const r=await fetch(bust(url),{cache:"no-store"}); if(!r.ok) throw new Error(`HTTP ${r.status}`);
+         const js=await r.json(); cacheSet(url,js); return js; }
+    catch(e){ lastErr=e; await sleep([300,700,1500,2500][Math.min(i,3)]); }
   }
   throw lastErr || new Error("network error");
 }
 
-// Gauge SVG
-function gaugeSVG(value){
-  const v = Math.max(0, Math.min(100, Number(value)||0));
-  const angle = -90 + (v/100)*180;
-  const segs = [{a:-90,b:-54,c:"#ff4d4d"},{a:-54,b:-18,c:"#ffb84d"},{a:-18,b:18,c:"#cccc66"},{a:18,b:54,c:"#88cc66"},{a:54,b:90,c:"#33aa55"}];
-  const arc=(a,b)=>{const r=70,cx=100,cy=100,ra=a*Math.PI/180,rb=b*Math.PI/180,x1=cx+r*Math.cos(ra),y1=cy+r*Math.sin(ra),x2=cx+r*Math.cos(rb),y2=cy+r*Math.sin(rb);return `M ${x1} ${y1} A ${r} ${r} 0 0 1 ${x2} ${y2}`;};
-  const nx=100+60*Math.cos(angle*Math.PI/180), ny=100+60*Math.sin(angle*Math.PI/180);
-  return `<svg viewBox="0 0 200 130" class="gauge">
-    <g>${segs.map(s=>`<path d="${arc(s.a,s.b)}" stroke="${s.c}" stroke-width="12" fill="none"/>`).join("")}</g>
-    <line x1="100" y1="100" x2="${nx.toFixed(1)}" y2="${ny.toFixed(1)}" stroke="var(--text)" stroke-width="3"/>
-    <circle cx="100" cy="100" r="5" fill="var(--text)"/>
-    <text x="100" y="120" text-anchor="middle" font-size="14" fill="var(--text)" font-family="Arial">${Math.round(v)}</text>
-  </svg>`;
+/* =================== UI helpers =================== */
+function card(title, html, tone="", tip=""){
+  const cls = tone==="bull"?"ok":tone==="warn"?"warn":tone==="bear"?"bad":"";
+  const tipAttr = tip ? ` data-tip="${tip.replace(/"/g,'&quot;')}"` : "";
+  return `<div class="card ${cls}"${tipAttr}><h3>${title}</h3>${html}</div>`;
+}
+function scoreLabel(x){
+  if (x>=2.5) return `Bullish (${x.toFixed(1)})`;
+  if (x<=-2.5) return `Bearish (${x.toFixed(1)})`;
+  return `Neutral (${x.toFixed(1)})`;
 }
 
-// Chart
+/* =================== Chart =================== */
 function drawPriceChart(canvas, series){
   const ctx = canvas.getContext("2d");
   const W = canvas.width, H = canvas.height;
@@ -192,33 +236,40 @@ function drawPriceChart(canvas, series){
   series.forEach((p,i)=>{ const px=x(p.t), py=y(p.v); if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py); });
   ctx.stroke();
   ctx.fillStyle="var(--text-secondary)"; ctx.font="12px Arial";
-  ctx.fillText("$"+fmt(maxY.toFixed(0)), 6, y(maxY)+4);
-  ctx.fillText("$"+fmt(minY.toFixed(0)), 6, y(minY)+12);
+  ctx.fillText(fmtUSD(maxY), 6, y(maxY)+4);
+  ctx.fillText(fmtUSD(minY), 6, y(minY)+12);
 }
 
-// UI helpers
-function card(title, html, tone="", tip=""){
-  const cls = tone==="bull"?"ok":tone==="warn"?"warn":tone==="bear"?"bad":"";
-  const tipAttr = tip ? ` data-tip="${tip.replace(/"/g,'&quot;')}"` : "";
-  return `<div class="card ${cls}"${tipAttr}><h3>${title}</h3>${html}</div>`;
-}
-function scoreLabel(x){
-  if (x>=2.5) return `Bullish (${x.toFixed(1)})`;
-  if (x<=-2.5) return `Bearish (${x.toFixed(1)})`;
-  return `Neutral (${x.toFixed(1)})`;
+/* =================== Gauge SVG =================== */
+function gaugeSVG(value){
+  const v = Math.max(0, Math.min(100, Number(value)||0));
+  const angle = -90 + (v/100)*180;
+  const segs = [{a:-90,b:-54,c:"#ff4d4d"},{a:-54,b:-18,c:"#ffb84d"},{a:-18,b:18,c:"#cccc66"},{a:18,b:54,c:"#88cc66"},{a:54,b:90,c:"#33aa55"}];
+  const arc=(a,b)=>{const r=70,cx=100,cy=100,ra=a*Math.PI/180,rb=b*Math.PI/180,x1=cx+r*Math.cos(ra),y1=cy+r*Math.sin(ra),x2=cx+r*Math.cos(rb),y2=cy+r*Math.sin(rb);return `M ${x1} ${y1} A ${r} ${r} 0 0 1 ${x2} ${y2}`;};
+  const nx=100+60*Math.cos(angle*Math.PI/180), ny=100+60*Math.sin(angle*Math.PI/180);
+  return `<svg viewBox="0 0 200 130" class="gauge">
+    <g>${segs.map(s=>`<path d="${arc(s.a,s.b)}" stroke="${s.c}" stroke-width="12" fill="none"/>`).join("")}</g>
+    <line x1="100" y1="100" x2="${nx.toFixed(1)}" y2="${ny.toFixed(1)}" stroke="var(--text)" stroke-width="3"/>
+    <circle cx="100" cy="100" r="5" fill="var(--text)"/>
+    <text x="100" y="120" text-anchor="middle" font-size="14" fill="var(--text)" font-family="Arial">${Math.round(v)}</text>
+  </svg>`;
 }
 
-// Main
+/* =================== Main =================== */
 async function main(){
-  $("#grid").innerHTML = "";
+  const grid = $("#grid");
+  grid.innerHTML = "";
   $("#refreshBtn").disabled = true;
   $("#asof").textContent = "Updating…";
   $("#asofChart").textContent = "Updating…";
 
+  // Market Score = مجموع نقاط بسيطة:
+  // + هيمنة BTC العالية، + تحسن F&G، + ارتفاع الهاش ريت/العناوين،
+  // - ازدحام الرسوم/الميمبول، - جشع شديد. (مؤشر توضيحي فقط)
   let score=0;
   const cards=[];
 
-  // Core + chart
+  // --- Core + chart
   try{
     const [g, p, coin, chart] = await Promise.all([
       getJSONRetry(CG_GLOBAL),
@@ -229,7 +280,7 @@ async function main(){
 
     const s = (chart.prices||[]).map(([t,v])=>({t:Math.floor(t/1000), v}));
     drawPriceChart($("#priceChart"), s);
-    if(s.length) $("#asofChart").textContent = "Last: " + new Date(s[s.length-1].t*1000).toLocaleDateString();
+    if(s.length) $("#asofChart").textContent = "Last: " + new Date(s.at(-1).t*1000).toLocaleDateString();
 
     const priceUSD = p?.bitcoin?.usd;
     const btcCap = coin?.market_data?.market_cap?.usd;
@@ -240,13 +291,13 @@ async function main(){
     const altM      = (totalM && btcCap) ? Math.max(0, totalM - btcCap) : null;
     const liqRatio  = (totalM>0 && vol24!=null) ? vol24/totalM : null;
 
-    cards.push(card("BTC Price (CoinGecko)", `<div class="center big">$${priceUSD?fmt(priceUSD.toFixed(0)):"—"}</div>`, "", "Spot price in USD (CoinGecko)."));
-    cards.push(card("BTC Dominance", `<div class="center big">${dominance!=null?dominance.toFixed(1)+"%":"—"}</div>`,
+    cards.push(card("BTC Price (CoinGecko)", `<div class="big" title="${priceUSD?.toLocaleString()}">${fmtUSD(priceUSD)}</div>`, "", "Spot price in USD (CoinGecko)."));
+    cards.push(card("BTC Dominance", `<div class="big" title="${dominance?.toFixed(2)}%">${dominance!=null?dominance.toFixed(1)+"%":"—"}</div>`,
       dominance>=55?"bull":dominance<=45?"warn":"", "BTC share of total market cap."));
-    cards.push(card("Total Market Cap", `<div class="center big">$${totalM?fmt(totalM.toFixed(0)):"—"}</div>`, "", "Total crypto market cap (USD)."));
-    cards.push(card("Altcoin Market Cap", `<div class="center big">$${altM?fmt(altM.toFixed(0)):"—"}</div>`, "", "Total market cap minus BTC."));
-    cards.push(card("24h Total Volume", `<div class="center big">$${vol24?fmt(vol24.toFixed(0)):"—"}</div>`, "", "Aggregate last-24h trading volume."));
-    cards.push(card("Volume / Market Cap", `<div class="center big">${liqRatio!=null?(liqRatio*100).toFixed(2)+"%":"—"}</div>`, "", "Liquidity ratio = 24h Volume ÷ Market Cap."));
+    cards.push(card("Total Market Cap", `<div class="big" title="${totalM?.toLocaleString()}">$${fmtNUM(totalM)}</div>`, "", "Total crypto market cap (USD)."));
+    cards.push(card("Altcoin Market Cap", `<div class="big" title="${altM?.toLocaleString()}">$${fmtNUM(altM)}</div>`, "", "Total market cap minus BTC."));
+    cards.push(card("24h Total Volume", `<div class="big" title="${vol24?.toLocaleString()}">$${fmtNUM(vol24)}</div>`, "", "Aggregate last-24h trading volume."));
+    cards.push(card("Volume / Market Cap", `<div class="big" title="${(liqRatio*100)?.toFixed(2)}%">${liqRatio!=null?(liqRatio*100).toFixed(2)+"%":"—"}</div>`, "", "Liquidity ratio = 24h Volume ÷ Market Cap."));
 
     if (dominance>=55) score += 0.4; else if (dominance<=45) score -= 0.2;
 
@@ -256,18 +307,20 @@ async function main(){
     let s2fTone="", s2fMsg="Informational only";
     if(s2f!=null && s2f>100){ s2fTone="bull"; s2fMsg="High scarcity"; score+=0.2; }
     cards.push(card("Stock-to-Flow (approx)", `
-      <div class="kv"><span>Stock (circulating)</span><span>${supply?fmt(supply.toFixed(0)):"—"} BTC</span></div>
-      <div class="kv"><span>Flow / year (est.)</span><span>${fmt(flowYear.toFixed(0))} BTC</span></div>
-      <div class="kv"><span>S2F</span><span class="big">${s2f? s2f.toFixed(1):"—"}</span></div>
+      <div class="kv"><span>Stock (circulating)</span><span title="${supply?.toLocaleString()}">${fmtNUM(supply)} BTC</span></div>
+      <div class="kv"><span>Flow / year (est.)</span><span title="${flowYear.toLocaleString()}">${fmtNUM(flowYear)} BTC</span></div>
+      <div class="big" title="${s2f?.toFixed(3) ?? ''}">${s2f? s2f.toFixed(1):"—"}</div>
       <div class="muted">${s2fMsg}</div>
     `, s2fTone, "Approximate S2F using current block subsidy × blocks/day × 365."));
-
   }catch(e){
     console.error("Core error:", e);
     cards.push(card("Core Data", `<div class="muted">Error loading market data</div>`));
   }
 
-  // Fear & Greed
+  // --- Fear & Greed
+  function gauge(v){
+    return `<div class="center">${gaugeSVG(v)}</div>`;
+  }
   try{
     const f = await getJSONRetry(FNG);
     const now = f?.data?.[0];
@@ -279,125 +332,61 @@ async function main(){
       else if(v>=75){ tone="warn"; msg="Extreme greed"; score -= .4; }
       else if(v>=55){ tone="bull"; msg="Greed"; score += .2; }
       cards.push(card("Fear & Greed (Gauge)",
-        `<div class="center">${gaugeSVG(v)}</div>
-         <div class="center muted">${now.value_classification} — ${new Date(Number(now.timestamp)*1000).toLocaleDateString()}</div>`,
+        `${gauge(v)}<div class="center muted">${now.value_classification} — ${new Date(Number(now.timestamp)*1000).toLocaleDateString()}</div>`,
         tone, "Sentiment index (0=extreme fear, 100=extreme greed)."));
     }
-  }catch(e){ cards.push(card("Fear & Greed", `<div class="muted">Error loading index</div>`)); }
+  }catch(_){}
 
-  // Hashrate
+  // --- Reusable delta card
   const addDeltaCard = (title, latest, prev, unit, tip, upTh=0.05, dnTh=-0.05) => {
     const ch = (latest!=null && prev!=null) ? (latest-prev)/prev : null;
     let tone="", msg="—"; 
     if(ch!=null){ if(ch>upTh){tone="bull";msg="Rising";} else if(ch<dnTh){tone="warn";msg="Falling";} }
+    const pretty = unit==="USD" ? fmtUSD(latest) : (unit? `${fmtNUM(latest)} ${unit}` : fmtNUM(latest));
+    const titleFull = latest!=null ? (unit==="USD" ? "$"+latest.toLocaleString() : latest.toLocaleString()+" "+(unit||"")) : "";
     cards.push(card(title,
-      `<div class="kv"><span>Latest</span><span class="big">${latest!=null?(unit==="USD"?"$":"")+fmt(latest.toFixed( unit==="USD"?0: (unit==="EH/s"?2:1) ))+" "+(unit!=="USD"?unit:""):"—"}</span></div>
+      `<div class="big" title="${titleFull}">${pretty}</div>
        <div class="kv"><span>~7d Change</span><span>${pct(ch)}</span></div>
        <div class="muted">${msg}</div>`,
       tone, tip));
   };
 
-  try{
-    const h = await getJSONRetry(BCH_HASH);
-    const v=h?.values||[]; const last=v.at(-1)?.y, prev=v.at(-8)?.y;
-    addDeltaCard("Hashrate (Blockchain.com)", last, prev, "EH/s", "Estimated network hash rate.");
-    if(last!=null && prev!=null && (last-prev)/prev>0.05) score+=.3;
-  }catch(e){ cards.push(card("Hashrate", `<div class="muted">Error</div>`)); }
-
-  // Difficulty
-  try{
-    const d = await getJSONRetry(BCH_DIFF);
-    const v=d?.values||[]; const last=v.at(-1)?.y, prev=v.at(-8)?.y;
-    addDeltaCard("Mining Difficulty", last, prev, "", "Protocol mining difficulty.", 0.03, -0.03);
-  }catch(e){ cards.push(card("Mining Difficulty", `<div class="muted">Error</div>`)); }
-
-  // Active addresses
-  try{
-    const a = await getJSONRetry(BCH_ADDR);
-    const v=a?.values||[]; const last=v.at(-1)?.y, prev=v.at(-8)?.y;
-    addDeltaCard("Active Addresses", last, prev, "", "Unique active addresses per day.");
-  }catch(e){ cards.push(card("Active Addresses", `<div class="muted">Error</div>`)); }
-
-  // Fees (daily) with mempool fallback
+  // --- On-chain metrics
+  try{ const h = await getJSONRetry(BCH_HASH); const v=h?.values||[]; addDeltaCard("Hashrate (Blockchain.com)", v.at(-1)?.y, v.at(-8)?.y, "EH/s", "Estimated network hash rate."); }catch(_){}
+  try{ const d = await getJSONRetry(BCH_DIFF); const v=d?.values||[]; addDeltaCard("Mining Difficulty", v.at(-1)?.y, v.at(-8)?.y, "", "Protocol mining difficulty.", 0.03, -0.03); }catch(_){}
+  try{ const a = await getJSONRetry(BCH_ADDR); const v=a?.values||[]; addDeltaCard("Active Addresses", v.at(-1)?.y, v.at(-8)?.y, "", "Unique active addresses per day."); }catch(_){}
   let hadFees=false;
-  try{
-    const f = await getJSONRetry(BCH_FEES_USD);
-    const v=f?.values||[]; const last=v.at(-1)?.y, prev=v.at(-8)?.y;
-    addDeltaCard("Daily Fees (USD)", last, prev, "USD", "Total daily transaction fees (USD).", 0.25, -0.25);
-    hadFees=true;
-  }catch(e){}
+  try{ const f = await getJSONRetry(BCH_FEES_USD); const v=f?.values||[]; addDeltaCard("Daily Fees (USD)", v.at(-1)?.y, v.at(-8)?.y, "USD", "Total daily transaction fees (USD).", 0.25, -0.25); hadFees=true; }catch(_){}
   if(!hadFees){
     try{
       const mf = await getJSONRetry(MEMPOOL_FEES);
       cards.push(card("Current Fees (mempool.space)",
-        `<div class="kv"><span>Fast</span><span class="big">${mf.fastestFee} sat/vB</span></div>
+        `<div class="big">${mf.fastestFee} sat/vB</div>
          <div class="kv"><span>Standard</span><span>${mf.halfHourFee} sat/vB</span></div>
-         <div class="kv"><span>Economy</span><span>${mf.hourFee} sat/vB</span></div>`, "", "Recommended fee rates right now."));
-    }catch(e){ cards.push(card("Fees", `<div class="muted">Error</div>`)); }
+         <div class="kv"><span>Economy</span><span>${mf.hourFee} sat/vB</span></div>`,
+        "", "Recommended fee rates right now."));
+    }catch(_){}
   }
+  try{ const t = await getJSONRetry(BCH_TXV_USD); const v=t?.values||[]; addDeltaCard("Transaction Volume (USD)", v.at(-1)?.y, v.at(-8)?.y, "USD", "Estimated daily on-chain volume."); }catch(_){}
+  try{ const m = await getJSONRetry(BCH_MVRV); const v=m?.values||[]; const last=v.at(-1)?.y, prev=v.at(-8)?.y;
+       let tone="", msg="—"; if(last!=null){ if(last>3.7){tone="warn";msg="Overvalued";} else if(last<1){tone="bull";msg="Undervalued";} else msg="Fair value"; }
+       cards.push(card("MVRV Ratio", `<div class="big" title="${last?.toFixed(4)??''}">${last!=null?last.toFixed(2):"—"}</div><div class="kv"><span>~7d Change</span><span>${pct((last!=null&&prev!=null)?(last-prev)/prev:null)}</span></div><div class="muted">${msg}</div>`, tone, "Market Value / Realized Value ratio.")); }catch(_){}
+  try{ const n = await getJSONRetry(BCH_NVT); const v=n?.values||[]; const last=v.at(-1)?.y, prev=v.at(-8)?.y;
+       let tone="", msg="—"; if(last!=null){ if(last>150){tone="warn";msg="High valuation";} else if(last<50){tone="bull";msg="Low valuation";} else msg="Normal range"; }
+       cards.push(card("NVT Ratio", `<div class="big" title="${last?.toFixed(4)??''}">${last!=null?last.toFixed(1):"—"}</div><div class="kv"><span>~7d Change</span><span>${pct((last!=null&&prev!=null)?(last-prev)/prev:null)}</span></div><div class="muted">${msg}</div>`, tone, "Network Value to Transactions ratio.")); }catch(_){}
+  try{ const u = await getJSONRetry(BCH_UTXO); const v=u?.values||[]; addDeltaCard("UTXO Count", v.at(-1)?.y, v.at(-8)?.y, "", "Unspent outputs (activity proxy).", 0.02, -0.02); }catch(_){}
+  try{ const ms = await getJSONRetry(MEMPOOL_STATS); const count=ms?.count||0, vsize=ms?.vsize||0, totalFees=ms?.total_fee||0;
+       let tone="", msg="—"; if(count>50000){tone="warn";msg="Congested";} else if(count<5000){tone="bull";msg="Clear";} else msg="Normal";
+       cards.push(card("Mempool Status", `<div class="big" title="${count.toLocaleString()}">${fmtNUM(count)} tx</div><div class="kv"><span>Size (vMB)</span><span>${(vsize/1e6).toFixed(1)}</span></div><div class="kv"><span>Total Fees</span><span>${(totalFees/1e8).toFixed(2)} BTC</span></div><div class="muted">${msg}</div>`, tone, "Pending transactions and pressure on blockspace.")); }catch(_){}
 
-  // TX volume (USD)
-  try{
-    const t = await getJSONRetry(BCH_TXV_USD);
-    const v=t?.values||[]; const last=v.at(-1)?.y, prev=v.at(-8)?.y;
-    addDeltaCard("Transaction Volume (USD)", last, prev, "USD", "Estimated daily on-chain volume.");
-  }catch(e){ cards.push(card("Transaction Volume", `<div class="muted">Error</div>`)); }
-
-  // MVRV & NVT (قد تفشل أحيانًا — ملفوفة بـ try/catch)
-  try{
-    const m = await getJSONRetry(BCH_MVRV);
-    const v=m?.values||[]; const last=v.at(-1)?.y, prev=v.at(-8)?.y;
-    let tone="", msg="—"; 
-    if(last!=null){ if(last>3.7){tone="warn";msg="Overvalued";} else if(last<1){tone="bull";msg="Undervalued";} else msg="Fair value"; }
-    cards.push(card("MVRV Ratio",
-      `<div class="kv"><span>Latest</span><span class="big">${last!=null?last.toFixed(2):"—"}</span></div>
-       <div class="kv"><span>~7d Change</span><span>${pct((last!=null&&prev!=null)?(last-prev)/prev:null)}</span></div>
-       <div class="muted">${msg}</div>`,
-      tone, "Market Value / Realized Value ratio."));
-  }catch(e){ /* ignore */ }
-
-  try{
-    const n = await getJSONRetry(BCH_NVT);
-    const v=n?.values||[]; const last=v.at(-1)?.y, prev=v.at(-8)?.y;
-    let tone="", msg="—"; 
-    if(last!=null){ if(last>150){tone="warn";msg="High valuation";} else if(last<50){tone="bull";msg="Low valuation";} else msg="Normal range"; }
-    cards.push(card("NVT Ratio",
-      `<div class="kv"><span>Latest</span><span class="big">${last!=null?last.toFixed(1):"—"}</span></div>
-       <div class="kv"><span>~7d Change</span><span>${pct((last!=null&&prev!=null)?(last-prev)/prev:null)}</span></div>
-       <div class="muted">${msg}</div>`,
-      tone, "Network Value to Transactions ratio."));
-  }catch(e){ /* ignore */ }
-
-  // UTXO
-  try{
-    const u = await getJSONRetry(BCH_UTXO);
-    const v=u?.values||[]; const last=v.at(-1)?.y, prev=v.at(-8)?.y;
-    addDeltaCard("UTXO Count", last, prev, "", "Unspent outputs (activity proxy).", 0.02, -0.02);
-  }catch(e){ /* ignore */ }
-
-  // Mempool status
-  try{
-    const ms = await getJSONRetry(MEMPOOL_STATS);
-    const count = ms?.count || 0, vsize = ms?.vsize || 0, totalFees = ms?.total_fee || 0;
-    let tone="", msg="—"; 
-    if(count > 50000){tone="warn";msg="Congested";} 
-    else if(count < 5000){tone="bull";msg="Clear";}
-    else {msg="Normal";}
-    cards.push(card("Mempool Status",
-      `<div class="kv"><span>Pending TXs</span><span class="big">${fmt(count)}</span></div>
-       <div class="kv"><span>Size (vMB)</span><span>${(vsize/1e6).toFixed(1)}</span></div>
-       <div class="kv"><span>Total Fees</span><span>${(totalFees/1e8).toFixed(2)} BTC</span></div>
-       <div class="muted">${msg}</div>`,
-      tone, "Pending transactions and pressure on blockspace."));
-  }catch(e){ /* ignore */ }
-
+  // Score label
   $("#marketScore").textContent = "Market Score: " + scoreLabel(score);
-  $("#grid").innerHTML = cards.join("");
+  grid.innerHTML = cards.join("");
   $("#asof").textContent = "Last updated: " + new Date().toLocaleString();
   $("#refreshBtn").disabled = false;
 }
 
-// Buttons
+/* =================== Buttons =================== */
 $("#toggleChartBtn").addEventListener("click", ()=>{
   const box = $("#chartBox");
   const hidden = box.style.display==="none";
@@ -406,7 +395,7 @@ $("#toggleChartBtn").addEventListener("click", ()=>{
 });
 $("#refreshBtn").addEventListener("click", main);
 
-// Initial load
+// Initial
 main();
 </script>
 </body>
