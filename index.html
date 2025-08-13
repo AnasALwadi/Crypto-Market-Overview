@@ -1,31 +1,72 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="auto">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>BTC/USDT — Market Overview (Free Data)</title>
 <style>
-  :root { color-scheme: dark; --ok:#7fd18b; --warn:#ffc877; --bad:#ff8b8b; --muted:#9aa0a6; }
-  body{margin:0;background:#0f1115;color:#e6e6e6;font-family:Arial,Helvetica,sans-serif}
-  .wrap{max-width:1150px;margin:18px auto;padding:0 14px}
-  .brand{display:flex;justify-content:space-between;align-items:center;margin:6px 0 14px}
-  .brand h1{margin:0;font-size:18px;color:#ddd}
-  .brand .me{color:#ffc877;font-weight:700}
-  .score{padding:6px 10px;border:1px solid #2a3040;border-radius:999px;background:#171a21;font-size:13px}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
-  .card{background:#171a21;border:1px solid #262b36;border-radius:12px;padding:14px;min-height:140px;display:flex;flex-direction:column}
-  .card h3{margin:0 0 8px;font-size:16px}
+  :root{
+    --bg:#0f1115; --surface:#171a21; --border:#262b36; --text:#e6e6e6; --muted:#9aa0a6;
+    --ok:#7fd18b; --warn:#ffc877; --bad:#ff8b8b; --accent:#8ab4f8; --card-shadow:0 6px 20px rgba(0,0,0,.25);
+  }
+  /* Light theme vars */
+  @media (prefers-color-scheme: light){
+    :root{ --bg:#f6f7fb; --surface:#ffffff; --border:#e7e9f2; --text:#1f2430; --muted:#6d7480; --card-shadow:0 6px 18px rgba(10,20,30,.06); }
+  }
+  /* Force theme via attribute */
+  html[data-theme="light"]{
+    --bg:#f6f7fb; --surface:#ffffff; --border:#e7e9f2; --text:#1f2430; --muted:#6d7480; --card-shadow:0 6px 18px rgba(10,20,30,.06);
+  }
+  html[data-theme="dark"]{
+    --bg:#0f1115; --surface:#171a21; --border:#262b36; --text:#e6e6e6; --muted:#9aa0a6; --card-shadow:0 6px 20px rgba(0,0,0,.25);
+  }
+
+  /* Base */
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}
+  .wrap{max-width:1180px;margin:18px auto;padding:0 14px}
+  .brand{display:flex;gap:10px;justify-content:space-between;align-items:center;margin:6px 0 14px}
+  .brand h1{margin:0;font-size:18px}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .me{color:var(--warn);font-weight:700}
+  .btn{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:8px 12px;cursor:pointer;box-shadow:var(--card-shadow)}
+  .btn:disabled{opacity:.6;cursor:not-allowed}
+  .pill{padding:6px 10px;border:1px solid var(--border);border-radius:999px;background:var(--surface)}
   .muted{color:var(--muted);font-size:12px}
-  .ok{outline:1px solid #2f5a3a}
-  .warn{outline:1px solid #5c4a1f}
-  .bad{outline:1px solid #5a2f2f}
-  .kv{display:flex;justify-content:space-between;margin:6px 0}
-  .big{font-size:22px;font-weight:700}
-  .row{display:flex;gap:8px;flex-wrap:wrap}
-  button{background:#222a35;border:1px solid #2f3646;color:#e6e6e6;border-radius:8px;padding:6px 10px;cursor:pointer}
-  button:disabled{opacity:.6;cursor:not-allowed}
-  .gauge{width:100%;max-width:240px;margin:auto}
+  .grid{
+    display:grid;gap:14px;
+    grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+    align-items:stretch;
+  }
+  .card{
+    background:var(--surface);border:1px solid var(--border);border-radius:14px;
+    padding:14px;min-height:170px;display:flex;flex-direction:column;justify-content:space-between;
+    box-shadow:var(--card-shadow); position:relative;
+  }
+  .card h3{margin:0 0 10px;font-size:16px}
+  .kv{display:flex;justify-content:space-between;gap:10px;margin:7px 0}
+  .big{font-size:24px;font-weight:800}
   .center{text-align:center}
+  .ok{outline:1px solid color-mix(in oklab, var(--ok) 40%, transparent)}
+  .warn{outline:1px solid color-mix(in oklab, var(--warn) 40%, transparent)}
+  .bad{outline:1px solid color-mix(in oklab, var(--bad) 40%, transparent)}
+
+  /* Tooltip on cards */
+  .card[data-tip]::after{
+    content: attr(data-tip);
+    position:absolute; left:12px; right:12px; bottom:12px;
+    background:rgba(0,0,0,.75); color:#fff; font-size:12px; line-height:1.3;
+    padding:8px 10px; border-radius:10px; opacity:0; transform:translateY(6px);
+    pointer-events:none; transition:opacity .18s, transform .18s;
+  }
+  html[data-theme="light"] .card[data-tip]::after{ background:rgba(30,34,44,.9); }
+  .card:hover::after{ opacity:1; transform:translateY(0) }
+
+  /* Chart box */
+  .chartWrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:10px;margin:0 0 14px;box-shadow:var(--card-shadow)}
+  canvas#priceChart{width:100%;height:340px;display:block}
+  .toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .gauge{width:100%;max-width:240px;margin:auto}
 </style>
 </head>
 <body>
@@ -33,12 +74,24 @@
   <div class="brand">
     <h1>BTC/USDT — Market Overview</h1>
     <div class="row">
-      <div class="score" id="marketScore">Market Score: loading…</div>
-      <button id="refreshBtn">Refresh</button>
+      <div class="pill" id="marketScore">Market Score: loading…</div>
+      <button class="btn" id="toggleChartBtn">Hide chart</button>
+      <button class="btn" id="refreshBtn">Refresh</button>
+      <button class="btn" id="themeBtn" title="Toggle theme">Theme: Auto</button>
       <div class="me">Made by Anas Alwadi</div>
     </div>
   </div>
 
+  <!-- Chart -->
+  <div class="chartWrap" id="chartBox">
+    <div class="toolbar">
+      <div class="muted">BTC/USDT — last 180 days</div>
+      <div class="muted" id="asofChart">Updating…</div>
+    </div>
+    <canvas id="priceChart" width="1080" height="340" aria-label="BTC price"></canvas>
+  </div>
+
+  <!-- Cards -->
   <div class="grid" id="grid"></div>
   <p class="muted" id="asof" style="margin-top:10px"></p>
 </div>
@@ -46,298 +99,274 @@
 <script>
 const $ = s => document.querySelector(s);
 const fmt = n => Number(n).toLocaleString();
-const pct = x => isFinite(x) ? (x*100).toFixed(2) + "%" : "—";
+const pct = x => (x==null||!isFinite(x)) ? "—" : (x*100).toFixed(2)+"%";
 const bust = url => url + (url.includes("?")?"&":"?") + "t=" + Date.now();
 
-// ---- Free sources ----
-const CG_GLOBAL   = "https://api.coingecko.com/api/v3/global";
-const CG_PRICE    = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd";
-const CG_COIN     = "https://api.coingecko.com/api/v3/coins/bitcoin?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false";
-const CG_MKTCHART = "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=120&interval=daily";
-const FNG         = "https://api.alternative.me/fng/?limit=2";
-// Blockchain.com charts (use cors=true + مناسب للمدى)
-const BCH_HASH    = "https://api.blockchain.info/charts/hash-rate?timespan=8weeks&format=json&cors=true";
-const BCH_DIFF    = "https://api.blockchain.info/charts/difficulty?timespan=8weeks&format=json&cors=true";
-const BCH_ADDR    = "https://api.blockchain.info/charts/active-addresses?timespan=8weeks&format=json&cors=true";
-const BCH_TXV_USD = "https://api.blockchain.info/charts/estimated-transaction-volume-usd?timespan=120days&format=json&cors=true";
-const BCH_FEES_BTC= "https://api.blockchain.info/charts/transaction-fees?timespan=8weeks&format=json&cors=true";
+// Theme toggle: auto / light / dark
+function applyTheme(mode){
+  const html = document.documentElement;
+  if(mode==="auto"){ html.setAttribute("data-theme","auto"); }
+  else if(mode==="light"){ html.setAttribute("data-theme","light"); }
+  else { html.setAttribute("data-theme","dark"); }
+  localStorage.setItem("themeMode", mode);
+  $("#themeBtn").textContent = "Theme: " + mode[0].toUpperCase()+mode.slice(1);
+}
+(function initTheme(){
+  applyTheme(localStorage.getItem("themeMode") || "auto");
+})();
+$("#themeBtn").addEventListener("click", ()=>{
+  const order=["auto","light","dark"];
+  const cur = localStorage.getItem("themeMode") || "auto";
+  const next = order[(order.indexOf(cur)+1)%order.length];
+  applyTheme(next);
+});
 
-function card(title, html, tone=""){ 
-  const cls = tone==="bull"?"ok":tone==="warn"?"warn":tone==="bear"?"bad":"";
-  return `<div class="card ${cls}"><h3>${title}</h3>${html}</div>`;
-}
-function scoreLabel(x){
-  if (x>=2.5) return `Bullish (${x.toFixed(1)})`;
-  if (x<=-2.5) return `Bearish (${x.toFixed(1)})`;
-  return `Neutral (${x.toFixed(1)})`;
-}
+// Data sources
+const CG_PRICE    = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd";
+const CG_GLOBAL   = "https://api.coingecko.com/api/v3/global";
+const CG_COIN     = "https://api.coingecko.com/api/v3/coins/bitcoin?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false";
+const CG_MKTCHART = "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=180&interval=daily";
+const FNG         = "https://api.alternative.me/fng/?limit=2";
+const BCH_HASH    = "https://api.blockchain.info/charts/hash-rate?timespan=60days&format=json&cors=true";
+const BCH_DIFF    = "https://api.blockchain.info/charts/difficulty?timespan=60days&format=json&cors=true";
+const BCH_ADDR    = "https://api.blockchain.info/charts/active-addresses?timespan=60days&format=json&cors=true";
+const BCH_TXV_USD = "https://api.blockchain.info/charts/estimated-transaction-volume-usd?timespan=180days&format=json&cors=true";
+const BCH_FEES_BTC= "https://api.blockchain.info/charts/transaction-fees?timespan=60days&format=json&cors=true";
+
 async function getJSON(url){
   const r = await fetch(bust(url), {cache:"no-store"});
   if(!r.ok) throw new Error(`HTTP ${r.status}`);
   return r.json();
 }
-function SMA(arr, win){
-  const out=[]; let s=0;
-  for(let i=0;i<arr.length;i++){
-    s += arr[i];
-    if(i>=win) s -= arr[i-win];
-    if(i>=win-1) out.push(s/win);
-  }
-  return out;
-}
+function SMA(arr, win){ const out=[]; let s=0; for(let i=0;i<arr.length;i++){ s+=arr[i]; if(i>=win) s-=arr[i-win]; if(i>=win-1) out.push(s/win);} return out; }
 
-// Fear & Greed Gauge SVG (0..100)
+// Gauge SVG (0..100)
 function gaugeSVG(value){
   const v = Math.max(0, Math.min(100, Number(value)||0));
-  const angle = -90 + (v/100)*180; // -90 to +90
-  // segments colors
+  const angle = -90 + (v/100)*180;
   const segs = [
-    {a:-90, b:-54, c:"#ff4d4d"}, // 0-20 extreme fear
-    {a:-54, b:-18, c:"#ffb84d"}, // 20-40 fear
-    {a:-18, b:18,  c:"#cccc66"}, // 40-60 neutral
-    {a:18,  b:54,  c:"#88cc66"}, // 60-80 greed
-    {a:54,  b:90,  c:"#33aa55"}  // 80-100 extreme greed
+    {a:-90,b:-54,c:"#ff4d4d"},{a:-54,b:-18,c:"#ffb84d"},{a:-18,b:18,c:"#cccc66"},{a:18,b:54,c:"#88cc66"},{a:54,b:90,c:"#33aa55"}
   ];
-  const arc = (a,b) => {
-    const r=70, cx=100, cy=100;
-    const ra=a*Math.PI/180, rb=b*Math.PI/180;
-    const x1=cx+r*Math.cos(ra), y1=cy+r*Math.sin(ra);
-    const x2=cx+r*Math.cos(rb), y2=cy+r*Math.sin(rb);
-    return `M ${x1} ${y1} A ${r} ${r} 0 0 1 ${x2} ${y2}`;
-  };
-  const needleX = 100 + 60*Math.cos(angle*Math.PI/180);
-  const needleY = 100 + 60*Math.sin(angle*Math.PI/180);
-  return `
-  <svg viewBox="0 0 200 130" class="gauge" aria-label="Fear & Greed gauge">
-    ${segs.map(s=>`<path d="${arc(s.a,s.b)}" stroke="${s.c}" stroke-width="12" fill="none"/>`).join("")}
-    <line x1="100" y1="100" x2="${needleX.toFixed(1)}" y2="${needleY.toFixed(1)}" stroke="#e6e6e6" stroke-width="3" />
-    <circle cx="100" cy="100" r="5" fill="#e6e6e6"/>
-    <text x="100" y="120" text-anchor="middle" font-size="14" fill="#e6e6e6" font-family="Arial">${Math.round(v)}</text>
-  </svg>`;
+  const arc=(a,b)=>{const r=70,cx=100,cy=100,ra=a*Math.PI/180,rb=b*Math.PI/180,x1=cx+r*Math.cos(ra),y1=cy+r*Math.sin(ra),x2=cx+r*Math.cos(rb),y2=cy+r*Math.sin(rb);return `M ${x1} ${y1} A ${r} ${r} 0 0 1 ${x2} ${y2}`;};
+  const nx=100+60*Math.cos(angle*Math.PI/180), ny=100+60*Math.sin(angle*Math.PI/180);
+  return `<svg viewBox="0 0 200 130" class="gauge"><g>${segs.map(s=>`<path d="${arc(s.a,s.b)}" stroke="${s.c}" stroke-width="12" fill="none"/>`).join("")}</g>
+  <line x1="100" y1="100" x2="${nx.toFixed(1)}" y2="${ny.toFixed(1)}" stroke="var(--text)" stroke-width="3"/><circle cx="100" cy="100" r="5" fill="var(--text)"/>
+  <text x="100" y="120" text-anchor="middle" font-size="14" fill="var(--text)" font-family="Arial">${Math.round(v)}</text></svg>`;
+}
+
+// Simple price chart (canvas)
+function drawPriceChart(canvas, series){
+  const ctx = canvas.getContext("2d");
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0,0,W,H);
+  if(!series.length) return;
+  const xs = series.map(p=>p.t), ys = series.map(p=>p.v);
+  const x0 = xs[0], x1 = xs[xs.length-1];
+  const minY = Math.min(...ys), maxY = Math.max(...ys);
+  const padL=50, padR=10, padT=10, padB=24;
+  const x = t => padL + ((t-x0)/(x1-x0))*(W-padL-padR);
+  const y = v => H-padB - ((v-minY)/(maxY-minY))*(H-padT-padB);
+
+  // grid
+  const g=5; ctx.strokeStyle="rgba(128,128,128,.25)"; ctx.lineWidth=1;
+  for(let i=0;i<=g;i++){ const gy=padT+i*(H-padT-padB)/g; ctx.beginPath(); ctx.moveTo(padL,gy); ctx.lineTo(W-padR,gy); ctx.stroke(); }
+  // line
+  ctx.strokeStyle="var(--accent)"; ctx.lineWidth=1.6; ctx.beginPath();
+  series.forEach((p,i)=>{ const px=x(p.t), py=y(p.v); if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py); });
+  ctx.stroke();
+  // axis labels
+  ctx.fillStyle="var(--muted)"; ctx.font="12px Arial";
+  ctx.fillText("$"+fmt(maxY.toFixed(0)), 6, y(maxY)+4);
+  ctx.fillText("$"+fmt(minY.toFixed(0)), 6, y(minY)+12);
+}
+
+function card(title, html, tone="", tip=""){
+  const cls = tone==="bull"?"ok":tone==="warn"?"warn":tone==="bear"?"bad":"";
+  const tipAttr = tip ? ` data-tip="${tip.replace(/"/g,'&quot;')}"` : "";
+  return `<div class="card ${cls}"${tipAttr}><h3>${title}</h3>${html}</div>`;
+}
+
+function scoreLabel(x){
+  if (x>=2.5) return `Bullish (${x.toFixed(1)})`;
+  if (x<=-2.5) return `Bearish (${x.toFixed(1)})`;
+  return `Neutral (${x.toFixed(1)})`;
 }
 
 async function main(){
   $("#grid").innerHTML = "";
   $("#refreshBtn").disabled = true;
   $("#asof").textContent = "Updating…";
+  $("#asofChart").textContent = "Updating…";
 
-  let score = 0;
-  const cards = [];
+  let score=0;
+  const cards=[];
 
-  // ========== BTC core cards (كل واحد في كارت مستقل) ==========
-  let priceUSD = null, dominance = null, totalM = null, altM = null, vol24 = null;
+  // ---- Fetch core + chart ----
+  let priceUSD=null, dominance=null, totalM=null, altM=null, vol24=null, supply=null;
 
   try{
-    const [g, p, coin] = await Promise.all([
+    const [g, p, coin, chart] = await Promise.all([
       getJSON(CG_GLOBAL),
       getJSON(CG_PRICE),
-      getJSON(CG_COIN)
+      getJSON(CG_COIN),
+      getJSON(CG_MKTCHART)
     ]);
 
+    // Chart
+    const s = (chart.prices||[]).map(([t,v])=>({t:Math.floor(t/1000), v}));
+    drawPriceChart($("#priceChart"), s);
+    $("#asofChart").textContent = "Last: " + new Date(s[s.length-1].t*1000).toLocaleDateString();
+
+    // Core
     priceUSD = p.bitcoin.usd;
-    dominance = g.data.market_cap_percentage.btc; // %
-    totalM = g.data.total_market_cap.usd;
-    vol24  = g.data.total_volume.usd;
-    const btcMarketCap = coin.market_data.market_cap.usd;
-    const supply = coin.market_data.circulating_supply || (btcMarketCap && priceUSD ? btcMarketCap/priceUSD : null);
-    altM = Math.max(0, totalM - btcMarketCap);
-    const liqRatio = (totalM>0) ? vol24 / totalM : null;
+    const btcCap = coin.market_data.market_cap.usd;
+    dominance = g.data.market_cap_percentage.btc;
+    totalM    = g.data.total_market_cap.usd;
+    vol24     = g.data.total_volume.usd;
+    supply    = coin.market_data.circulating_supply || (btcCap && priceUSD ? btcCap/priceUSD : null);
+    altM      = Math.max(0, totalM - btcCap);
+    const liqRatio = (totalM>0) ? vol24/totalM : null;
 
-    // Cards:
-    cards.push(card("BTC Price (CoinGecko)", `<div class="center big">$${fmt(priceUSD.toFixed(0))}</div>`));
+    // Separate BTC cards (each alone)
+    cards.push(card("BTC Price (CoinGecko)", `<div class="center big">$${fmt(priceUSD.toFixed(0))}</div>`,
+      "", "Spot price in USD (CoinGecko simple/price)."));
     cards.push(card("BTC Dominance", `<div class="center big">${dominance.toFixed(1)}%</div>`,
-      dominance>=55?"bull":dominance<=45?"warn":""));
-    cards.push(card("Total Market Cap", `<div class="center big">$${fmt(totalM.toFixed(0))}</div>`));
-    cards.push(card("Altcoin Market Cap", `<div class="center big">$${fmt(altM.toFixed(0))}</div>`));
-    cards.push(card("24h Total Volume", `<div class="center big">$${fmt(vol24.toFixed(0))}</div>`));
-    cards.push(card("Volume / Market Cap", `<div class="center big">${liqRatio!=null? (liqRatio*100).toFixed(2)+"%":"—"}</div>`));
+      dominance>=55?"bull":dominance<=45?"warn":"", "BTC market cap share in the total crypto market."));
+    cards.push(card("Total Market Cap", `<div class="center big">$${fmt(totalM.toFixed(0))}</div>`,
+      "", "Total crypto market capitalization (USD)."));
+    cards.push(card("Altcoin Market Cap", `<div class="center big">$${fmt(altM.toFixed(0))}</div>`,
+      "", "Total market cap minus BTC market cap."));
+    cards.push(card("24h Total Volume", `<div class="center big">$${fmt(vol24.toFixed(0))}</div>`,
+      "", "Total traded volume in the last 24h across tracked markets."));
+    cards.push(card("Volume / Market Cap", `<div class="center big">${liqRatio!=null?(liqRatio*100).toFixed(2)+"%":"—"}</div>`,
+      "", "Liquidity ratio = 24h Volume ÷ Total Market Cap."));
+    // Score tweak
+    if (dominance >= 55) score += 0.4; else if (dominance <= 45) score -= 0.2;
 
-    // Stock-to-Flow (approx): subsidy after 2024 halving = 3.125 BTC
-    const flowYear = 3.125 * 144 * 365;        // block subsidy * blocks/day * 365
-    const s2f = supply ? (supply / flowYear) : null;
-    let s2fTone=""; let s2fMsg="Informational only";
-    if(s2f!=null){
-      if(s2f>100){ s2fTone="bull"; s2fMsg="High scarcity"; score += 0.2; }
-      cards.push(card("Stock-to-Flow (approx)", `
-        <div class="kv"><span>Stock (circulating)</span><span>${supply?fmt(supply.toFixed(0)):"—"} BTC</span></div>
-        <div class="kv"><span>Flow / year (est.)</span><span>${fmt(flowYear.toFixed(0))} BTC</span></div>
-        <div class="kv"><span>S2F</span><span class="big">${s2f? s2f.toFixed(1):"—"}</span></div>
-        <div class="muted">${s2fMsg}</div>
-      `, s2fTone));
-    }else{
-      cards.push(card("Stock-to-Flow (approx)", `<div class="muted">Not available</div>`));
-    }
-
-    // Adjust score lightly with dominance:
-    if (dominance >= 55) score += 0.4;
-    else if (dominance <= 45) score -= 0.2;
+    // S2F approx
+    const flowYear = 3.125 * 144 * 365;
+    const s2f = supply ? (supply/flowYear) : null;
+    let s2fTone="", s2fMsg="Informational only";
+    if(s2f!=null && s2f>100){ s2fTone="bull"; s2fMsg="High scarcity"; score+=0.2; }
+    cards.push(card("Stock-to-Flow (approx)", `
+      <div class="kv"><span>Stock (circulating)</span><span>${supply?fmt(supply.toFixed(0)):"—"} BTC</span></div>
+      <div class="kv"><span>Flow / year (est.)</span><span>${fmt(flowYear.toFixed(0))} BTC</span></div>
+      <div class="kv"><span>S2F</span><span class="big">${s2f? s2f.toFixed(1):"—"}</span></div>
+      <div class="muted">${s2fMsg}</div>
+    `, s2fTone, "Approximation: uses current block subsidy × blocks/day × 365."));
 
   }catch(e){
-    cards.push(card("BTC Core (CoinGecko)", `<div class="muted">Error: ${e.message}</div>`));
+    cards.push(card("BTC Core / Chart", `<div class="muted">Error: ${e.message}</div>`));
   }
 
-  // ========== Fear & Greed Gauge ==========
+  // Fear & Greed (Gauge)
   try{
     const f = await getJSON(FNG);
     const now = f?.data?.[0];
     if(now){
-      const val = Number(now.value);
+      const v = Number(now.value);
       let tone="", msg="Neutral";
-      if(val <= 25){ tone="bear"; msg="Extreme Fear"; score -= 0.8; }
-      else if(val <= 45){ tone="warn"; msg="Fear"; score -= 0.4; }
-      else if(val >= 75){ tone="warn"; msg="Extreme Greed"; score -= 0.4; }
-      else if(val >= 55){ tone="bull"; msg="Greed"; score += 0.2; }
-      cards.push(card("Fear & Greed (Gauge)", `
-        <div class="center">${gaugeSVG(val)}</div>
-        <div class="center muted">${now.value_classification} — ${new Date(Number(now.timestamp)*1000).toLocaleDateString()}</div>
-      `, tone));
-    } else {
-      cards.push(card("Fear & Greed", `<div class="muted">No data</div>`));
+      if(v<=25){ tone="bear"; msg="Extreme fear"; score -= .8; }
+      else if(v<=45){ tone="warn"; msg="Fear"; score -= .4; }
+      else if(v>=75){ tone="warn"; msg="Extreme greed"; score -= .4; }
+      else if(v>=55){ tone="bull"; msg="Greed"; score += .2; }
+      cards.push(card("Fear & Greed (Gauge)",
+        `<div class="center">${gaugeSVG(v)}</div>
+         <div class="center muted">${now.value_classification} — ${new Date(Number(now.timestamp)*1000).toLocaleDateString()}</div>`,
+        tone, "Sentiment index (0=extreme fear, 100=extreme greed)."));
     }
   }catch(e){
     cards.push(card("Fear & Greed", `<div class="muted">Error: ${e.message}</div>`));
   }
 
-  // ========== On-chain basics ==========
   // Hashrate
   try{
     const h = await getJSON(BCH_HASH);
-    const pts = h?.values || [];
-    const last = pts[pts.length-1], prev = pts[pts.length-8];
-    const latest = last?.y, change = (latest && prev) ? (latest - prev)/prev : null;
-    let tone="", msg="—";
-    if(change!=null){
-      if(change > 0.05){ tone="bull"; msg="Rising"; score += 0.3; }
-      else if(change < -0.05){ tone="warn"; msg="Falling"; score -= 0.2; }
-    }
-    cards.push(card("Hashrate (Blockchain.com)", `
-      <div class="kv"><span>Latest</span><span class="big">${latest ? fmt(latest.toFixed(2)) : "—"} EH/s</span></div>
-      <div class="kv"><span>~7d Change</span><span>${pct(change)}</span></div>
-      <div class="muted">${msg}</div>
-    `, tone));
-  }catch(e){
-    cards.push(card("Hashrate", `<div class="muted">Error: ${e.message}</div>`));
-  }
+    const pts=h?.values||[]; const last=pts[pts.length-1], prev=pts[pts.length-8];
+    const latest=last?.y, ch=(latest&&prev)?(latest-prev.y)/prev.y:null;
+    let tone="", msg="—"; if(ch!=null){ if(ch>.05){tone="bull";msg="Rising";score+=.3;} else if(ch<-.05){tone="warn";msg="Falling";score-=.2;} }
+    cards.push(card("Hashrate (Blockchain.com)",
+      `<div class="kv"><span>Latest</span><span class="big">${latest?fmt(latest.toFixed(2)):"—"} EH/s</span></div>
+       <div class="kv"><span>~7d Change</span><span>${pct(ch)}</span></div>
+       <div class="muted">${msg}</div>`,
+      tone, "Estimated network hash rate (exahashes/second)."));
+  }catch(e){ cards.push(card("Hashrate", `<div class="muted">Error: ${e.message}</div>`)); }
 
   // Difficulty
   try{
     const d = await getJSON(BCH_DIFF);
-    const pts = d?.values || [];
-    const last = pts[pts.length-1], prev = pts[pts.length-8];
-    const latest = last?.y, change = (latest && prev) ? (latest - prev)/prev : null;
-    let tone="", msg="—";
-    if(change!=null){
-      if(change > 0.03){ tone="bull"; msg="Trending up"; score += 0.2; }
-      else if(change < -0.03){ tone="warn"; msg="Trending down"; score -= 0.1; }
-    }
-    cards.push(card("Mining Difficulty", `
-      <div class="kv"><span>Latest</span><span class="big">${latest ? fmt(latest.toFixed(0)) : "—"}</span></div>
-      <div class="kv"><span>~7d Change</span><span>${pct(change)}</span></div>
-      <div class="muted">${msg}</div>
-    `, tone));
-  }catch(e){
-    cards.push(card("Mining Difficulty", `<div class="muted">Error: ${e.message}</div>`));
-  }
+    const pts=d?.values||[]; const last=pts[pts.length-1], prev=pts[pts.length-8];
+    const latest=last?.y, ch=(latest&&prev)?(latest-prev.y)/prev.y:null;
+    let tone="", msg="—"; if(ch!=null){ if(ch>.03){tone="bull";msg="Trending up";score+=.2;} else if(ch<-.03){tone="warn";msg="Trending down";score-=.1;} }
+    cards.push(card("Mining Difficulty",
+      `<div class="kv"><span>Latest</span><span class="big">${latest?fmt(latest.toFixed(0)):"—"}</span></div>
+       <div class="kv"><span>~7d Change</span><span>${pct(ch)}</span></div>
+       <div class="muted">${msg}</div>`,
+      tone, "Protocol setting controlling how hard it is to mine a block."));
+  }catch(e){ cards.push(card("Mining Difficulty", `<div class="muted">Error: ${e.message}</div>`)); }
 
   // Active Addresses
   try{
     const a = await getJSON(BCH_ADDR);
-    const pts = a?.values || [];
-    const last = pts[pts.length-1], prev = pts[pts.length-8];
-    const latest = last?.y, change = (latest && prev) ? (latest - prev)/prev : null;
-    let tone="", msg="—";
-    if(change!=null){
-      if(change > 0.05){ tone="bull"; msg="Activity up"; score += 0.3; }
-      else if(change < -0.05){ tone="warn"; msg="Activity down"; score -= 0.2; }
-    }
-    cards.push(card("Active Addresses", `
-      <div class="kv"><span>Latest</span><span class="big">${latest ? fmt(latest.toFixed(0)) : "—"}</span></div>
-      <div class="kv"><span>~7d Change</span><span>${pct(change)}</span></div>
-      <div class="muted">${msg}</div>
-    `, tone));
-  }catch(e){
-    cards.push(card("Active Addresses", `<div class="muted">Error: ${e.message}</div>`));
-  }
+    const pts=a?.values||[]; const last=pts[pts.length-1], prev=pts[pts.length-8];
+    const latest=last?.y, ch=(latest&&prev)?(latest-prev.y)/prev.y:null;
+    let tone="", msg="—"; if(ch!=null){ if(ch>.05){tone="bull";msg="Activity up";score+=.3;} else if(ch<-.05){tone="warn";msg="Activity down";score-=.2;} }
+    cards.push(card("Active Addresses",
+      `<div class="kv"><span>Latest</span><span class="big">${latest?fmt(latest.toFixed(0)):"—"}</span></div>
+       <div class="kv"><span>~7d Change</span><span>${pct(ch)}</span></div>
+       <div class="muted">${msg}</div>`,
+      tone, "Daily count of unique addresses active on-chain."));
+  }catch(e){ cards.push(card("Active Addresses", `<div class="muted">Error: ${e.message}</div>`)); }
 
-  // Fees (convert BTC → USD بسعر اليوم)
+  // Fees (daily)
   try{
     const f = await getJSON(BCH_FEES_BTC);
-    const pts = f?.values || [];
-    const last = pts[pts.length-1], prev = pts[pts.length-8];
-    const feesBTC = last?.y || null;
-    const change = (feesBTC && prev) ? (feesBTC - prev.y)/prev.y : null;
-    const feesUSD = (feesBTC && priceUSD) ? feesBTC * priceUSD : null;
-    let tone="", msg="—";
-    if(change!=null){
-      if(change > 0.25){ tone="warn"; msg="Congestion"; score -= 0.2; }
-      else if(change < -0.25){ tone="bull"; msg="Easing"; score += 0.1; }
-    }
-    cards.push(card("Transaction Fees (daily)", `
-      <div class="kv"><span>Total fees (BTC)</span><span class="big">${feesBTC ? feesBTC.toFixed(2) : "—"} BTC</span></div>
-      <div class="kv"><span>≈ USD</span><span>${feesUSD ? "$"+fmt(feesUSD.toFixed(0)) : "—"}</span></div>
-      <div class="kv"><span>~7d Change</span><span>${pct(change)}</span></div>
-      <div class="muted">${msg}</div>
-    `, tone));
-  }catch(e){
-    cards.push(card("Transaction Fees", `<div class="muted">Error: ${e.message}</div>`));
-  }
+    const pts=f?.values||[]; const last=pts[pts.length-1], prev=pts[pts.length-8];
+    const feesBTC=last?.y||null; const ch=(feesBTC&&prev)?(feesBTC-prev.y)/prev.y:null;
+    const price = ($("#grid").dataset.priceUSD)||null; // not used
+    const priceResp = await getJSON(CG_PRICE); const px = priceResp.bitcoin.usd;
+    const feesUSD = (feesBTC && px)? feesBTC*px : null;
+    let tone="", msg="—"; if(ch!=null){ if(ch>.25){tone="warn";msg="Congestion";score-=.2;} else if(ch<-.25){tone="bull";msg="Easing";score+=.1;} }
+    cards.push(card("Transaction Fees (daily)",
+      `<div class="kv"><span>Total fees (BTC)</span><span class="big">${feesBTC?feesBTC.toFixed(2):"—"} BTC</span></div>
+       <div class="kv"><span>≈ USD</span><span>${feesUSD?"$"+fmt(feesUSD.toFixed(0)):"—"}</span></div>
+       <div class="kv"><span>~7d Change</span><span>${pct(ch)}</span></div>
+       <div class="muted">${msg}</div>`,
+      tone, "Total miner fees paid per day (proxy for demand / congestion)."));
+  }catch(e){ cards.push(card("Transaction Fees", `<div class="muted">Error: ${e.message}</div>`)); }
 
-  // ========== Valuation: NVT + Golden Cross ==========
+  // NVT + Golden Cross
   try{
     const [mcSeries, txvSeries] = await Promise.all([
-      getJSON(CG_MKTCHART),
-      getJSON(BCH_TXV_USD),
+      (await getJSON(CG_MKTCHART)).market_caps || [],
+      (await getJSON(BCH_TXV_USD)).values || []
     ]);
-    const mc = (mcSeries.market_caps || []).map(([t,v])=>({t:Math.floor(t/1000), v}));
-    const tv = (txvSeries.values || []).map(o=>({t:o.x, v:o.y}));
-    function joinSeries(a,b){
-      const out=[]; let j=0;
-      for(let i=0;i<a.length;i++){
-        const ta=a[i].t;
-        while(j<b.length-1 && b[j+1].t<=ta) j++;
-        const tb=b[j]?.t;
-        if(Math.abs((tb||0)-ta)<=86400*1.5){
-          out.push({t:ta, a:a[i].v, b:b[j].v});
-        }
-      }
-      return out;
-    }
-    const joined = joinSeries(mc, tv).filter(x=>x.a>0 && x.b>0);
+    const mc = mcSeries.map(([t,v])=>({t:Math.floor(t/1000), v}));
+    const tv = txvSeries.map(o=>({t:o.x, v:o.y}));
+    function joinSeries(a,b){ const out=[]; let j=0; for(let i=0;i<a.length;i++){ const ta=a[i].t; while(j<b.length-1 && b[j+1].t<=ta) j++; const tb=b[j]?.t; if(Math.abs((tb||0)-ta)<=86400*1.5) out.push({t:ta,a:a[i].v,b:b[j].v}); } return out; }
+    const joined = joinSeries(mc,tv).filter(x=>x.a>0 && x.b>0);
     if(joined.length){
-      const nvtSeries = joined.map(x=>x.a / x.b);
-      const latest = nvtSeries[nvtSeries.length-1];
-
-      let nvtTone="", nvtMsg="Neutral zone";
-      if(latest < 20){ nvtTone="bull"; nvtMsg="Strong buying opportunity"; score+=0.6; }
-      else if(latest < 40){ nvtTone="bull"; nvtMsg="Fair value / potential buy"; score+=0.2; }
-      else if(latest >= 70 && latest < 80){ nvtTone="warn"; nvtMsg="Potential overvaluation"; score-=0.2; }
-      else if(latest >= 80){ nvtTone="bear"; nvtMsg="Bubble risk — selling opportunity"; score-=0.6; }
-
-      cards.push(card("NVT (Network Value to Tx)", `
-        <div class="center big">${latest.toFixed(1)}</div>
-        <div class="center muted">${nvtMsg}</div>
-      `, nvtTone));
-
-      // Golden Cross (MA10 vs MA30 of NVT) كنسبة انحراف
-      const ma10 = SMA(nvtSeries,10), ma30 = SMA(nvtSeries,30);
-      if(ma30.length){
-        const gc = (ma10[ma10.length-1] - ma30[ma30.length-1]) / ma30[ma30.length-1];
-        let gcTone="", gcMsg="Fair value";
-        if(gc < -0.015){ gcTone="bull"; gcMsg="Undervalue"; score+=0.3; }
-        else if(gc > 0.021){ gcTone="bear"; gcMsg="Overvalue"; score-=0.3; }
-        cards.push(card("NVT Golden Cross (approx)", `
-          <div class="center big">${(gc*100).toFixed(2)}%</div>
-          <div class="center muted">${gcMsg}</div>
-        `, gcTone));
-      }
-    } else {
-      cards.push(card("NVT / Golden Cross", `<div class="muted">Not enough data</div>`));
+      const nvt = joined.map(x=>x.a/x.b), latest = nvt[nvt.length-1];
+      let tone="", msg="Neutral zone";
+      if(latest<20){ tone="bull"; msg="Strong buying opportunity"; score+=.6; }
+      else if(latest<40){ tone="bull"; msg="Fair value / potential buy"; score+=.2; }
+      else if(latest>=70 && latest<80){ tone="warn"; msg="Potential overvaluation"; score-=.2; }
+      else if(latest>=80){ tone="bear"; msg="Bubble risk"; score-=.6; }
+      const ma10=SMA(nvt,10), ma30=SMA(nvt,30);
+      let gcTxt="—", gcTone="";
+      if(ma30.length){ const gc=(ma10[ma10.length-1]-ma30[ma30.length-1])/ma30[ma30.length-1]; gcTxt=(gc*100).toFixed(2)+"%"; if(gc<-1.5){gcTone="bull";} else if(gc>2.1){gcTone="bear";}}
+      cards.push(card("NVT (Network Value to Tx)",
+        `<div class="center big">${latest.toFixed(1)}</div><div class="center muted">${msg}</div>`,
+        tone, "Market cap ÷ daily on-chain transaction value (USD). Lower = cheaper."));
+      cards.push(card("NVT Golden Cross (approx)",
+        `<div class="center big">${gcTxt}</div><div class="center muted">Negative = undervalued, Positive = overvalued</div>`,
+        "", "Derived from NVT moving averages to reduce noise."));
     }
   }catch(e){
     cards.push(card("NVT / Golden Cross", `<div class="muted">Error: ${e.message}</div>`));
   }
 
-  // Render + score
+  // Render
   $("#grid").innerHTML = cards.join("");
   $("#marketScore").textContent = "Market Score: " + scoreLabel(score);
   $("#asof").textContent = "Updated at " + new Date().toLocaleString();
@@ -345,8 +374,15 @@ async function main(){
 }
 
 $("#refreshBtn").addEventListener("click", main);
+$("#toggleChartBtn").addEventListener("click", ()=>{
+  const box = $("#chartBox");
+  const hidden = box.style.display === "none";
+  box.style.display = hidden ? "block" : "none";
+  $("#toggleChartBtn").textContent = hidden ? "Hide chart" : "Show chart";
+});
+
 main();
-// Auto-refresh كل 10 دقائق
+// تحديث تلقائي كل 10 دقائق
 setInterval(main, 10*60*1000);
 </script>
 </body>
