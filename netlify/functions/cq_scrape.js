@@ -1,25 +1,13 @@
-// netlify/functions/cq_scrape.js
-export const config = { path: "/.netlify/functions/cq_scrape" };
-
-/**
- * Scrape SOPR / MVRV time-series from CryptoQuant public pages (requires logged-in cookie).
- * Set env var: CQ_COOKIE (copy full cookie string from browser).
- *
- * Test:
- *  /.netlify/functions/cq_scrape?metric=sopr
- *  /.netlify/functions/cq_scrape?metric=mvrv
- *  /.netlify/functions/cq_scrape?metric=sopr&debug=1
- */
+// netlify/functions/cq_scrape.js  (CommonJS for Netlify)
 
 const MAP = {
   sopr: "https://cryptoquant.com/asset/btc/indicator/sopr",
   mvrv: "https://cryptoquant.com/asset/btc/indicator/mvrv",
 };
 
-// -------- small utils --------
+// ---------- helpers ----------
 function jsonSafeParse(s) { try { return JSON.parse(s); } catch { return null; } }
 
-// recursive finder for any array of { time/value }-like points
 function findTimeSeries(node) {
   const paths = [];
   function rec(n, path) {
@@ -30,7 +18,7 @@ function findTimeSeries(node) {
       const hasVal  = keys.some(k => /value|v|y|val/i.test(k));
       if (hasTime && hasVal) paths.push({ path, sample: n.slice(-5) });
     }
-    if (typeof n === "object") {
+    if (typeof n === "object" && !Array.isArray(n)) {
       for (const k of Object.keys(n)) rec(n[k], path.concat(k));
     }
   }
@@ -39,19 +27,24 @@ function findTimeSeries(node) {
 }
 
 function ok(json) {
-  return new Response(JSON.stringify(json), {
-    status: 200,
+  return {
+    statusCode: 200,
     headers: { "content-type": "application/json; charset=utf-8" },
-  });
+    body: JSON.stringify(json),
+  };
 }
 function bad(status, msg) {
-  return new Response(JSON.stringify({ error: msg }), {
-    status,
+  return {
+    statusCode: status,
     headers: { "content-type": "application/json; charset=utf-8" },
-  });
+    body: JSON.stringify({ error: msg }),
+  };
 }
 
-export async function handler(event) {
+// لا نستخدم exports.config/path لتفادي تعارضات؛
+ // نصل للدالة على الرابط الافتراضي:
+// /.netlify/functions/cq_scrape
+exports.handler = async (event) => {
   try {
     const metric = (event.queryStringParameters?.metric || "").toLowerCase();
     const debug  = event.queryStringParameters?.debug === "1";
@@ -63,8 +56,6 @@ export async function handler(event) {
     }
 
     const url = MAP[metric];
-
-    // Stronger headers help avoid being served a stripped page
     const res = await fetch(url, {
       headers: {
         "cookie": COOKIE,
@@ -95,7 +86,6 @@ export async function handler(event) {
       return bad(res.status, `Upstream status ${res.status}`);
     }
 
-    // 1) Extract Next.js data blob
     const m = html.match(
       /<script id="__NEXT_DATA__" type="application\/json">([\s\S]+?)<\/script>/
     );
@@ -104,28 +94,21 @@ export async function handler(event) {
     const nextData = jsonSafeParse(m[1]);
     if (!nextData) return bad(502, "Failed to parse __NEXT_DATA__ JSON");
 
-    // 2) Search inside for time-series arrays
     const found = findTimeSeries(nextData);
     if (!found.length) return bad(404, "No time series found");
 
-    // 3) Heuristic: pick the LONGEST candidate (most points)
-    let best = found[0];
-    let bestLen = best.sample.length;
-    function getByPath(obj, path) {
-      return path.reduce((acc, k) => (acc ? acc[k] : undefined), obj);
-    }
+    // pick longest array
+    let bestPath = found[0].path, bestLen = 0;
+    const getByPath = (obj, p) => p.reduce((a,k)=> (a ? a[k] : undefined), obj);
     for (const cand of found) {
       const arr = getByPath(nextData, cand.path) || [];
       if (Array.isArray(arr) && arr.length > bestLen) {
-        best = cand;
-        bestLen = arr.length;
+        bestLen = arr.length; bestPath = cand.path;
       }
     }
-    const fullArr = getByPath(nextData, best.path);
+    const fullArr = getByPath(nextData, bestPath) || [];
 
-    // 4) Normalize points → { time, value }
     const norm = fullArr.map(p => {
-      // try common key names
       const t = p.time ?? p.t ?? p.date ?? p.x ?? null;
       const v = p.value ?? p.v ?? p.y ?? p.val ?? null;
       return { time: t, value: v };
@@ -133,13 +116,8 @@ export async function handler(event) {
 
     if (!norm.length) return bad(404, "Parsed array but points were empty");
 
-    return ok({
-      metric,
-      count: norm.length,
-      // send last 200 points to keep payload small
-      data: norm.slice(-200),
-    });
+    return ok({ metric, count: norm.length, data: norm.slice(-200) });
   } catch (e) {
     return bad(500, `Exception: ${e.message}`);
   }
-}
+};
